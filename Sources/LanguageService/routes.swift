@@ -2,18 +2,13 @@ import Vapor
 import Foundation
 
 func routes(_ app: Application) throws {
-    app.get { getRequest -> String in
-        return "Hello, I'm a Language Service. An LSP implementation is running, but I'm not doing anything yet 🙄"
-    }
-
-    app.post { postRequest -> String in
-        return "Post request body: \(postRequest.body.string ?? "nil")"
-    }
-    
-    testTalkingToSourceKitLSP()
+    launchSourceKitLSP()
+    setupWebSocket(app)
 }
 
-fileprivate func testTalkingToSourceKitLSP() {
+// MARK: - Launch Language Server
+
+fileprivate func launchSourceKitLSP() {
     // setup generally
     process.executableURL = URL(fileURLWithPath: "/Users/seb/Desktop/sourcekit-lsp")
     process.arguments = []
@@ -27,8 +22,11 @@ fileprivate func testTalkingToSourceKitLSP() {
     process.standardOutput = outputPipe
     let outputFileHandle = outputPipe.fileHandleForReading
     outputFileHandle.readabilityHandler = { fileHandle in
-        let errorData = fileHandle.availableData
-        print(String(data: errorData, encoding: .utf8) ?? "error decoding output")
+        let outputData = fileHandle.availableData
+        let outputString = String(data: outputData,
+                                  encoding: .utf8) ?? "error decoding output"
+        print(outputString)
+        websocket?.send(outputString)
     }
 
     // read errors
@@ -45,42 +43,48 @@ fileprivate func testTalkingToSourceKitLSP() {
     } catch {
         print(error.localizedDescription)
     }
-    
-    // send message
-    sendMessageToSourceKitLSP()
 }
 
-fileprivate func sendMessageToSourceKitLSP() {
-    let messageData = createTestMessageData()
+// MARK: - Client WebSocket
+
+func setupWebSocket(_ app: Application) {
+    app.webSocket { request, ws in
+        websocket = ws
+        
+        ws.onBinary { ws, byteBuffer in
+            websocketDidSend(byteBuffer: byteBuffer)
+        }
+    }
+}
+
+func websocketDidSend(byteBuffer: ByteBuffer) {
+    guard let data = byteBuffer.getData(at: 0,
+                                        length: byteBuffer.readableBytes) else {
+        print("error: could not get data from received byte buffer")
+        return
+    }
     
+    let dataString = String(data: data,
+                            encoding: .utf8) ?? "error decoding data"
+    
+    print("received data of \(data.count) bytes:\n\(dataString)")
+    
+    sendDataToLanguageServer(data)
+}
+
+fileprivate func sendDataToLanguageServer(_ data: Data) {
     do {
-        try inputPipe.fileHandleForWriting.write(contentsOf: messageData)
+        try inputPipe.fileHandleForWriting.write(contentsOf: data)
     } catch {
         print(error.localizedDescription)
     }
 }
 
-fileprivate func createTestMessageData() -> Data {
-    let request = """
-    {
-        "jsonrpc": "2.0",
-        "id": 1,
-        "method": "initialize",
-        "params":
-        {
-            "capabilities": {},
-            "trace": "off"
-        }
-    }
-    """
-    
-    let messageContentData = request.data(using: .utf8)!
-    let messageHeader = "Content-Length: \(messageContentData.count)\r\n\r\n"
-    let messageHeaderData = messageHeader.data(using: .utf8)!
-    return messageHeaderData + messageContentData
-}
+fileprivate var websocket: WebSocket?
 
+// MARK: - Language Server Process
+
+fileprivate let process = Process()
 fileprivate let inputPipe = Pipe()
 fileprivate let outputPipe = Pipe()
 fileprivate let errorPipe = Pipe()
-fileprivate let process = Process()
