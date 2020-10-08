@@ -3,45 +3,39 @@ import Foundation
 
 func routes(_ app: Application) throws {
     app.get { getRequest -> String in
-        print(process.isRunning)
-        sendMessageToSourceKitLSP()
-        return "Hello, I'm a Language Service. You sent me a get request."
+        return "Hello, I'm a Language Service. An LSP implementation is running, but I'm not doing anything yet 🙄"
     }
 
     app.post { postRequest -> String in
         return "Post request body: \(postRequest.body.string ?? "nil")"
     }
     
-    startSourceKitLSP()
+    testTalkingToSourceKitLSP()
 }
 
-fileprivate func startSourceKitLSP() {
+fileprivate func testTalkingToSourceKitLSP() {
     // setup generally
     process.executableURL = URL(fileURLWithPath: "/Users/seb/Desktop/sourcekit-lsp")
+    process.arguments = []
+    process.environment = nil
     process.standardInput = inputPipe
     process.terminationHandler = { p in
-        print("Terminated for reason \(p.terminationReason.rawValue)")
+        print("Terminated with reason \(p.terminationReason.rawValue)")
     }
     
     // read output
     process.standardOutput = outputPipe
-    let outputFile = outputPipe.fileHandleForReading
-    outputFile.waitForDataInBackgroundAndNotify()
-    NotificationCenter.default.addObserver(forName: .NSFileHandleDataAvailable,
-                                           object: outputFile,
-                                           queue: nil) { _ in
-        let outputData = outputFile.availableData
-        print(String(data: outputData, encoding: .utf8) ?? "error decoding output")
+    let outputFileHandle = outputPipe.fileHandleForReading
+    outputFileHandle.readabilityHandler = { fileHandle in
+        let errorData = fileHandle.availableData
+        print(String(data: errorData, encoding: .utf8) ?? "error decoding output")
     }
 
     // read errors
     process.standardError = errorPipe
-    let errorFile = errorPipe.fileHandleForReading
-    errorFile.waitForDataInBackgroundAndNotify()
-    NotificationCenter.default.addObserver(forName: .NSFileHandleDataAvailable,
-                                           object: errorFile,
-                                           queue: nil) { _ in
-        let errorData = errorFile.availableData
+    let errorFileHandle = errorPipe.fileHandleForReading
+    errorFileHandle.readabilityHandler = { fileHandle in
+        let errorData = fileHandle.availableData
         print(String(data: errorData, encoding: .utf8) ?? "error decoding error")
     }
     
@@ -51,36 +45,39 @@ fileprivate func startSourceKitLSP() {
     } catch {
         print(error.localizedDescription)
     }
+    
+    // send message
+    sendMessageToSourceKitLSP()
 }
 
 fileprivate func sendMessageToSourceKitLSP() {
+    let messageData = createTestMessageData()
+    
     do {
-        try inputPipe.fileHandleForWriting.write(contentsOf: testMessageData())
+        try inputPipe.fileHandleForWriting.write(contentsOf: messageData)
     } catch {
         print(error.localizedDescription)
     }
 }
 
-fileprivate func testMessageData() -> Data {
-    let messageHeader = #"Content-Type: "application/vscode-jsonrpc; charset=utf-8"\r\n\r\n"#
-    let messageContent = """
+fileprivate func createTestMessageData() -> Data {
+    let request = """
     {
         "jsonrpc": "2.0",
         "id": 1,
         "method": "initialize",
-        "params": {
+        "params":
+        {
+            "capabilities": {},
+            "trace": "off"
         }
     }
     """
-    guard let messageHeaderData = messageHeader.data(using: .ascii),
-        let messageContentData = messageContent.data(using: .utf8) else {
-        print("Error encoding message")
-        return Data()
-    }
     
-    var result = messageHeaderData
-    result.append(messageContentData)
-    return result
+    let messageContentData = request.data(using: .utf8)!
+    let messageHeader = "Content-Length: \(messageContentData.count)\r\n\r\n"
+    let messageHeaderData = messageHeader.data(using: .utf8)!
+    return messageHeaderData + messageContentData
 }
 
 fileprivate let inputPipe = Pipe()
