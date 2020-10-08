@@ -18,7 +18,9 @@ To decouple editors (IDEs) from the language servers. Possible benefits:
 
 The singular purpose of the Language Service is to forward LSP messages from some editor to some LSP language server and vice versa. WebSocket here is just a means of data transport. The Language Service "API" shall know nothing about the LSP standard itself. Encoding and decoding LSP messages and generally representing LSP with proper types remains a concern of- and in control of the editor.
 
-The project is written in Swift using [Vapor](https://github.com/vapor/vapor), but it's really just an experimental seed right now. I've never done any backend development and have finally just figured out how to talk to [`sourcekit-lsp`](https://github.com/apple/sourcekit-lsp) and how to use WebSocket on server- and client side. I appreciate any advice and help! 🙏🏻
+I'm writing this project on a Mac in Swift using [Vapor](https://github.com/vapor/vapor), and it should be possible to build it on Linux as well. Also, while the Language Service is intended to work with language servers for all languages, I'm using the Swift language server (`sourcekit-lsp`) to get this going.
+
+Overall, this is really just an experimental seed right now. I've never done any backend development and have finally just figured out how to talk to [`sourcekit-lsp`](https://github.com/apple/sourcekit-lsp) and how to use WebSocket on server- and client side. I appreciate any advice and help! 🙏🏻
 
 ## To Do
 
@@ -32,7 +34,6 @@ The project is written in Swift using [Vapor](https://github.com/vapor/vapor), b
 * [ ] Let Language Service locate `sourcekit-lsp`
 * [ ] Allow to use multiple different language servers. Maybe have an endpoint for each language, like `ws://127.0.0.1:<service port>/<language>`
 * [ ] Add basic API so client editors can ask what languages are available
-* [ ] Possibly build a package/framework that helps on the client (editor-) side with using the LSH, consider using or extending <https://github.com/chimehq/SwiftLSPClient>
+* [ ] Possibly build a package/framework that helps Swift clients (editors) with using the LSH, consider using or extending <https://github.com/chimehq/SwiftLSPClient>
 * [ ] Add web frontend (end necessary endpoints) for managing language servers, consider using [Leaf](https://github.com/vapor/leaf)
 * [ ] Enable serving multiple clients who need services for the same language at the same time
-
