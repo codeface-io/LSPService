@@ -2,20 +2,24 @@
 
 ## What?
 
-An app that locally runs a web service (the "Language Service") which then allows editors and IDEs to use local [LSP](https://microsoft.github.io/language-server-protocol/) language servers simply via WebSockets.
+An app that locally hosts a web service (the "Language Service") which then allows editors and IDEs to use local [LSP language servers](https://langserver.org) simply via WebSockets.
 
 ## Why?
 
-To make life easier for editors (and their developers) and to enable some future perspectives:
+The [LSP protocol](https://microsoft.github.io/language-server-protocol/) is the present and future of software development tools. But leveraging it for my own tool project turned out to be more difficult than expected. 
 
-* **Mac Editors can be sandboxed and probably even be distributed via the Mac App Store.**
+Most of all, I want to distribute my tool via the App Store, so it must be sandboxed, which makes it impossible to deal with language servers directly or with any other "tooling" of the tech world.
+
+So I thoutht: What if a language server was simply a local web service? Possible benefits:
+
+* **On macOS, Editors can be sandboxed and probably even be distributed via the App Store.**
 * **Editors don't need to locate, install, run and talk to language servers.**
 * In the future, the Language Service could be a machine's central place for managing LSP language servers, possibly also through a web front end.
-* Even further ahead, running the Language Service as a remote web service might have some interesting applications, in particular where LSP is used for static code analysis or remote inspection.
+* Even further down the road, running the Language Service on an actual web server might have some interesting applications, in particular where LSP is used for static code analysis or remote inspection.
 
 ## How?
 
-The singular purpose of the Language Service is to present language servers (for different languages) as simple WebSockets:
+The singular purpose of the Language Service is to present LSP language servers as simple WebSockets:
 
 ![LanguageServiceHost](https://raw.githubusercontent.com/flowtoolz/LanguageServiceHost/master/Documentation/language_service_host_idea.jpg)
 
