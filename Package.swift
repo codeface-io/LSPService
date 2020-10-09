@@ -6,6 +6,9 @@ let package = Package(
     platforms: [
        .macOS(.v10_15)
     ],
+    products: [
+        .executable(name: "LanguageServiceHost", targets: ["LanguageServiceHost"]),
+    ],
     dependencies: [
         // 💧 A server-side Swift web framework.
         .package(url: "https://github.com/vapor/vapor.git", from: "4.0.0")
@@ -23,10 +26,18 @@ let package = Package(
                 .unsafeFlags(["-cross-module-optimization"], .when(configuration: .release))
             ]
         ),
-        .target(name: "LanguageServiceHost", dependencies: [.target(name: "LanguageService")]),
-        .testTarget(name: "LanguageServiceTests", dependencies: [
-            .target(name: "LanguageService"),
-            .product(name: "XCTVapor", package: "vapor"),
-        ])
+        .target(
+            name: "LanguageServiceHost",
+            dependencies: [
+                .target(name: "LanguageService")
+            ]
+        ),
+        .testTarget(
+            name: "LanguageServiceTests",
+            dependencies: [
+                .target(name: "LanguageService"),
+                .product(name: "XCTVapor", package: "vapor"),
+            ]
+        )
     ]
 )
