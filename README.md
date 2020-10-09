@@ -2,20 +2,20 @@
 
 ## What?
 
-A web server for hosting a "language service" locally. The service then allows to access local [LSP](https://microsoft.github.io/language-server-protocol/) language servers via WebSockets:
+An app that locally runs a web service (the "Language Service") which then allows editors and IDEs to use local [LSP](https://microsoft.github.io/language-server-protocol/) language servers simply via WebSockets.
 
 ## Why?
 
-To decouple editors (IDEs) from the language servers. Possible benefits:
+To make life easier for editors (and their developers) and to enable some future perspectives:
 
-* **Mac Editors can be sandboxed and (hopefully) even be distributed via the Mac App Store.**
-* Editors don't need to deal with locating, installing and running language servers.
-* In the future, the Language Service Host could be a machine's central place for locating, installing and running LSP language servers.
-* Even further ahead, running the Language Service as a remote web service might have some interesting applications, in particular where LSP is used for static code analysis or remote inspection rather than code editing.
+* **Mac Editors can be sandboxed and probably even be distributed via the Mac App Store.**
+* **Editors don't need to locate, install, run and talk to language servers.**
+* In the future, the Language Service could be a machine's central place for managing LSP language servers, possibly also through a web front end.
+* Even further ahead, running the Language Service as a remote web service might have some interesting applications, in particular where LSP is used for static code analysis or remote inspection.
 
 ## How?
 
-The singular purpose of the Language Service is to provide language servers (for different languages) as simple WebSockets:
+The singular purpose of the Language Service is to present language servers (for different languages) as simple WebSockets:
 
 ![LanguageServiceHost](https://raw.githubusercontent.com/flowtoolz/LanguageServiceHost/master/Documentation/language_service_host_idea.jpg)
 
