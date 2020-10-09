@@ -93,11 +93,21 @@ func registerRoutes(onAPI api: RoutesBuilder) {
     api.webSocket(":\(languageNameParameter)") { request, ws in
         let languageName = request.parameters.get(languageNameParameter)!
         websocket = ws
+        
         ws.onBinary { ws, byteBuffer in
             let data = Data(buffer: byteBuffer)
             let dataString = String(data: data, encoding: .utf8) ?? "error decoding data"
             print("received data from socket \(ObjectIdentifier(ws).hashValue) at endpoint for \(languageName):\n\(dataString)")
             sendDataToLanguageServer(data)
+        }
+        
+        ws.onClose.whenComplete { result in
+            switch result {
+            case .success:
+                print("websocket did close")
+            case .failure(let error):
+                print("websocket failed to close: \(error.localizedDescription)")
+            }
         }
     }
 }
