@@ -4,8 +4,7 @@ class SwiftLanguageServer {
     
     // MARK: - Life Cycle
     
-    init(executable: URL) {
-        self.executable = executable
+    init() {
         didSendOutput = { _ in
             print("\(Self.self) did send output, but output handler has not been set")
         }
@@ -75,7 +74,7 @@ class SwiftLanguageServer {
     // MARK: - Process
     
     private func setupProcess() {
-        process.executableURL = executable
+        updateExecutable()
         process.environment = nil
         process.arguments = []
         process.terminationHandler = { process in
@@ -83,7 +82,17 @@ class SwiftLanguageServer {
         }
     }
     
+    func updateExecutable(filePath: String = getSourceKitLSPPath()) {
+        guard let executable = actuallyExistingExecutable(for: filePath) else { return }
+        process.executableURL = executable // just setting nil crashes
+    }
+    
     func run() {
+        guard process.executableURL != nil else {
+            print("Error: \(Self.self) has no valid executable set")
+            return
+        }
+        
         guard !isRunning else {
             print("warning: \(Self.self) is already running.")
             return
@@ -103,5 +112,60 @@ class SwiftLanguageServer {
     var isRunning: Bool { process.isRunning }
     
     private let process = Process()
-    private let executable: URL
+    
+    // MARK: - Executable (sourcekit-lsp)
+    
+    func actuallyExistingExecutable(for filePath: String?) -> URL? {
+        guard let path = filePath else { return nil }
+        
+        if FileManager.default.fileExists(atPath: path) {
+            return URL(fileURLWithPath: path)
+        } else {
+            print("Error: sourcekit-lsp does not seem to exist here:\n\(path)\n\(Self.self) will not be able to run without the executable")
+            return nil
+        }
+    }
+    
+    private static func getSourceKitLSPPath() -> String {
+        var path = defaultExecutablePath
+        
+        do {
+            let output = try runExecutable(at: "/usr/bin/xcrun",
+                                           arguments: ["--find", "sourcekit-lsp"])
+            if let firstLine = output.components(separatedBy: "\n").first {
+                path = firstLine
+            } else {
+                print("Error: failed to get path from output of '/usr/bin/xcrun --find sourcekit-lsp'\nWill assume this path for sourcekit-lsp:\n\(path)")
+            }
+        } catch {
+            print("Error: failed to run '/usr/bin/xcrun --find sourcekit-lsp': \(error.localizedDescription)\nWill assume this path for sourcekit-lsp:\n\(path)")
+        }
+        
+        return path
+    }
+    
+    private static let defaultExecutablePath = "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/sourcekit-lsp"
+}
+
+func runExecutable(at filePath: String, arguments: [String]) throws -> String {
+    let input = Pipe()
+    let output = Pipe()
+    
+    let process = Process()
+    process.executableURL = URL(fileURLWithPath: filePath)
+    process.standardInput = input
+    process.standardOutput = output
+    process.environment = nil
+    process.arguments = arguments
+    
+    var outputData = Data()
+    
+    output.fileHandleForReading.readabilityHandler = { output in
+        outputData += output.availableData
+    }
+    
+    try process.run()
+    process.waitUntilExit()
+    
+    return String(data: outputData, encoding: .utf8)!
 }

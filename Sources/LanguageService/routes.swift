@@ -109,5 +109,4 @@ let lowercasedNamesOfSupportedLanguages: Set<String> = ["swift"]
 
 // MARK: - Swift Language Server
 
-let swiftLanguageServer = SwiftLanguageServer(executable: sourcekitLSP)
-let sourcekitLSP = URL(fileURLWithPath: "/Users/seb/Desktop/sourcekit-lsp")
+let swiftLanguageServer = SwiftLanguageServer()
