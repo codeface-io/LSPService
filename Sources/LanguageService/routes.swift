@@ -36,15 +36,17 @@ fileprivate func launchSourceKitLSP() {
         print("Terminated with reason \(p.terminationReason.rawValue)")
     }
     
-    // read output
+    // read and output and forward it to client
     process.standardOutput = outputPipe
     let outputFileHandle = outputPipe.fileHandleForReading
     outputFileHandle.readabilityHandler = { fileHandle in
         let outputData = fileHandle.availableData
+        
         let outputString = String(data: outputData,
                                   encoding: .utf8) ?? "error decoding output"
-        print(outputString)
-        websocket?.send(outputString)
+        print("received output from language server:\n" + outputString)
+
+        websocket?.send([UInt8](outputData))
     }
 
     // read errors
@@ -92,25 +94,12 @@ func registerRoutes(onAPI api: RoutesBuilder) {
         let languageName = request.parameters.get(languageNameParameter)!
         websocket = ws
         ws.onBinary { ws, byteBuffer in
-            websocketDidSend(byteBuffer: byteBuffer,
-                             forLanguage: languageName)
+            let data = Data(buffer: byteBuffer)
+            let dataString = String(data: data, encoding: .utf8) ?? "error decoding data"
+            print("received data from socket \(ObjectIdentifier(ws).hashValue) at endpoint for \(languageName):\n\(dataString)")
+            sendDataToLanguageServer(data)
         }
     }
-}
-
-func websocketDidSend(byteBuffer: ByteBuffer, forLanguage language: String) {
-    guard let data = byteBuffer.getData(at: 0,
-                                        length: byteBuffer.readableBytes) else {
-        print("error: could not get data from received byte buffer")
-        return
-    }
-    
-    let dataString = String(data: data,
-                            encoding: .utf8) ?? "error decoding data"
-    
-    print("received data of \(data.count) bytes for \(language):\n\(dataString)")
-    
-    sendDataToLanguageServer(data)
 }
 
 fileprivate var websocket: WebSocket?
