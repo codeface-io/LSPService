@@ -1,11 +1,9 @@
 import Vapor
 import Foundation
 
-// MARK: - Setup
+// MARK: - Register Routes
 
 func registerRoutes(on app: Application) throws {
-    launchSourceKitLSP()
-    
     app.on(.GET) { req in
         "Hello, I'm the Language Service Host.\n\nEndpoints (Vapor Routes):\n\(routeList(for: app))"
     }
@@ -22,47 +20,6 @@ func registerRoutes(onLanguageService languageService: RoutesBuilder,
     registerRoutes(onDashboard: languageService.grouped("dashboard"), on: app)
     
     registerRoutes(onAPI: languageService.grouped("api"))
-}
-
-// MARK: - Launch SourceKitLSP (Language Server)
-
-fileprivate func launchSourceKitLSP() {
-    // setup generally
-    process.executableURL = URL(fileURLWithPath: "/Users/seb/Desktop/sourcekit-lsp")
-    process.arguments = []
-    process.environment = nil
-    process.standardInput = inputPipe
-    process.terminationHandler = { p in
-        print("Terminated with reason \(p.terminationReason.rawValue)")
-    }
-    
-    // read and output and forward it to client
-    process.standardOutput = outputPipe
-    let outputFileHandle = outputPipe.fileHandleForReading
-    outputFileHandle.readabilityHandler = { fileHandle in
-        let outputData = fileHandle.availableData
-        
-        let outputString = String(data: outputData,
-                                  encoding: .utf8) ?? "error decoding output"
-        print("received output from language server:\n" + outputString)
-
-        websocket?.send([UInt8](outputData))
-    }
-
-    // read errors
-    process.standardError = errorPipe
-    let errorFileHandle = errorPipe.fileHandleForReading
-    errorFileHandle.readabilityHandler = { fileHandle in
-        let errorData = fileHandle.availableData
-        print(String(data: errorData, encoding: .utf8) ?? "error decoding error")
-    }
-    
-    // launch
-    do {
-        try process.run()
-    } catch {
-        print(error.localizedDescription)
-    }
 }
 
 // MARK: - Dashboard
@@ -85,20 +42,27 @@ func routeList(for app: Application) -> String {
     app.routes.all.map { $0.description }.reduce("") { $0 + $1 + "\n" }
 }
 
-// MARK: - API
+// MARK: - Websocket API
 
 func registerRoutes(onAPI api: RoutesBuilder) {
     let languageNameParameter = "languageName"
     
     api.webSocket(":\(languageNameParameter)") { request, ws in
         let languageName = request.parameters.get(languageNameParameter)!
+        guard isSupported(language: languageName) else {
+            ws.send("Error accessing Language Service: \(languageName.capitalized) is currently not supported.")
+            return
+        }
+        
+        configureAndRunSwiftLanguageServer()
+        
         websocket = ws
         
         ws.onBinary { ws, byteBuffer in
             let data = Data(buffer: byteBuffer)
             let dataString = String(data: data, encoding: .utf8) ?? "error decoding data"
             print("received data from socket \(ObjectIdentifier(ws).hashValue) at endpoint for \(languageName):\n\(dataString)")
-            sendDataToLanguageServer(data)
+            swiftLanguageServer.receive(data)
         }
         
         ws.onClose.whenComplete { result in
@@ -112,22 +76,19 @@ func registerRoutes(onAPI api: RoutesBuilder) {
     }
 }
 
-fileprivate var websocket: WebSocket?
+fileprivate func configureAndRunSwiftLanguageServer() {
+    swiftLanguageServer.didSendOutput = { output in
+        let outputString = String(data: output,
+                                  encoding: .utf8) ?? "error decoding output"
+        print("received output from Swift language server:\n" + outputString)
 
-// MARK: - Language Server
-
-fileprivate func sendDataToLanguageServer(_ data: Data) {
-    do {
-        try inputPipe.fileHandleForWriting.write(contentsOf: data)
-    } catch {
-        print(error.localizedDescription)
+        websocket?.send([UInt8](output))
     }
+
+    swiftLanguageServer.run()
 }
 
-fileprivate let process = Process()
-fileprivate let inputPipe = Pipe()
-fileprivate let outputPipe = Pipe()
-fileprivate let errorPipe = Pipe()
+fileprivate var websocket: WebSocket?
 
 // MARK: - Supported Languages
 
@@ -145,3 +106,8 @@ func isSupported(language: String) -> Bool {
 }
 
 let lowercasedNamesOfSupportedLanguages: Set<String> = ["swift"]
+
+// MARK: - Swift Language Server
+
+let swiftLanguageServer = SwiftLanguageServer(executable: sourcekitLSP)
+let sourcekitLSP = URL(fileURLWithPath: "/Users/seb/Desktop/sourcekit-lsp")
