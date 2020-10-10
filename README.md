@@ -10,7 +10,7 @@ The [LSP protocol](https://microsoft.github.io/language-server-protocol/) is the
 
 Most of all, I want to distribute my tool via the App Store, so it must be sandboxed, which makes it impossible to deal with language servers directly or with any other "tooling" of the tech world.
 
-So I thoutht: What if a language server was simply a local web service? Possible benefits:
+So I thought: What if a language server was simply a local web service? Possible benefits:
 
 * **On macOS, Editors can be sandboxed and probably even be distributed via the App Store.**
 * **Editors don't need to locate, install, run and talk to language servers.**
