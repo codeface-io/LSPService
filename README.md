@@ -40,8 +40,9 @@ Although the Language Service will work with many languages, I focus on the Swif
 * [ ] Allow to use multiple different language servers. Proof concept by supporting/testing at least one additional language server (Python or Java)
 * [ ] Document how to use the LSH, possibly also provide macOS binary
 * [ ] Enable serving different language endpoints with the same language server executable, like `sourcekit-lsp` can work with C, C++ and Objective-c as well.
-* [ ] Add web frontend for managing language servers, consider exploring [Leaf](https://github.com/vapor/leaf)
-* [ ] Possibly build a package/framework that helps Swift clients (editors) with using the LSH, consider using or extending <https://github.com/chimehq/SwiftLSPClient>
+* [ ] Add web frontend for managing language servers. Consider using [Plot](https://github.com/JohnSundell/Plot)
+* [ ] Possibly build a package/framework for simply and typsafely defining, encoding and decoding LSP messages. Consider suggesting to extract that type system from [SwiftLSPClient](https://github.com/chimehq/SwiftLSPClient) and/or from sourcekit-lsp into a dedicated package. Both use a (near) identical typesystem for that already ...
+* [ ] Possibly build a Swift package that helps Swift clients (editors) with using the Language Server
 * [ ] Enable serving multiple clients who need services for the same language at the same time
 * [ ] Explore whether this approach would actually fly with the Mac App Store review, because:
   * The editor app would need to encourage the user to download and install the Language Service Host, but apps in the App Store are not allowed to lead the user to some website, at least as it relates to purchase funnels.
