@@ -34,16 +34,18 @@ Although the Language Service will work with many languages, I focus on the Swif
 * [x] Implement proof of concept with WebSockets and `sourcekit-lsp`
 * [x] Let the Language Service locate `sourcekit-lsp` for the Swift endpoint
 * [x] Have a dynamic endpoint for all languages, like `ws://127.0.0.1:<service port>/languageservice/api/<language>`
-* [ ] Explore whether `sourcekit-lsp` can be adjusted to send error feedback when it fails to decode incoming data. This would enormously accelerate development of  `sourcekit-lsp` clients, whether they use `sourcekit-lsp` directly or via this Language Service. And it might also have implications for the Language Service.
-* [ ] Add a way for client editors to receive the [error output](https://en.wikipedia.org/wiki/Standard_streams#Standard_error_(stderr)) from language server processes
+* [ ] Explore whether `sourcekit-lsp` can be adjusted to send error feedback when it fails to decode incoming data. This would enormously accelerate development of  `sourcekit-lsp` clients, whether they use `sourcekit-lsp` directly or via this Language Service. It might also have implications for the Language Service.
 * [ ] Add an endpoint for client editors to detect what languages are available
 * [ ] Allow to use multiple different language servers. Proof concept by supporting/testing at least one additional language server (Python or Java)
 * [ ] Document how to use the LSH, possibly also provide macOS binary
+* [ ] Lift logging and error handling up to the best practices of Vapor. Ensure that users launching the host app see all errors in the terminal.
 * [ ] Enable serving different language endpoints with the same language server executable, like `sourcekit-lsp` can work with C, C++ and Objective-c as well.
-* [ ] Add web frontend for managing language servers. Consider using [Plot](https://github.com/JohnSundell/Plot)
+* [ ] Consider adding a proper CLI for the host app so users can manage the list of language servers from the command line (as alternative to- or replacement of a web frontend ...)
+* [ ] Consider adding a web frontend for managing language servers. Possibly use [Plot](https://github.com/JohnSundell/Plot)
 * [ ] Possibly build a package/framework for simply and typsafely defining, encoding and decoding LSP messages. Consider suggesting to extract that type system from [SwiftLSPClient](https://github.com/chimehq/SwiftLSPClient) and/or from sourcekit-lsp into a dedicated package. Both use a (near) identical typesystem for that already ...
 * [ ] Possibly build a Swift package that helps Swift clients (editors) with using the Language Server
 * [ ] Enable serving multiple clients who need services for the same language at the same time
 * [ ] Explore whether this approach would actually fly with the Mac App Store review, because:
   * The editor app would need to encourage the user to download and install the Language Service Host, but apps in the App Store are not allowed to lead the user to some website, at least as it relates to purchase funnels.
   * The Language Service Host is not really a web API. And it could be argued that it is more of a plugin that effects the behaviour of the editor app, which would break App Store rules.
+* [ ] Re-evaluate whether client editors need to to receive the [error output](https://en.wikipedia.org/wiki/Standard_streams#Standard_error_(stderr)) from language server processes. LSP errors come as regular LSP messages from standard output, and using different streams is not part of the LSP standard and a totally different abstraction level anyway. So stdOut should be irrelevant to the editor.
