@@ -14,8 +14,8 @@ So I thoutht: What if a language server was simply a local web service? Possible
 
 * **On macOS, Editors can be sandboxed and probably even be distributed via the App Store.**
 * **Editors don't need to locate, install, run and talk to language servers.**
-* In the future, the Language Service could be a machine's central place for managing LSP language servers, possibly also through a web front end.
-* Even further down the road, running the Language Service on an actual web server might have some interesting applications, in particular where LSP is used for static code analysis or remote inspection.
+* In the future, the Language Service could be a machine's central place for managing LSP language servers, through a CLI and/or through a web front end.
+* Even further down the road, running the Language Service on actual web servers might have interesting applications, in particular where LSP is used for static code analysis or remote inspection.
 
 ## How?
 
@@ -27,20 +27,20 @@ The Language Service forwards LSP messages from some editor to some LSP language
 
 Editors, on the other hand, know nothing about how to locate, install, run and talk to language servers. This remains a concern of the Language Service.
 
-Although the Language Service is intended to work with language servers for all languages, I focus on the Swift language server (`sourcekit-lsp`) to get this going.
+Although the Language Service will work with many languages, I focus on the Swift language server (`sourcekit-lsp`) to get this going.
 
 ## To Do
 
 * [x] Implement proof of concept with WebSockets and `sourcekit-lsp`
 * [x] Let the Language Service locate `sourcekit-lsp` for the Swift endpoint
 * [x] Have a dynamic endpoint for all languages, like `ws://127.0.0.1:<service port>/languageservice/api/<language>`
-* [ ] Explore whether `sourcekit-lsp` can be adjusted to send error feedback when it fails to decode incoming data. This would enormously accelerate development of  `sourcekit-lsp` clients, whether they use `sourcekit-lsp` directly or via this Language Service. And it mightn also have implications for the Language Service.
+* [ ] Explore whether `sourcekit-lsp` can be adjusted to send error feedback when it fails to decode incoming data. This would enormously accelerate development of  `sourcekit-lsp` clients, whether they use `sourcekit-lsp` directly or via this Language Service. And it might also have implications for the Language Service.
 * [ ] Add a way for client editors to receive the [error output](https://en.wikipedia.org/wiki/Standard_streams#Standard_error_(stderr)) from language server processes
 * [ ] Add an endpoint for client editors to detect what languages are available
 * [ ] Allow to use multiple different language servers. Proof concept by supporting/testing at least one additional language server (Python or Java)
 * [ ] Document how to use the LSH, possibly also provide macOS binary
 * [ ] Enable serving different language endpoints with the same language server executable, like `sourcekit-lsp` can work with C, C++ and Objective-c as well.
-* [ ] Add web frontend (end necessary endpoints) for managing language servers, consider using [Leaf](https://github.com/vapor/leaf)
+* [ ] Add web frontend for managing language servers, consider exploring [Leaf](https://github.com/vapor/leaf)
 * [ ] Possibly build a package/framework that helps Swift clients (editors) with using the LSH, consider using or extending <https://github.com/chimehq/SwiftLSPClient>
 * [ ] Enable serving multiple clients who need services for the same language at the same time
 * [ ] Explore whether this approach would actually fly with the Mac App Store review, because:
