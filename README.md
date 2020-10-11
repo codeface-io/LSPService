@@ -35,7 +35,7 @@ Although the Language Service will work with many languages, I focus on the Swif
 * [x] Let the Language Service locate `sourcekit-lsp` for the Swift endpoint
 * [x] Have a dynamic endpoint for all languages, like `ws://127.0.0.1:<service port>/languageservice/api/<language>`
 * [x] Evaluate whether client editors need to to receive the [error output](https://en.wikipedia.org/wiki/Standard_streams#Standard_error_(stderr)) from language server processes.
-  * Result: LSP errors come as regular LSP messages from standard output, and using different streams is not part of the LSP standard and a totally different abstraction level anyway. So stdOut should be irrelevant to the editor.
+  * Result: LSP errors come as regular LSP messages from standard output, and using different streams is not part of the LSP standard and a totally different abstraction level anyway. So stdErr should be irrelevant to the editor.
 * [x] Explore whether `sourcekit-lsp` can be adjusted to send error feedback when it fails to decode incoming data. This would enormously accelerate development of  `sourcekit-lsp` clients, whether they use `sourcekit-lsp` directly or via this Language Service. It might also have implications for the Language Service.
   * Result: It doesn't seem possible with reasonable effort right now. So all development must start with- and build upon correctly encoded valid LSP messages. 
 * [ ] Add an endpoint for client editors to detect what languages are available
