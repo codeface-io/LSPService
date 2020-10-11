@@ -74,6 +74,15 @@ func registerRoutes(onAPI api: RoutesBuilder) {
             }
         }
     }
+    
+    api.on(.GET, "languages") { request -> String in
+        let data = try JSONEncoder().encode(lowercasedNamesOfSupportedLanguages)
+        if let string = String(data: data, encoding: .utf8) {
+            return string
+        } else {
+            return "Error encoding language list"
+        }
+    }
 }
 
 fileprivate func configureAndRunSwiftLanguageServer() {
