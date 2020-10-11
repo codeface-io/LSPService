@@ -77,12 +77,18 @@ func registerRoutes(onAPI api: RoutesBuilder) {
 }
 
 fileprivate func configureAndRunSwiftLanguageServer() {
-    swiftLanguageServer.didSendOutput = { output in
-        let outputString = String(data: output,
+    swiftLanguageServer.didSendOutput = { outputData in
+        let outputString = String(data: outputData,
                                   encoding: .utf8) ?? "error decoding output"
         print("received output from Swift language server:\n" + outputString)
 
-        websocket?.send([UInt8](output))
+        websocket?.send([UInt8](outputData))
+    }
+    
+    swiftLanguageServer.didSendError = { errorData in
+        let errorString = String(data: errorData,
+                                  encoding: .utf8) ?? "error decoding error"
+        print("received error from Swift language server:\n" + errorString)
     }
 
     swiftLanguageServer.run()
