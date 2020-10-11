@@ -115,13 +115,11 @@ class SwiftLanguageServer {
     
     // MARK: - Executable (sourcekit-lsp)
     
-    func actuallyExistingExecutable(for filePath: String?) -> URL? {
-        guard let path = filePath else { return nil }
-        
-        if FileManager.default.fileExists(atPath: path) {
-            return URL(fileURLWithPath: path)
+    func actuallyExistingExecutable(for filePath: String) -> URL? {
+        if FileManager.default.fileExists(atPath: filePath) {
+            return URL(fileURLWithPath: filePath)
         } else {
-            print("Error: sourcekit-lsp does not seem to exist here:\n\(path)\n\(Self.self) will not be able to run without the executable")
+            print("Error: sourcekit-lsp does not seem to exist here:\n\(filePath)\n\(Self.self) will not be able to run without the executable")
             return nil
         }
     }
