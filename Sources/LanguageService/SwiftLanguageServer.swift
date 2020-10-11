@@ -34,7 +34,7 @@ class SwiftLanguageServer {
             return
         }
         
-        if input.count > 0 {
+        if input.count == 0 {
             print("warning: \(Self.self) received empty input data.")
         }
         
