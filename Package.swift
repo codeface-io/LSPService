@@ -10,14 +10,17 @@ let package = Package(
         .executable(name: "LanguageServiceHost", targets: ["LanguageServiceHost"]),
     ],
     dependencies: [
-        // 💧 A server-side Swift web framework.
-        .package(url: "https://github.com/vapor/vapor.git", from: "4.0.0")
+        .package(url: "https://github.com/vapor/vapor.git", from: "4.0.0"),
+        .package(url: "https://github.com/flowtoolz/FoundationToolz.git", .branch("master")),
+        .package(url: "https://github.com/flowtoolz/SwiftyToolz.git", .branch("master"))
     ],
     targets: [
         .target(
             name: "LanguageService",
             dependencies: [
-                .product(name: "Vapor", package: "vapor")
+                .product(name: "Vapor", package: "vapor"),
+                .product(name: "FoundationToolz", package: "FoundationToolz"),
+                .product(name: "SwiftyToolz", package: "SwiftyToolz")
             ],
             swiftSettings: [
                 // Enable better optimizations when building in Release configuration. Despite the use of

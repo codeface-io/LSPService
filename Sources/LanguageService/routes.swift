@@ -1,5 +1,7 @@
 import Vapor
+import FoundationToolz
 import Foundation
+import SwiftyToolz
 
 // MARK: - Register Routes
 
@@ -14,7 +16,7 @@ func registerRoutes(on app: Application) throws {
 func registerRoutes(onLanguageService languageService: RoutesBuilder,
                     on app: Application) {
     languageService.on(.GET) { req in
-        "Hello, I'm the Language Service.\n\nEndpoints (Vapor Routes):\n\(routeList(for: app))\n\nAnd all supported languages:\n\(listOfSupportedLanguages())"
+        "Hello, I'm the Language Service.\n\nEndpoints (Vapor Routes):\n\(routeList(for: app))\n\nAnd all supported languages:\n\(languagesAsString())"
     }
     
     registerRoutes(onDashboard: languageService.grouped("dashboard"), on: app)
@@ -26,14 +28,14 @@ func registerRoutes(onLanguageService languageService: RoutesBuilder,
 
 func registerRoutes(onDashboard dashboard: RoutesBuilder, on app: Application) {
     dashboard.on(.GET) { req in
-        "Hello, I'm the Language Service.\n\nEndpoints (Vapor Routes):\n\(routeList(for: app))\nSupported Languages:\n\(listOfSupportedLanguages())"
+        "Hello, I'm the Language Service.\n\nEndpoints (Vapor Routes):\n\(routeList(for: app))\nSupported Languages:\n\(languagesAsString())"
     }
 
     let languageNameParameter = "languageName"
 
     dashboard.on(.GET, ":\(languageNameParameter)") { req -> String in
         let languageName = req.parameters.get(languageNameParameter)!
-        let languageIsSupported = isSupported(language: languageName)
+        let languageIsSupported = isAvailable(language: languageName)
         return "Hello, I'm the Language Service.\n\nThe language \(languageName.capitalized) is \(languageIsSupported ? "already" : "not yet") supported."
     }
 }
@@ -49,7 +51,7 @@ func registerRoutes(onAPI api: RoutesBuilder) {
     
     api.webSocket(":\(languageNameParameter)") { request, ws in
         let languageName = request.parameters.get(languageNameParameter)!
-        guard isSupported(language: languageName) else {
+        guard isAvailable(language: languageName) else {
             ws.send("Error accessing Language Service: \(languageName.capitalized) is currently not supported.")
             return
         }
@@ -60,7 +62,7 @@ func registerRoutes(onAPI api: RoutesBuilder) {
         
         ws.onBinary { ws, byteBuffer in
             let data = Data(buffer: byteBuffer)
-            let dataString = String(data: data, encoding: .utf8) ?? "error decoding data"
+            let dataString = data.utf8String ?? "error decoding data"
             print("received data from socket \(ObjectIdentifier(ws).hashValue) at endpoint for \(languageName):\n\(dataString)")
             swiftLanguageServer.receive(data)
         }
@@ -76,9 +78,8 @@ func registerRoutes(onAPI api: RoutesBuilder) {
     }
     
     api.on(.GET, "languages") { request -> String in
-        let data = try JSONEncoder().encode(lowercasedNamesOfSupportedLanguages)
-        if let string = String(data: data, encoding: .utf8) {
-            return string
+        if let responseString = languagesLowercased.encode()?.utf8String {
+            return responseString
         } else {
             return "Error encoding language list"
         }
@@ -87,16 +88,14 @@ func registerRoutes(onAPI api: RoutesBuilder) {
 
 fileprivate func configureAndRunSwiftLanguageServer() {
     swiftLanguageServer.didSendOutput = { outputData in
-        let outputString = String(data: outputData,
-                                  encoding: .utf8) ?? "error decoding output"
+        let outputString = outputData.utf8String ?? "error decoding output"
         print("received output from Swift language server:\n" + outputString)
 
         websocket?.send([UInt8](outputData))
     }
     
     swiftLanguageServer.didSendError = { errorData in
-        let errorString = String(data: errorData,
-                                  encoding: .utf8) ?? "error decoding error"
+        let errorString = errorData.utf8String ?? "error decoding error"
         print("received error from Swift language server:\n" + errorString)
     }
 
@@ -107,20 +106,15 @@ fileprivate var websocket: WebSocket?
 
 // MARK: - Supported Languages
 
-func listOfSupportedLanguages() -> String {
-    lowercasedNamesOfSupportedLanguages.map {
-        $0.capitalized
-    }
-    .reduce("") {
-        $0 + $1 + "\n"
-    }
+func languagesAsString() -> String {
+    languagesLowercased.map { $0.capitalized }.reduce("") { $0 + $1 + "\n" }
 }
 
-func isSupported(language: String) -> Bool {
-    lowercasedNamesOfSupportedLanguages.contains(language.lowercased())
+func isAvailable(language: String) -> Bool {
+    languagesLowercased.contains(language.lowercased())
 }
 
-let lowercasedNamesOfSupportedLanguages: Set<String> = ["swift"]
+let languagesLowercased: Set<String> = ["swift", "python", "java", "c++"]
 
 // MARK: - Swift Language Server
 

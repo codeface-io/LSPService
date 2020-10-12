@@ -29,6 +29,24 @@
         }
       },
       {
+        "package": "FoundationToolz",
+        "repositoryURL": "https://github.com/flowtoolz/FoundationToolz.git",
+        "state": {
+          "branch": "master",
+          "revision": "54754c6eff1ffef87d5704fd2eefea6b4c6128fa",
+          "version": null
+        }
+      },
+      {
+        "package": "Reachability",
+        "repositoryURL": "https://github.com/ashleymills/Reachability.swift.git",
+        "state": {
+          "branch": null,
+          "revision": "6c8652a8ea35a64cf36367d07b3d6e5e6a24b272",
+          "version": "4.3.1"
+        }
+      },
+      {
         "package": "routing-kit",
         "repositoryURL": "https://github.com/vapor/routing-kit.git",
         "state": {
@@ -116,6 +134,15 @@
           "branch": null,
           "revision": "bb56586c4cab9a79dce6ec4738baddb5802c5de7",
           "version": "1.9.0"
+        }
+      },
+      {
+        "package": "SwiftyToolz",
+        "repositoryURL": "https://github.com/flowtoolz/SwiftyToolz.git",
+        "state": {
+          "branch": "master",
+          "revision": "43733a20ec39bd7702dbf3ecdea889a1b7f4ca65",
+          "version": null
         }
       },
       {
