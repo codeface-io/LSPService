@@ -84,12 +84,8 @@ func registerRoutes(onAPI api: RoutesBuilder) {
         }
     }
 
-    api.on(.GET, "languages") { request -> String in
-        if let responseString = languagesLowercased.encode()?.utf8String {
-            return responseString
-        } else {
-            throw "Error encoding language list"
-        }
+    api.on(.GET, "languages") { _ in
+        Array(languagesLowercased)
     }
 }
 
@@ -121,7 +117,7 @@ func isAvailable(language: String) -> Bool {
     languagesLowercased.contains(language.lowercased())
 }
 
-let languagesLowercased: Set<String> = ["swift", "python", "java", "c++"]
+let languagesLowercased: Set<String> = ["swift"] //, "python", "java", "c++"]
 
 // MARK: - Swift Language Server
 
