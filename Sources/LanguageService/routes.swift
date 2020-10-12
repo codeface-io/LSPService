@@ -53,9 +53,9 @@ func registerRoutes(onAPI api: RoutesBuilder) {
         ws.onClose.whenComplete { result in
             switch result {
             case .success:
-                print("websocket did close")
+                request.logger.info("websocket did close")
             case .failure(let error):
-                print("websocket failed to close: \(error.localizedDescription)")
+                request.logger.error("websocket failed to close: \(error.localizedDescription)")
             }
         }
         
