@@ -38,10 +38,11 @@ Although the Language Service will work with many languages, I focus on the Swif
   * Result: LSP errors come as regular LSP messages from standard output, and using different streams is not part of the LSP standard and a totally different abstraction level anyway. So stdErr should be irrelevant to the editor.
 * [x] Explore whether `sourcekit-lsp` can be adjusted to send error feedback when it fails to decode incoming data. This would enormously accelerate development of  `sourcekit-lsp` clients, whether they use `sourcekit-lsp` directly or via this Language Service. It might also have implications for the Language Service.
   * Result: It doesn't seem possible with reasonable effort right now. So all development must start with- and build upon correctly encoded valid LSP messages. 
-* [ ] Add an endpoint for client editors to detect what languages are available
+* [x] Add an endpoint for client editors to detect what languages are available
+* [ ] Lift logging and error handling up to the best practices of Vapor. Ensure that users launching the host app see all errors in the terminal, and that clients get proper error responses.
+* [ ] Properly handle websocket connection attempt for unavailable languages: send feedback, then close connection.
 * [ ] Allow to use multiple different language servers. Proof concept by supporting/testing at least one additional language server (Python or Java)
 * [ ] Document how to use the LSH, possibly also provide macOS binary
-* [ ] Lift logging and error handling up to the best practices of Vapor. Ensure that users launching the host app see all errors in the terminal.
 * [ ] Enable serving different language endpoints with the same language server executable, like `sourcekit-lsp` can work with C, C++ and Objective-c as well.
 * [ ] Consider adding a proper CLI for the host app so users can manage the list of language servers from the command line (as alternative to- or replacement of a web frontend ...)
 * [ ] Consider adding a web frontend for managing language servers. Possibly use [Plot](https://github.com/JohnSundell/Plot)
