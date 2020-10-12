@@ -44,15 +44,31 @@ func routeList(for app: Application) -> String {
     app.routes.all.map { $0.description }.reduce("") { $0 + $1 + "\n" }
 }
 
-// MARK: - Websocket API
+// MARK: - API
 
 func registerRoutes(onAPI api: RoutesBuilder) {
     let languageNameParameter = "languageName"
     
     api.webSocket(":\(languageNameParameter)") { request, ws in
+        ws.onClose.whenComplete { result in
+            switch result {
+            case .success:
+                print("websocket did close")
+            case .failure(let error):
+                print("websocket failed to close: \(error.localizedDescription)")
+            }
+        }
+        
         let languageName = request.parameters.get(languageNameParameter)!
         guard isAvailable(language: languageName) else {
-            ws.send("Error accessing Language Service: \(languageName.capitalized) is currently not supported.")
+            let errorFeedbackWasSent = request.eventLoop.makePromise(of: Void.self)
+            errorFeedbackWasSent.futureResult.whenComplete { _ in
+                ws.close(promise: nil)
+            }
+            
+            // TODO: explore LSP standard: can these kind of generic issues be communicated via LSP messages/notifications?
+            ws.send("Error: A language server for \(languageName.capitalized) is currently not available.",
+                    promise: errorFeedbackWasSent)
             return
         }
         
@@ -66,17 +82,8 @@ func registerRoutes(onAPI api: RoutesBuilder) {
             print("received data from socket \(ObjectIdentifier(ws).hashValue) at endpoint for \(languageName):\n\(dataString)")
             swiftLanguageServer.receive(data)
         }
-        
-        ws.onClose.whenComplete { result in
-            switch result {
-            case .success:
-                print("websocket did close")
-            case .failure(let error):
-                print("websocket failed to close: \(error.localizedDescription)")
-            }
-        }
     }
-    
+
     api.on(.GET, "languages") { request -> String in
         if let responseString = languagesLowercased.encode()?.utf8String {
             return responseString

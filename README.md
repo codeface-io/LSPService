@@ -8,7 +8,7 @@ An app that locally hosts a web service (the "Language Service") which then allo
 
 The [LSP protocol](https://microsoft.github.io/language-server-protocol/) is the present and future of software development tools. But leveraging it for my own tool project turned out to be more difficult than expected. 
 
-Most of all, I want to distribute my tool via the Mac Mac App Store, so it must be sandboxed, which makes it impossible to deal with language servers directly or with any other "tooling" of the tech world.
+Most of all, I want to distribute my tool via the Mac App Store, so it must be sandboxed, which makes it impossible to deal with language servers directly or with any other "tooling" of the tech world.
 
 So I thought: What if a language server was simply a local web service? Possible benefits:
 
@@ -39,8 +39,8 @@ Although the Language Service will work with many languages, I focus on the Swif
 * [x] Explore whether `sourcekit-lsp` can be adjusted to send error feedback when it fails to decode incoming data. This would enormously accelerate development of  `sourcekit-lsp` clients, whether they use `sourcekit-lsp` directly or via this Language Service. It might also have implications for the Language Service.
   * Result: It doesn't seem possible with reasonable effort right now. So all development must start with- and build upon correctly encoded valid LSP messages. 
 * [x] Add an endpoint for client editors to detect what languages are available
+* [x] Properly handle websocket connection attempt for unavailable languages: send feedback, then close connection.
 * [ ] Lift logging and error handling up to the best practices of Vapor. Ensure that users launching the host app see all errors in the terminal, and that clients get proper error responses.
-* [ ] Properly handle websocket connection attempt for unavailable languages: send feedback, then close connection.
 * [ ] Allow to use multiple different language servers. Proof concept by supporting/testing at least one additional language server (Python or Java)
 * [ ] Document how to use the LSH, possibly also provide macOS binary
 * [ ] Enable serving different language endpoints with the same language server executable, like `sourcekit-lsp` can work with C, C++ and Objective-c as well.
