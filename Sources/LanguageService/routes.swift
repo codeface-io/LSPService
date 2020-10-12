@@ -81,7 +81,7 @@ func registerRoutes(onAPI api: RoutesBuilder) {
         if let responseString = languagesLowercased.encode()?.utf8String {
             return responseString
         } else {
-            return "Error encoding language list"
+            throw "Error encoding language list"
         }
     }
 }
