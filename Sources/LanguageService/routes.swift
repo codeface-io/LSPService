@@ -103,6 +103,16 @@ fileprivate func configureAndRunSwiftLanguageServer() {
         print("received \(errorData.count) bytes error data from Swift language server:\n" + errorString)
         websocket?.send(errorString)
     }
+    
+    swiftLanguageServer.didTerminate = {
+        guard let websocket = websocket, !websocket.isClosed else { return }
+        let errorFeedbackWasSent = websocket.eventLoop.makePromise(of: Void.self)
+        errorFeedbackWasSent.futureResult.whenComplete { _ in
+            websocket.close(promise: nil)
+        }
+        websocket.send("Swift language server did terminate",
+                       promise: errorFeedbackWasSent)
+    }
 
     swiftLanguageServer.run()
 }
