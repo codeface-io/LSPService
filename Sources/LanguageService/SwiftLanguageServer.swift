@@ -11,6 +11,9 @@ class SwiftLanguageServer {
         didSendError = { _ in
             print("\(Self.self) did send error, but error handler has not been set")
         }
+        didTerminate = {
+            print("\(Self.self) did terminate, but termination handler has not been set")
+        }
         
         setupProcess()
         setupInput()
@@ -51,7 +54,8 @@ class SwiftLanguageServer {
     
     private func setupOutput() {
         outPipe.fileHandleForReading.readabilityHandler = { [weak self] outHandle in
-            self?.didSendOutput(outHandle.availableData)
+            let outputData = outHandle.availableData
+            if outputData.count > 0 { self?.didSendOutput(outputData) }
         }
         process.standardOutput = outPipe
     }
@@ -63,7 +67,8 @@ class SwiftLanguageServer {
     
     private func setupErrorOutput() {
         errorPipe.fileHandleForReading.readabilityHandler = { [weak self] errorHandle in
-            self?.didSendError(errorHandle.availableData)
+            let errorData = errorHandle.availableData
+            if errorData.count > 0 { self?.didSendError(errorData) }
         }
         process.standardError = errorPipe
     }
@@ -77,10 +82,13 @@ class SwiftLanguageServer {
         updateExecutable()
         process.environment = nil
         process.arguments = []
-        process.terminationHandler = { process in
+        process.terminationHandler = { [weak self] process in
             print("\(Self.self) terminated. code: \(process.terminationReason.rawValue)")
+            self?.didTerminate()
         }
     }
+    
+    var didTerminate: () -> Void
     
     func updateExecutable(filePath: String = getSourceKitLSPPath()) {
         guard let executable = actuallyExistingExecutable(for: filePath) else { return }
@@ -102,6 +110,10 @@ class SwiftLanguageServer {
             try process.run()
         } catch {
             print(error.localizedDescription)
+        }
+        
+        if !process.isRunning {
+            print("ERROR: process is not running after successful call to run()")
         }
     }
     
