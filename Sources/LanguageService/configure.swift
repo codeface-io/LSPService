@@ -36,7 +36,7 @@ func processNextConsoleInput(app: Application) {
     }
     
     didReadConsole.whenFailure { error in
-        app.console.output("Error: \(error.localizedDescription)".consoleText())
+        app.console.output("🛑  Reading your input failed: \(error.localizedDescription)".consoleText())
     }
 }
 
@@ -52,7 +52,7 @@ func process(input: String, from console: Console) {
     
     guard argumentsToProcess.count > 0 else {
         guard let executablePath = executablePathsByLanguage[language.lowercased()] else {
-            console.output("🛑  No LSP server path set for language \"\(language.capitalized)\"".consoleText())
+            console.output("🛑  No LSP server path is set for language \"\(language.capitalized)\"".consoleText())
             return
         }
         
@@ -67,7 +67,7 @@ func process(input: String, from console: Console) {
     console.output("✅  \(language.capitalized) now has a new LSP server path:\n   \"\(newExecutablePath)\"".consoleText())
     
     if argumentsToProcess.count > 0 {
-        console.output("⚠️  I'm gonna ignore unexpected remaining arguments: \(argumentsToProcess)".consoleText())
+        console.output("⚠️  I'm gonna ignore these unexpected remaining arguments: \(argumentsToProcess)".consoleText())
     }
 }
 
