@@ -15,13 +15,15 @@ public func configure(_ app: Application) throws {
 }
 
 func startProcessingConsoleInput(app: Application) {
-    app.console.output("👋🏻 Type to configure the Language Service:\n⌨️ <language> [<executable path>]\t\tget/set LSP server executable for language")
-    let languages = languagesLowercased.map { $0.capitalized }.joined(separator: ", ")
-    app.console.output("🗣 Available languages: \(languages)".consoleText())
+    app.console.output("\n👋🏻  Hello, I'm the Language Service. Configure me with these commands:\n⌨️  <language> [<executable path>]\t\t➡️  get/set path to LSP server for language")
+    let languages = languagesJoined(by: ", ")
+    app.console.output("🗣  LSP server paths are set for: \(languages)".consoleText())
     processNextConsoleInput(app: app)
 }
 
 func processNextConsoleInput(app: Application) {
+    print("💬  ", terminator: "")
+    
     let eventLoop = app.eventLoopGroup.next()
     
     let didReadConsole = app.threadPool.runIfActive(eventLoop: eventLoop) {
@@ -42,28 +44,30 @@ func process(input: String, from console: Console) {
     var argumentsToProcess = arguments(fromInput: input)
 
     guard argumentsToProcess.count > 0 else {
-        console.output("🛑 Could not recognize command".consoleText())
+        console.output("🛑  Couldn't recognize your input as a command".consoleText())
         return
     }
     
     let language = argumentsToProcess.removeFirst()
     
-    guard isAvailable(language: language) else {
-        console.output("🛑 Language \"\(language.capitalized)\" not supported".consoleText())
-        return
-    }
-    
     guard argumentsToProcess.count > 0 else {
-        console.output("✅ \(language.capitalized) is a supported language".consoleText())
+        guard let executablePath = executablePathsByLanguage[language.lowercased()] else {
+            console.output("🛑  No LSP server path set for language \"\(language.capitalized)\"".consoleText())
+            return
+        }
+        
+        console.output("✅  \(language.capitalized) has this LSP server path set:\n   \"\(executablePath)\"".consoleText())
         return
     }
     
-    let executablePath = argumentsToProcess.removeFirst()
+    let newExecutablePath = argumentsToProcess.removeFirst()
     
-    console.output("✅ Will set language server executable path for \(language.capitalized) to \"\(executablePath)\"".consoleText())
+    executablePathsByLanguage[language.lowercased()] = newExecutablePath
+    
+    console.output("✅  \(language.capitalized) now has a new LSP server path:\n   \"\(newExecutablePath)\"".consoleText())
     
     if argumentsToProcess.count > 0 {
-        console.output("⚠️ Ignoring unexpected remaining arguments: \(argumentsToProcess)".consoleText())
+        console.output("⚠️  I'm gonna ignore unexpected remaining arguments: \(argumentsToProcess)".consoleText())
     }
 }
 

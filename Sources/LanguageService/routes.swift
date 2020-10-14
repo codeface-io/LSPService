@@ -16,7 +16,7 @@ func registerRoutes(on app: Application) throws {
 func registerRoutes(onLanguageService languageService: RoutesBuilder,
                     on app: Application) {
     languageService.on(.GET) { req in
-        "Hello, I'm the Language Service.\n\nEndpoints (Vapor Routes):\n\(routeList(for: app))\n\nAnd all supported languages:\n\(languagesAsString())"
+        "Hello, I'm the Language Service.\n\nEndpoints (Vapor Routes):\n\(routeList(for: app))\n\nAnd all supported languages:\n\(languagesJoined(by: "\n"))"
     }
     
     registerRoutes(onDashboard: languageService.grouped("dashboard"), on: app)
@@ -28,7 +28,7 @@ func registerRoutes(onLanguageService languageService: RoutesBuilder,
 
 func registerRoutes(onDashboard dashboard: RoutesBuilder, on app: Application) {
     dashboard.on(.GET) { req in
-        "Hello, I'm the Language Service.\n\nEndpoints (Vapor Routes):\n\(routeList(for: app))\nSupported Languages:\n\(languagesAsString())"
+        "Hello, I'm the Language Service.\n\nEndpoints (Vapor Routes):\n\(routeList(for: app))\nSupported Languages:\n\(languagesJoined(by: "\n"))"
     }
 
     let languageNameParameter = "languageName"
@@ -86,7 +86,7 @@ func registerRoutes(onAPI api: RoutesBuilder, app: Application) {
     }
 
     api.on(.GET, "languages") { _ in
-        Array(languagesLowercased)
+        Array(executablePathsByLanguage.keys)
     }
 }
 
@@ -133,11 +133,13 @@ fileprivate func configureAndRunLanguageServer(forLanguage lang: String,
 }
 
 func createLanguageServer(forLanguage lang: String, app: Application) -> LanguageServer? {
-    switch lang.lowercased() {
-    case "swift": return LanguageServer(.swift, logger: app.logger)
-    case "python": return LanguageServer(.python, logger: app.logger)
-    default: return nil
+    guard let executablePath = executablePathsByLanguage[lang.lowercased()] else {
+        app.logger.error("No LSP server path set for language \(lang.capitalized)")
+        return nil
     }
+    
+    return LanguageServer(LanguageServer.Executable(path: executablePath),
+                          logger: app.logger)
 }
 
 var languageServer: LanguageServer?

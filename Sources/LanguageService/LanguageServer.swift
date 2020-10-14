@@ -129,29 +129,6 @@ class LanguageServer {
     private let process = Process()
     
     struct Executable {
-        
-        static var python = Executable(path: "/Library/Frameworks/Python.framework/Versions/3.9/bin/pyls")
-        
-        static var swift: Executable {
-            return Executable(path: "/Users/seb/Library/Developer/Xcode/DerivedData/sourcekit-lsp_Fork-asttkeaysojqnhakomxyeenamaml/Build/Products/Debug/sourcekit-lsp")
-            
-            var path = "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/sourcekit-lsp"
-            
-            do {
-                let output = try runExecutable(at: "/usr/bin/xcrun",
-                                               arguments: ["--find", "sourcekit-lsp"])
-                if let firstLine = output.components(separatedBy: "\n").first {
-                    path = firstLine
-                } else {
-                    print("Error: failed to get path from output of '/usr/bin/xcrun --find sourcekit-lsp'\nWill assume this path for sourcekit-lsp:\n\(path)")
-                }
-            } catch {
-                print("Error: failed to run '/usr/bin/xcrun --find sourcekit-lsp': \(error.localizedDescription)\nWill assume this path for sourcekit-lsp:\n\(path)")
-            }
-            
-            return Executable(path: path)
-        }
-        
         let path: String
     }
     
@@ -160,12 +137,40 @@ class LanguageServer {
 
 // MARK: - Supported Languages
 
-func languagesAsString() -> String {
-    languagesLowercased.map { $0.capitalized }.joined(separator: "\n")
+func languagesJoined(by separator: String) -> String {
+    executablePathsByLanguage.keys.map { $0.capitalized }.joined(separator: separator)
 }
 
 func isAvailable(language: String) -> Bool {
-    languagesLowercased.contains(language.lowercased())
+    executablePathsByLanguage[language.lowercased()] != nil
 }
 
-let languagesLowercased: Set<String> = ["swift", "python"]//, "java", "c++"]
+var executablePathsByLanguage = retrieveExecutablePathsForLanguages()
+
+func retrieveExecutablePathsForLanguages() -> [String : String] {
+    var paths = [String : String]()
+    
+    paths["swift"] = {
+        return  "/Users/seb/Library/Developer/Xcode/DerivedData/sourcekit-lsp_Fork-asttkeaysojqnhakomxyeenamaml/Build/Products/Debug/sourcekit-lsp"
+        
+        var path = "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/sourcekit-lsp"
+        
+        do {
+            let output = try runExecutable(at: "/usr/bin/xcrun",
+                                           arguments: ["--find", "sourcekit-lsp"])
+            if let firstLine = output.components(separatedBy: "\n").first {
+                path = firstLine
+            } else {
+                print("Error: failed to get path from output of '/usr/bin/xcrun --find sourcekit-lsp'\nWill assume this path for sourcekit-lsp:\n\(path)")
+            }
+        } catch {
+            print("Error: failed to run '/usr/bin/xcrun --find sourcekit-lsp': \(error.localizedDescription)\nWill assume this path for sourcekit-lsp:\n\(path)")
+        }
+        
+        return path
+    }()
+    
+    paths["python"] = "/Library/Frameworks/Python.framework/Versions/3.9/bin/pyls"
+    
+    return paths
+}
