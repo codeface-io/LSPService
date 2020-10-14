@@ -37,7 +37,7 @@ Although the Language Service will work with many languages, I focus on the Swif
 * [x] Evaluate whether client editors need to to receive the [error output](https://en.wikipedia.org/wiki/Standard_streams#Standard_error_(stderr)) from language server processes.
   * Result: LSP errors come as regular LSP messages from standard output, and using different streams is not part of the LSP standard and a totally different abstraction level anyway. So stdErr should be irrelevant to the editor.
 * [x] Explore whether `sourcekit-lsp` can be adjusted to send error feedback when it fails to decode incoming data. This would enormously accelerate development of  `sourcekit-lsp` clients, whether they use `sourcekit-lsp` directly or via this Language Service. It might also have implications for the Language Service.
-  * Result: It doesn't seem possible with reasonable effort right now. So all development must start with- and build upon correctly encoded valid LSP messages. 
+  * Result: sourcekit-lsp now sends an LSP error response message if the message it receives has at least a [valid header](https://microsoft.github.io/language-server-protocol/specifications/specification-current/#headerPart). Prepending that header is solved, so all development can now rely on immediate well formed feedback.
 * [x] Add an endpoint for client editors to detect what languages are available
 * [x] Properly handle websocket connection attempt for unavailable languages: send feedback, then close connection.
 * [x] Lift logging and error handling up to the best practices of Vapor. Ensure that users launching the host app see all errors in the terminal, and that clients get proper error responses.
