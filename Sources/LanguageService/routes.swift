@@ -142,18 +142,6 @@ func createLanguageServer(forLanguage lang: String, app: Application) -> Languag
 
 var languageServer: LanguageServer?
 
-// MARK: - Supported Languages
-
-func languagesAsString() -> String {
-    languagesLowercased.map { $0.capitalized }.reduce("") { $0 + $1 + "\n" }
-}
-
-func isAvailable(language: String) -> Bool {
-    languagesLowercased.contains(language.lowercased())
-}
-
-let languagesLowercased: Set<String> = ["swift", "python"]//, "java", "c++"]
-
 // MARK: - Websocket
 
 fileprivate var websocket: WebSocket?

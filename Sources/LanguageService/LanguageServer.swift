@@ -158,3 +158,14 @@ class LanguageServer {
     private let log: Logger
 }
 
+// MARK: - Supported Languages
+
+func languagesAsString() -> String {
+    languagesLowercased.map { $0.capitalized }.joined(separator: "\n")
+}
+
+func isAvailable(language: String) -> Bool {
+    languagesLowercased.contains(language.lowercased())
+}
+
+let languagesLowercased: Set<String> = ["swift", "python"]//, "java", "c++"]
