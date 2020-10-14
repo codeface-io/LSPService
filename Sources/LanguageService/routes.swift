@@ -21,7 +21,7 @@ func registerRoutes(onLanguageService languageService: RoutesBuilder,
     
     registerRoutes(onDashboard: languageService.grouped("dashboard"), on: app)
     
-    registerRoutes(onAPI: languageService.grouped("api"))
+    registerRoutes(onAPI: languageService.grouped("api"), app: app)
 }
 
 // MARK: - Dashboard
@@ -46,11 +46,11 @@ func routeList(for app: Application) -> String {
 
 // MARK: - API
 
-func registerRoutes(onAPI api: RoutesBuilder) {
+func registerRoutes(onAPI api: RoutesBuilder, app: Application) {
     let languageNameParameter = "languageName"
     
-    api.webSocket(":\(languageNameParameter)") { request, ws in
-        ws.onClose.whenComplete { result in
+    api.webSocket(":\(languageNameParameter)") { request, newWebsocket in
+        newWebsocket.onClose.whenComplete { result in
             switch result {
             case .success:
                 request.logger.info("websocket did close")
@@ -63,25 +63,26 @@ func registerRoutes(onAPI api: RoutesBuilder) {
         guard isAvailable(language: languageName) else {
             let errorFeedbackWasSent = request.eventLoop.makePromise(of: Void.self)
             errorFeedbackWasSent.futureResult.whenComplete { _ in
-                ws.close(promise: nil)
+                newWebsocket.close(promise: nil)
             }
             
             // TODO: explore LSP standard: can these kind of generic issues be communicated via LSP messages/notifications?
-            ws.send("Error: A language server for \(languageName.capitalized) is currently not available.",
+            newWebsocket.send("Error: A language server for \(languageName.capitalized) is currently not available.",
                     promise: errorFeedbackWasSent)
             return
         }
         
-        configureAndRunSwiftLanguageServer()
-        
-        websocket = ws
-        
-        ws.onBinary { ws, byteBuffer in
+        newWebsocket.onBinary { ws, byteBuffer in
             let data = Data(buffer: byteBuffer)
             let dataString = data.utf8String ?? "error decoding data"
             print("received data from socket \(ObjectIdentifier(ws).hashValue) at endpoint for \(languageName):\n\(dataString)")
-            swiftLanguageServer.receive(data)
+            languageServer?.receive(data)
         }
+        
+        websocket?.close(promise: nil)
+        websocket = newWebsocket
+        
+        configureAndRunLanguageServer(forLanguage: languageName, app: app)
     }
 
     api.on(.GET, "languages") { _ in
@@ -89,35 +90,57 @@ func registerRoutes(onAPI api: RoutesBuilder) {
     }
 }
 
-fileprivate func configureAndRunSwiftLanguageServer() {
-    swiftLanguageServer.didSendOutput = { outputData in
+// MARK: - Language Server
+
+fileprivate func configureAndRunLanguageServer(forLanguage lang: String,
+                                               app: Application) {
+    languageServer?.stop()
+    
+    guard let newLanguageServer = createLanguageServer(forLanguage: lang,
+                                                       app: app)
+    else {
+        app.logger.error("Could not create language server")
+        return
+    }
+    
+    languageServer = newLanguageServer
+    
+    languageServer?.didSendOutput = { outputData in
         guard outputData.count > 0 else { return }
         let outputString = outputData.utf8String ?? "error decoding output"
-        print("received \(outputData.count) bytes output data from Swift language server:\n" + outputString)
+        print("received \(outputData.count) bytes output data from \(lang.capitalized) language server:\n" + outputString)
         websocket?.send([UInt8](outputData))
     }
     
-    swiftLanguageServer.didSendError = { errorData in
+    languageServer?.didSendError = { errorData in
         guard errorData.count > 0 else { return }
         let errorString = errorData.utf8String ?? "error decoding error"
-        print("received \(errorData.count) bytes error data from Swift language server:\n" + errorString)
+        print("received \(errorData.count) bytes error data from \(lang.capitalized) language server:\n" + errorString)
         websocket?.send(errorString)
     }
     
-    swiftLanguageServer.didTerminate = {
+    languageServer?.didTerminate = {
         guard let websocket = websocket, !websocket.isClosed else { return }
         let errorFeedbackWasSent = websocket.eventLoop.makePromise(of: Void.self)
         errorFeedbackWasSent.futureResult.whenComplete { _ in
             websocket.close(promise: nil)
         }
-        websocket.send("Swift language server did terminate",
+        websocket.send("\(lang.capitalized) language server did terminate",
                        promise: errorFeedbackWasSent)
     }
 
-    swiftLanguageServer.run()
+    languageServer?.run()
 }
 
-fileprivate var websocket: WebSocket?
+func createLanguageServer(forLanguage lang: String, app: Application) -> LanguageServer? {
+    switch lang.lowercased() {
+    case "swift": return LanguageServer(.swift, logger: app.logger)
+    case "python": return LanguageServer(.python, logger: app.logger)
+    default: return nil
+    }
+}
+
+var languageServer: LanguageServer?
 
 // MARK: - Supported Languages
 
@@ -129,8 +152,8 @@ func isAvailable(language: String) -> Bool {
     languagesLowercased.contains(language.lowercased())
 }
 
-let languagesLowercased: Set<String> = ["swift"] //, "python", "java", "c++"]
+let languagesLowercased: Set<String> = ["swift", "python"]//, "java", "c++"]
 
-// MARK: - Swift Language Server
+// MARK: - Websocket
 
-let swiftLanguageServer = SwiftLanguageServer()
+fileprivate var websocket: WebSocket?
