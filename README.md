@@ -6,7 +6,7 @@ An app that locally hosts a web service (the "Language Service") which then allo
 
 ## Why?
 
-The [LSP protocol](https://microsoft.github.io/language-server-protocol/) is the present and future of software development tools. But leveraging it for my own tool project turned out to be more difficult than expected. 
+The [Language Server Protocol](https://microsoft.github.io/language-server-protocol/) is the present and future of software development tools. But leveraging it for my own tool project turned out to be more difficult than expected. 
 
 Most of all, I want to distribute my tool via the Mac App Store, so it must be sandboxed, which makes it impossible to deal with language servers directly or with any other "tooling" of the tech world.
 
@@ -43,6 +43,10 @@ Although the Language Service will work with many languages, I focus on the Swif
 * [x] Lift logging and error handling up to the best practices of Vapor. Ensure that users launching the host app see all errors in the terminal, and that clients get proper error responses.
 * [x] Allow to use multiple different language servers. Proof concept by supporting/testing a Python language server
 * [x] Add a CLI for the host app so users can manage the list of language servers from the command line
+* [ ] Clean up interfaces:
+  * [ ] Future proof and rethink API structure
+  * [ ] Align structure of CLI to API
+  * [ ] Deny upgrade to Websocket protocol right away for unavailable languages, instead of opening the connection, sending feedback and then closing it again
 * [ ] Document how to use the LSH, also add macOS binary to repo
 * [ ] Add support for C, C++ and Objective-c via `sourcekit-lsp`
 * [ ] Consider adding a web frontend for managing language servers. Possibly use [Plot](https://github.com/JohnSundell/Plot)
