@@ -43,14 +43,12 @@ Although the Language Service will work with many languages, I focus on the Swif
 * [x] Lift logging and error handling up to the best practices of Vapor. Ensure that users launching the host app see all errors in the terminal, and that clients get proper error responses.
 * [x] Allow to use multiple different language servers. Proof concept by supporting/testing a Python language server
 * [x] Add a CLI for the host app so users can manage the list of language servers from the command line
-* [ ] Clean up interfaces:
-  * [ ] Future proof and rethink API structure
-  * [ ] Align structure of CLI to API
-  * [ ] Deny upgrade to Websocket protocol right away for unavailable languages, instead of opening the connection, sending feedback and then closing it again
+* [ ] Clean up interfaces: Future proof and rethink API structure, then align structure of CLI to API
 * [ ] Document how to use the LSH, also add macOS binary to repo
 * [ ] Add support for C, C++ and Objective-c via `sourcekit-lsp`
+* [ ] As soon as [this PR](https://github.com/vapor/vapor/pull/2498) is done: Decline upgrade to Websocket protocol right away for unavailable languages, instead of opening the connection, sending feedback and then closing it again.
 * [ ] Consider adding a web frontend for managing language servers. Possibly use [Plot](https://github.com/JohnSundell/Plot)
-* [ ] Possibly build a package/framework for simply and typsafely defining, encoding and decoding LSP messages. Consider suggesting to extract that type system from [SwiftLSPClient](https://github.com/chimehq/SwiftLSPClient) and/or from sourcekit-lsp into a dedicated package. Both use a (near) identical typesystem for that already ...
+* [ ] Possibly build a package/framework for simply and typesafely defining, encoding and decoding LSP messages. Consider suggesting to extract that type system from [SwiftLSPClient](https://github.com/chimehq/SwiftLSPClient) and/or from sourcekit-lsp into a dedicated package. Both use a (near) identical typesystem for that already ...
 * [ ] Possibly build a Swift package that helps client editors written in Swift to use the Language Service
 * [ ] Enable serving multiple clients who need services for the same language at the same time
 * [ ] Explore whether this approach would actually fly with the Mac App Store review, because:
