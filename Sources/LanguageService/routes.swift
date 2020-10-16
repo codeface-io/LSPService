@@ -73,7 +73,7 @@ func registerRoutes(onLanguage language: RoutesBuilder, app: Application) {
         newWebsocket.onBinary { ws, byteBuffer in
             let data = Data(buffer: byteBuffer)
             let dataString = data.utf8String ?? "error decoding data"
-            print("received data from socket \(ObjectIdentifier(ws).hashValue) at endpoint for \(languageName):\n\(dataString)")
+            app.logger.debug("received data from socket \(ObjectIdentifier(ws).hashValue) at endpoint for \(languageName):\n\(dataString)")
             languageServer?.receive(data)
         }
         
