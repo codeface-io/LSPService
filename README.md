@@ -27,15 +27,15 @@ So I thought: What if a language server was simply a local web service? Possible
 
 	* If you want to put your editor into the Mac App Store: Ensure your editor is at least partially usable without the LSH. This should help with the review process.
 
-2. Provide a download of the Language Service Host to your users:
+2. Provide a download of the LSH to your users:
 
 	* Build it via `swift build --configuration release`.
-	* Get the resulting binary from ".build/<target architecture>/release/LanguageServiceHost".
+	* Get the resulting binary from `.build/<target architecture>/release/LanguageServiceHost`.
 	* Upload the binary to where your users should download it.
 
 3. Let your editor encourage the user to download and run the LSH.
 
-	* Give a short explaination for why the LSH is helpful.
+	* Give a short explanation for why the LSH is helpful.
 	* Offer a convenient way to download and save the LSH.
 
 ### As the User of an Editor
