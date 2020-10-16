@@ -1,0 +1,3 @@
+swift build --configuration release
+
+cp .build/x86_64-apple-macosx/release/LanguageServiceHost Binaries/x86_64-apple-macosx/LanguageServiceHost
