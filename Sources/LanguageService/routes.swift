@@ -18,25 +18,16 @@ func registerRoutes(onLanguageService languageService: RoutesBuilder,
     languageService.on(.GET) { _ in
         "Hello, I'm the Language Service.\n\nEndpoints (Vapor Routes):\n\(routeList(for: app))\n\nAvailable languages:\n\(languagesJoined(by: "\n"))"
     }
-    
-    registerRoutes(onWebsite: languageService.grouped("website"), on: app)
-    registerRoutes(onAPI: languageService.grouped("api"), app: app)
-}
-
-// MARK: - Website
-
-func registerRoutes(onWebsite website: RoutesBuilder, on app: Application) {
-    website.on(.GET) { req in
-        "Hello, I'm the Language Service.\n\nEndpoints (Vapor Routes):\n\(routeList(for: app))\nSupported Languages:\n\(languagesJoined(by: "\n"))"
-    }
 
     let languageNameParameter = "languageName"
 
-    website.on(.GET, ":\(languageNameParameter)") { req -> String in
-        let languageName = req.parameters.get(languageNameParameter)!
-        let languageIsSupported = isAvailable(language: languageName)
-        return "Hello, I'm the Language Service.\n\nThe language \(languageName.capitalized) is \(languageIsSupported ? "already" : "not yet") supported."
+    languageService.on(.GET, ":\(languageNameParameter)") { req -> String in
+        let language = req.parameters.get(languageNameParameter)!
+        let executablePath = executablePathsByLanguage[language.lowercased()]
+        return "Hello, I'm the Language Service.\n\nThe language \(language.capitalized) has this associated language server:\n\(executablePath ?? "None")"
     }
+    
+    registerRoutes(onAPI: languageService.grouped("api"), app: app)
 }
 
 func routeList(for app: Application) -> String {
