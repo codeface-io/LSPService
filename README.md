@@ -43,7 +43,7 @@ Although the Language Service will work with many languages, I focus on the Swif
 * [x] Lift logging and error handling up to the best practices of Vapor. Ensure that users launching the host app see all errors in the terminal, and that clients get proper error responses.
 * [x] Allow to use multiple different language servers. Proof concept by supporting/testing a Python language server
 * [x] Add a CLI for the host app so users can manage the list of language servers from the command line
-* [ ] Clean up interfaces: Future proof and rethink API structure, then align structure of CLI to API
+* [x] Clean up interfaces: Future proof and rethink API structure, then align structure of CLI to API
 * [ ] Document how to use the LSH, also add macOS binary to repo
 * [ ] Add support for C, C++ and Objective-c via `sourcekit-lsp`
 * [ ] As soon as [this PR](https://github.com/vapor/vapor/pull/2498) is done: Decline upgrade to Websocket protocol right away for unavailable languages, instead of opening the connection, sending feedback and then closing it again.

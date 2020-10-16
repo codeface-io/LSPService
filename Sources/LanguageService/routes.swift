@@ -15,25 +15,24 @@ func registerRoutes(on app: Application) throws {
 
 func registerRoutes(onLanguageService languageService: RoutesBuilder,
                     on app: Application) {
-    languageService.on(.GET) { req in
-        "Hello, I'm the Language Service.\n\nEndpoints (Vapor Routes):\n\(routeList(for: app))\n\nAnd all supported languages:\n\(languagesJoined(by: "\n"))"
+    languageService.on(.GET) { _ in
+        "Hello, I'm the Language Service.\n\nEndpoints (Vapor Routes):\n\(routeList(for: app))\n\nAvailable languages:\n\(languagesJoined(by: "\n"))"
     }
     
-    registerRoutes(onDashboard: languageService.grouped("dashboard"), on: app)
-    
+    registerRoutes(onWebsite: languageService.grouped("website"), on: app)
     registerRoutes(onAPI: languageService.grouped("api"), app: app)
 }
 
-// MARK: - Dashboard
+// MARK: - Website
 
-func registerRoutes(onDashboard dashboard: RoutesBuilder, on app: Application) {
-    dashboard.on(.GET) { req in
+func registerRoutes(onWebsite website: RoutesBuilder, on app: Application) {
+    website.on(.GET) { req in
         "Hello, I'm the Language Service.\n\nEndpoints (Vapor Routes):\n\(routeList(for: app))\nSupported Languages:\n\(languagesJoined(by: "\n"))"
     }
 
     let languageNameParameter = "languageName"
 
-    dashboard.on(.GET, ":\(languageNameParameter)") { req -> String in
+    website.on(.GET, ":\(languageNameParameter)") { req -> String in
         let languageName = req.parameters.get(languageNameParameter)!
         let languageIsSupported = isAvailable(language: languageName)
         return "Hello, I'm the Language Service.\n\nThe language \(languageName.capitalized) is \(languageIsSupported ? "already" : "not yet") supported."
@@ -47,9 +46,17 @@ func routeList(for app: Application) -> String {
 // MARK: - API
 
 func registerRoutes(onAPI api: RoutesBuilder, app: Application) {
+    api.on(.GET, "languages") { _ in
+        Array(executablePathsByLanguage.keys)
+    }
+    
+    registerRoutes(onLanguage: api.grouped("language"), app: app)
+}
+
+func registerRoutes(onLanguage language: RoutesBuilder, app: Application) {
     let languageNameParameter = "languageName"
     
-    api.webSocket(":\(languageNameParameter)") { request, newWebsocket in
+    language.webSocket(":\(languageNameParameter)", "connection") { request, newWebsocket in
         newWebsocket.onClose.whenComplete { result in
             switch result {
             case .success:
@@ -85,8 +92,24 @@ func registerRoutes(onAPI api: RoutesBuilder, app: Application) {
         configureAndRunLanguageServer(forLanguage: languageName, app: app)
     }
 
-    api.on(.GET, "languages") { _ in
-        Array(executablePathsByLanguage.keys)
+    language.on(.GET, ":\(languageNameParameter)") { request -> String in
+        let language = request.parameters.get(languageNameParameter)!
+        guard let executablePath = executablePathsByLanguage[language.lowercased()] else {
+            throw Abort(.noContent,
+                        reason: "No LSP server path has been set for \(language.capitalized)")
+        }
+        return executablePath
+    }
+    
+    language.on(.POST, ":\(languageNameParameter)") { request -> HTTPStatus in
+        let executablePath = request.body.string ?? ""
+        guard URL(fromFilePath: executablePath) != nil else {
+            throw Abort(.badRequest,
+                        reason: "Request body contains no valid file path")
+        }
+        let language = request.parameters.get(languageNameParameter)!
+        executablePathsByLanguage[language.lowercased()] = executablePath
+        return .ok
     }
 }
 
@@ -108,14 +131,14 @@ fileprivate func configureAndRunLanguageServer(forLanguage lang: String,
     languageServer?.didSendOutput = { outputData in
         guard outputData.count > 0 else { return }
         let outputString = outputData.utf8String ?? "error decoding output"
-        print("received \(outputData.count) bytes output data from \(lang.capitalized) language server:\n" + outputString)
+        app.logger.debug("received \(outputData.count) bytes output data from \(lang.capitalized) language server:\n\(outputString)")
         websocket?.send([UInt8](outputData))
     }
     
     languageServer?.didSendError = { errorData in
         guard errorData.count > 0 else { return }
         let errorString = errorData.utf8String ?? "error decoding error"
-        print("received \(errorData.count) bytes error data from \(lang.capitalized) language server:\n" + errorString)
+        app.logger.debug("received \(errorData.count) bytes error data from \(lang.capitalized) language server:\n\(errorString)")
         websocket?.send(errorString)
     }
     
