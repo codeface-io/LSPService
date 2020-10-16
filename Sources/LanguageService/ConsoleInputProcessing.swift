@@ -2,7 +2,7 @@ import Foundation
 
 /// Pure logic of the CLI. No Vapor here.
 struct ConsoleInputProcessing {
-    static var inputPrefix: String { "💬  " }
+    static var prompt: String { "💬  " }
     
     static func initialOutput() -> String {
         """
@@ -23,10 +23,12 @@ struct ConsoleInputProcessing {
         
         let command = argumentsToProcess.removeFirst()
         
+        var output = ""
+        
         switch command {
         case "languages":
             let languages = languagesJoined(by: ", ")
-            return "✅  LSP server paths are set for: \(languages)"
+            output += "✅  LSP server paths are set for: \(languages)"
         case "language":
             guard argumentsToProcess.count > 0 else {
                 return "🛑  Please specify a language after the command \"language\""
@@ -36,15 +38,14 @@ struct ConsoleInputProcessing {
             
             guard argumentsToProcess.count > 0 else {
                 if let executablePath = executablePathsByLanguage[language.lowercased()] {
-                    return "✅  \(language.capitalized) has this LSP server path set:\n   \"\(executablePath)\""
+                    output += "✅  \(language.capitalized) has this LSP server path set:\n   \"\(executablePath)\""
                 } else {
-                    return "🛑  No LSP server path is set for language \"\(language.capitalized)\""
+                    output += "🛑  No LSP server path is set for language \"\(language.capitalized)\""
                 }
+                break
             }
             
             let newExecutablePath = argumentsToProcess.removeFirst()
-            
-            var output = ""
             
             if URL(fromFilePath: newExecutablePath) != nil {
                 executablePathsByLanguage[language.lowercased()] = newExecutablePath
@@ -52,15 +53,15 @@ struct ConsoleInputProcessing {
             } else {
                 output += "🛑  This is not a valid file path: \"\(newExecutablePath)\""
             }
-            
-            if argumentsToProcess.count > 0 {
-                output += "\n⚠️  I'm gonna ignore these unexpected remaining arguments: \(argumentsToProcess)"
-            }
-            
-            return output
         default:
             return "🛑  That's not an available command"
         }
+        
+        if argumentsToProcess.count > 0 {
+            output += "\n⚠️  I'm gonna ignore these unexpected remaining arguments: \(argumentsToProcess)"
+        }
+        
+        return output
     }
 
     private static func arguments(fromInput input: String) -> [String] {

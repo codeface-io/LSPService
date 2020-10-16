@@ -17,7 +17,8 @@ fileprivate func startProcessingConsoleInput(app: Application) {
 }
 
 fileprivate func processNextConsoleInput(app: Application) {
-    print(ConsoleInputProcessing.inputPrefix, terminator: "")
+    app.console.output(ConsoleInputProcessing.prompt.consoleText(),
+                       newLine: false)
     
     let eventLoop = app.eventLoopGroup.next()
     
