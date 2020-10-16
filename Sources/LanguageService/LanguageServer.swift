@@ -151,7 +151,7 @@ func retrieveExecutablePathsForLanguages() -> [String : String] {
     var paths = [String : String]()
     
     paths["swift"] = {
-        return  "/Users/seb/Library/Developer/Xcode/DerivedData/sourcekit-lsp_Fork-asttkeaysojqnhakomxyeenamaml/Build/Products/Debug/sourcekit-lsp"
+//        return  "/Users/seb/Library/Developer/Xcode/DerivedData/sourcekit-lsp_Fork-asttkeaysojqnhakomxyeenamaml/Build/Products/Debug/sourcekit-lsp"
         
         var path = "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/sourcekit-lsp"
         
