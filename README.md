@@ -1,8 +1,12 @@
 # Language Service Host
 
+🚨 *This project is at an early experimental stage.*
+
+👩🏻‍🚀 *Contributors and pioneers welcome!*
+
 ## What?
 
-The Language Service Host (LSH) is an app that locally hosts a web service (the "Language Service") which then allows editors and IDEs to use local [LSP language servers](https://langserver.org) simply via WebSockets:
+The Language Service Host (LSH) is an app that locally hosts a web service (the "Language Service") which then allows editors and IDEs to use local [LSP language servers](https://langserver.org) simply via WebSockets.
 
 ![LanguageServiceHost](https://raw.githubusercontent.com/flowtoolz/LanguageServiceHost/master/Documentation/language_service_host_idea.jpg)
 
@@ -23,9 +27,11 @@ So I thought: What if a language server was simply a local web service? Possible
 
 ### As the Developer of an Editor
 
-1. Let your editor use the Language Service API. The API allows talking to language servers and also configuring them. [The API is documented here](#API).
+1. Let your editor use the Language Service API:
 
-	* If you want to put your editor into the Mac App Store: Ensure your editor is at least partially usable without the LSH. This should help with the review process.
+	* [The API](#API) allows talking to language servers and configuring them.
+
+	* If you want to put your editor into the Mac App Store: Ensure your editor is also usable without the LSH. This should help with the review process.
 
 2. Provide a download of the LSH to your users:
 
@@ -33,20 +39,20 @@ So I thought: What if a language server was simply a local web service? Possible
 	* Get the resulting binary from `.build/<target architecture>/release/LanguageServiceHost`.
 	* Upload the binary to where your users should download it.
 
-3. Let your editor encourage the user to download and run the LSH.
+3. Let your editor encourage the user to download and run the LSH:
 
 	* Give a short explanation for why the LSH is helpful.
 	* Offer a convenient way to download and save the LSH.
 
 ### As the User of an Editor
 
-Of course, we assume here the editor supports the LSH.
+Of course, we assume here the editor supports the Language Service.
 
 1. Download and open the LSH app. It's named "LanguageServiceHost". It will run in Terminal, and as long as it's running there, the Language Service is available.
-2. Check that the Language Service is indeed available: Open this adress in your browser: <http://localhost:8080/languageservice>
+2. Check that the Language Service is indeed available: Open <http://localhost:8080/languageservice>.
 3. Set the language server locations (file paths) for the languages you want to have supported. 
-	* The LSH offers a command line interface for that. After it starts running in Terminal, it explains all  commands there.
-	* The LSH automatically locates the Swift language server (if Xcode is installed) and it guesses the location of a [python language server](https://github.com/palantir/python-language-server). But generally, it still needs help with locating language servers.
+	* There's a command line interface for that. After the LSH starts running in Terminal, the Language Service explains its commands there.
+	* The Language Service automatically locates the Swift language server (if Xcode is installed) and it guesses the location of a [python language server](https://github.com/palantir/python-language-server). But in general, users still have to locate their language servers manually.
 
 
 ## API
@@ -55,9 +61,11 @@ Of course, we assume here the editor supports the LSH.
 
 The singular purpose of the Language Service is to present LSP language servers as simple WebSockets.
 
-The Language Service forwards LSP messages from some editor to some LSP language server and vice versa. It knows nothing about the LSP standard itself. Encoding and decoding LSP messages and generally representing LSP with proper types remains a concern of the editor. 
+The Language Service forwards LSP messages from some editor to some language server and vice versa. It knows nothing about the LSP standard itself. Encoding and decoding LSP messages and generally representing LSP with proper types remains a concern of the editor. 
 
 The editor, on the other hand, knows nothing about how to locate, install, run and talk to language servers. This remains a concern of the Language Service.
+
+This is the intended separation of concerns. Compromises may be necessary here and there, in particular in this early stage of the project.
 
 ### Endpoints
 
