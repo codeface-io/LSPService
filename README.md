@@ -75,7 +75,7 @@ The root of the Language Service API is `http://127.0.0.1:8080/languageservice/a
 | :------------ | :---------- | :---------- |:----------- |
 | `languages` | `[String]` | `GET` | Get names of available languages. An available language is one for which the path of the associated language server is set. |
 | `language/<lang>` | `String` | `GET`, `POST` | Get and set the path of the language server associated with language "lang". |
-| `language/<lang>/connection` | `String`, `Data` | WebSocket | Connect and talk to the language server associated with language "lang". |
+| `language/<lang>/websocket` | `String`, `Data` | WebSocket | Connect and talk to the language server associated with language "lang". |
 
 ### Using the WebSocket
 

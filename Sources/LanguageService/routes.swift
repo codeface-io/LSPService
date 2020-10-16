@@ -47,7 +47,7 @@ func registerRoutes(onAPI api: RoutesBuilder, app: Application) {
 func registerRoutes(onLanguage language: RoutesBuilder, app: Application) {
     let languageNameParameter = "languageName"
     
-    language.webSocket(":\(languageNameParameter)", "connection") { request, newWebsocket in
+    language.webSocket(":\(languageNameParameter)", "websocket") { request, newWebsocket in
         newWebsocket.onClose.whenComplete { result in
             switch result {
             case .success:
