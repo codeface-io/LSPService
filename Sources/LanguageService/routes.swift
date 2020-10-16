@@ -16,7 +16,7 @@ func registerRoutes(on app: Application) throws {
 func registerRoutes(onLanguageService languageService: RoutesBuilder,
                     on app: Application) {
     languageService.on(.GET) { _ in
-        "Hello, I'm the Language Service.\n\nEndpoints (Vapor Routes):\n\(routeList(for: app))\n\nAvailable languages:\n\(languagesJoined(by: "\n"))"
+        "👋🏻 Hello, I'm the Language Service.\n\nEndpoints (Vapor Routes):\n\(routeList(for: app))\n\nAvailable languages:\n\(languagesJoined(by: "\n"))"
     }
 
     let languageNameParameter = "languageName"
@@ -31,7 +31,7 @@ func registerRoutes(onLanguageService languageService: RoutesBuilder,
 }
 
 func routeList(for app: Application) -> String {
-    app.routes.all.map { $0.description }.reduce("") { $0 + $1 + "\n" }
+    app.routes.all.map { $0.description }.joined(separator: "\n")
 }
 
 // MARK: - API
