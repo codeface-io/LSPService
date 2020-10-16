@@ -2,7 +2,9 @@
 
 ## What?
 
-An app that locally hosts a web service (the "Language Service") which then allows editors and IDEs to use local [LSP language servers](https://langserver.org) simply via WebSockets.
+The Language Service Host (LSH) is an app that locally hosts a web service (the "Language Service") which then allows editors and IDEs to use local [LSP language servers](https://langserver.org) simply via WebSockets:
+
+![LanguageServiceHost](https://raw.githubusercontent.com/flowtoolz/LanguageServiceHost/master/Documentation/language_service_host_idea.jpg)
 
 ## Why?
 
@@ -19,15 +21,68 @@ So I thought: What if a language server was simply a local web service? Possible
 
 ## How?
 
-The singular purpose of the Language Service is to present LSP language servers as simple WebSockets:
+### As the Developer of an Editor
 
-![LanguageServiceHost](https://raw.githubusercontent.com/flowtoolz/LanguageServiceHost/master/Documentation/language_service_host_idea.jpg)
+1. Let your editor use the Language Service API. The API allows talking to language servers and also configuring them. [The API is documented here](#API).
 
-The Language Service forwards LSP messages from some editor to some LSP language server and vice versa. It knows nothing about the LSP standard itself. Encoding and decoding LSP messages and generally representing LSP with proper types remains a concern of the editors. 
+	* If you want to put your editor into the Mac App Store: Ensure your editor is at least partially usable without the LSH. This should help with the review process.
 
-Editors, on the other hand, know nothing about how to locate, install, run and talk to language servers. This remains a concern of the Language Service.
+2. Provide a download of the Language Service Host to your users:
 
-Although the Language Service will work with many languages, I focus on the Swift language server (`sourcekit-lsp`) to get this going.
+	* Build it via `swift build --configuration release`.
+	* Get the resulting binary from ".build/<target architecture>/release/LanguageServiceHost".
+	* Upload the binary to where your users should download it.
+
+3. Let your editor encourage the user to download and run the LSH.
+
+	* Give a short explaination for why the LSH is helpful.
+	* Offer a convenient way to download and save the LSH.
+
+### As the User of an Editor
+
+Of course, we assume here the editor supports the LSH.
+
+1. Download and open the LSH app. It's named "LanguageServiceHost". It will run in Terminal, and as long as it's running there, the Language Service is available.
+2. Check that the Language Service is indeed available: Open this adress in your browser: <http://localhost:8080/languageservice>
+3. Set the language server locations (file paths) for the languages you want to have supported. 
+	* The LSH offers a command line interface for that. After it starts running in Terminal, it explains all  commands there.
+	* The LSH automatically locates the Swift language server (if Xcode is installed) and it guesses the location of a [python language server](https://github.com/palantir/python-language-server). But generally, it still needs help with locating language servers.
+
+
+## API
+
+### Editor vs. Language Service – Who's Responsible?
+
+The singular purpose of the Language Service is to present LSP language servers as simple WebSockets.
+
+The Language Service forwards LSP messages from some editor to some LSP language server and vice versa. It knows nothing about the LSP standard itself. Encoding and decoding LSP messages and generally representing LSP with proper types remains a concern of the editor. 
+
+The editor, on the other hand, knows nothing about how to locate, install, run and talk to language servers. This remains a concern of the Language Service.
+
+### Endpoints
+
+The root of the Language Service API is `http://127.0.0.1:8080/languageservice/api/`.
+
+| URL Path |     Types     |      Methods | Usage |
+| :------------ | :---------- | :---------- |:----------- |
+| `languages` | `[String]` | `GET` | Get names of available languages. An available language is one for which the path of the associated language server is set. |
+| `language/<lang>` | `String` | `GET`, `POST` | Get and set the path of the language server associated with language "lang". |
+| `language/<lang>/connection` | `String`, `Data` | WebSocket | Connect and talk to the language server associated with language "lang". |
+
+### Using the WebSocket
+
+Depending on the frameworks you use, you may need to set the URL scheme `ws://` explicitly.
+
+Encode LSP messages according to the LSP specification, including [header](https://microsoft.github.io/language-server-protocol/specifications/specification-current/#headerPart) and content part.
+
+Send and receive LSP messages via the data channel of the WebSocket. The data channel is used exclusively for LSP messages. It never outputs any other type of data.
+
+The LSP standard also specifies errors, and LSP messages can contain these errors. These "LSP error messages" are critical feedback for your editor. The language service may also at some point send its own errors in the form of LSP messages where appropriate, so editors can handle these errors in the same systematic way.
+
+Besides LSP messages, there are only two ways the WebSocket gives live feedback:
+
+* It sends log messages via its text channel. These are unstructured pure text strings that are useful for debugging. 
+* It terminates the connection if some serious problem occured, for example if the language server in use had to shut down.
 
 ## To Do
 
@@ -44,7 +99,7 @@ Although the Language Service will work with many languages, I focus on the Swif
 * [x] Allow to use multiple different language servers. Proof concept by supporting/testing a Python language server
 * [x] Add a CLI for the host app so users can manage the list of language servers from the command line
 * [x] Clean up interfaces: Future proof and rethink API structure, then align structure of CLI to API
-* [ ] Document how to use the LSH, also add macOS binary to repo
+* [x] Document how to use the LSH
 * [ ] Add support for C, C++ and Objective-c via `sourcekit-lsp`
 * [ ] As soon as [this PR](https://github.com/vapor/vapor/pull/2498) is done: Decline upgrade to Websocket protocol right away for unavailable languages, instead of opening the connection, sending feedback and then closing it again.
 * [ ] Consider adding a web frontend for managing language servers. Possibly use [Plot](https://github.com/JohnSundell/Plot)
