@@ -93,8 +93,8 @@ Besides LSP messages, there are only two ways the WebSocket gives live feedback:
 * [x] Have a dynamic endpoint for all languages, like `ws://127.0.0.1:<service port>/languageservice/api/<language>`
 * [x] Evaluate whether client editors need to to receive the [error output](https://en.wikipedia.org/wiki/Standard_streams#Standard_error_(stderr)) from language server processes.
   * Result: LSP errors come as regular LSP messages from standard output, and using different streams is not part of the LSP standard and a totally different abstraction level anyway. So stdErr should be irrelevant to the editor.
-* [x] Explore whether `sourcekit-lsp` can be adjusted to send error feedback when it fails to decode incoming data. This would enormously accelerate development of  `sourcekit-lsp` clients, whether they use `sourcekit-lsp` directly or via this Language Service. It might also have implications for the Language Service.
-  * Result: sourcekit-lsp now sends an LSP error response message if the message it receives has at least a [valid header](https://microsoft.github.io/language-server-protocol/specifications/specification-current/#headerPart). Prepending that header is solved, so all development can now rely on immediate well formed feedback.
+* [x] Explore whether `sourcekit-lsp` can be adjusted to send error feedback when it fails to decode incoming data. This would likely accelerate development of  `sourcekit-lsp` clients, whether they use `sourcekit-lsp` directly or via this Language Service.
+  * Result: sourcekit-lsp [now sends an LSP error response message](https://github.com/apple/sourcekit-lsp/pull/334) if the message it receives has at least a [valid header](https://microsoft.github.io/language-server-protocol/specifications/specification-current/#headerPart). Prepending that header is easy, so all development can now rely on immediate well formed feedback.
 * [x] Add an endpoint for client editors to detect what languages are available
 * [x] Properly handle websocket connection attempt for unavailable languages: send feedback, then close connection.
 * [x] Lift logging and error handling up to the best practices of Vapor. Ensure that users launching the host app see all errors in the terminal, and that clients get proper error responses.
@@ -102,10 +102,11 @@ Besides LSP messages, there are only two ways the WebSocket gives live feedback:
 * [x] Add a CLI for the host app so users can manage the list of language servers from the command line
 * [x] Clean up interfaces: Future proof and rethink API structure, then align structure of CLI to API
 * [x] Document how to use the LSH
+* [x] Evaluate whether to build a Swift package to help LSH client editors written in Swift to define, encode and decode LSP messages. Consider suggesting to extract that type system from [SwiftLSPClient](https://github.com/chimehq/SwiftLSPClient) and/or from sourcekit-lsp into a dedicated package. Both use a similar typesystem for that already ...
+	* Result: Building it is too big of a task but extraction already happened anyway: Such editors can use the static library product `LSPBindings` of the sourcekit-lsp package, assuming `LSPBindings` doesn't reach out of the app sandbox. It's unclear why [SwiftLSPClient](https://github.com/chimehq/SwiftLSPClient) reimplemented all that ...
 * [ ] Add support for C, C++ and Objective-c via `sourcekit-lsp`
 * [ ] As soon as [this PR](https://github.com/vapor/vapor/pull/2498) is done: Decline upgrade to Websocket protocol right away for unavailable languages, instead of opening the connection, sending feedback and then closing it again.
 * [ ] Consider adding a web frontend for managing language servers. Possibly use [Plot](https://github.com/JohnSundell/Plot)
-* [ ] Possibly build a package/framework for simply and typesafely defining, encoding and decoding LSP messages. Consider suggesting to extract that type system from [SwiftLSPClient](https://github.com/chimehq/SwiftLSPClient) and/or from sourcekit-lsp into a dedicated package. Both use a (near) identical typesystem for that already ...
 * [ ] Possibly build a Swift package that helps client editors written in Swift to use the Language Service
 * [ ] Enable serving multiple clients who need services for the same language at the same time
 * [ ] Explore whether this approach would actually fly with the Mac App Store review, because:
