@@ -6,20 +6,22 @@
 
 ## What?
 
-The Language Service Host (LSH) is an app that locally hosts a web service (the "Language Service") which then allows editors and IDEs to use local [LSP language servers](https://langserver.org) simply via WebSockets.
+The Language Service Host (LSH) is an app that locally hosts a web service (the Language Service) which then allows editors and IDEs to use local [LSP language servers](https://langserver.org) simply via WebSockets:
 
 ![LanguageServiceHost](https://raw.githubusercontent.com/flowtoolz/LanguageServiceHost/master/Documentation/language_service_host_idea.jpg)
 
+This project might appear biased towards Swift, because I use mainly the [Swift language server (sourcekit-lsp)](https://github.com/apple/sourcekit-lsp) as my example language server, and the LSH is itself written in Swift. However: **The LSH runs on macOS and Linux and can connect to all language servers**. 
+
 ## Why?
 
-The [Language Server Protocol](https://microsoft.github.io/language-server-protocol/) is the present and future of software development tools. But leveraging it for my own tool project turned out to be more difficult than expected. 
+The [Language Server Protocol](https://microsoft.github.io/language-server-protocol/) is the present and future of software development tools. But leveraging it for my own tool project turned out to be difficult. 
 
-Most of all, I want to distribute my tool via the Mac App Store, so it must be sandboxed, which makes it impossible to deal with language servers directly or with any other "tooling" of the tech world.
+Most of all, I want to distribute my tool via the Mac App Store, so it must be sandboxed, which makes it impossible to directly deal with language servers or any other "tooling" of the tech world.
 
-So I thought: What if a language server was simply a local web service? Possible benefits:
+So I thought: **What if a language server was simply a local web service?** Possible benefits:
 
+* **Editors don't need to install, locate, launch and talk to all the different language server executables.**
 * **On macOS, editors can be sandboxed and probably even be distributed via the App Store.**
-* **Editors don't need to locate, install, run and talk to language servers.**
 * In the future, the Language Service could be a machine's central place for managing LSP language servers, through a CLI and/or through a web front end.
 * Even further down the road, running the Language Service on actual web servers might have interesting applications, in particular where LSP is used for static code analysis or remote inspection.
 
@@ -46,7 +48,7 @@ Of course, we assume here the editor supports the Language Service.
 2. Check that the Language Service is indeed available: Open <http://localhost:8080/languageservice>.
 3. Set the language server locations (file paths) for the languages you want to have supported. 
 	* There's a command line interface for that. After the LSH starts running in Terminal, the Language Service explains its commands there.
-	* The Language Service automatically locates the Swift language server (if Xcode is installed) and it guesses the location of a [python language server](https://github.com/palantir/python-language-server). But in general, users still have to locate their language servers manually.
+	* The Language Service automatically finds the Swift language server (if Xcode is installed), and it guesses the location of a [python language server](https://github.com/palantir/python-language-server). But in general, users still must locate language servers manually.
 
 
 ## API
@@ -88,23 +90,23 @@ Besides LSP messages, there are only two ways the WebSocket gives live feedback:
 
 ## To Do
 
-* [x] Implement proof of concept with WebSockets and `sourcekit-lsp`
-* [x] Let the Language Service locate `sourcekit-lsp` for the Swift endpoint
-* [x] Have a dynamic endpoint for all languages, like `ws://127.0.0.1:<service port>/languageservice/api/<language>`
+* [x] Implement proof of concept with WebSockets and sourcekit-lsp
+* [x] Have a dynamic endpoint for all languages, like `127.0.0.1:<service port>/languageservice/api/<language>`
+* [x] Let the Language Service locate sourcekit-lsp for the Swift endpoint
 * [x] Evaluate whether client editors need to to receive the [error output](https://en.wikipedia.org/wiki/Standard_streams#Standard_error_(stderr)) from language server processes.
   * Result: LSP errors come as regular LSP messages from standard output, and using different streams is not part of the LSP standard and a totally different abstraction level anyway. So stdErr should be irrelevant to the editor.
-* [x] Explore whether `sourcekit-lsp` can be adjusted to send error feedback when it fails to decode incoming data. This would likely accelerate development of  `sourcekit-lsp` clients, whether they use `sourcekit-lsp` directly or via this Language Service.
-  * Result: sourcekit-lsp [now sends an LSP error response message](https://github.com/apple/sourcekit-lsp/pull/334) if the message it receives has at least a [valid header](https://microsoft.github.io/language-server-protocol/specifications/specification-current/#headerPart). Prepending that header is easy, so all development can now rely on immediate well formed feedback.
+* [x] Explore whether sourcekit-lsp can be adjusted to send error feedback when it fails to decode incoming data. This would likely accelerate development of the LSH and of other  sourcekit-lsp clients.
+  * Result: sourcekit-lsp [now sends an LSP error response message](https://github.com/apple/sourcekit-lsp/pull/334) in response to an undecodable message, if that message has at least a [valid header](https://microsoft.github.io/language-server-protocol/specifications/specification-current/#headerPart). Prepending that header is easy, so development of the LSH can now rely on immediate well formed feedback from sourcekit-lsp.
 * [x] Add an endpoint for client editors to detect what languages are available
 * [x] Properly handle websocket connection attempt for unavailable languages: send feedback, then close connection.
 * [x] Lift logging and error handling up to the best practices of Vapor. Ensure that users launching the host app see all errors in the terminal, and that clients get proper error responses.
 * [x] Allow to use multiple different language servers. Proof concept by supporting/testing a Python language server
 * [x] Add a CLI for the host app so users can manage the list of language servers from the command line
-* [x] Clean up interfaces: Future proof and rethink API structure, then align structure of CLI to API
+* [x] Clean up interfaces: Future proof and rethink API structure, then align CLI, API and web frontend
 * [x] Document how to use the LSH
-* [x] Evaluate whether to build a Swift package to help LSH client editors written in Swift to define, encode and decode LSP messages. Consider suggesting to extract that type system from [SwiftLSPClient](https://github.com/chimehq/SwiftLSPClient) and/or from sourcekit-lsp into a dedicated package. Both use a similar typesystem for that already ...
+* [x] Evaluate whether to build a Swift package that helps LSH client editors written in Swift to define, encode and decode LSP messages. Consider suggesting to extract that type system from [SwiftLSPClient](https://github.com/chimehq/SwiftLSPClient) and/or from sourcekit-lsp into a dedicated package. Both use a similar typesystem for that already ...
 	* Result: Building it is too big of a task but extraction already happened anyway: Such editors can use the static library product `LSPBindings` of the sourcekit-lsp package, assuming `LSPBindings` doesn't reach out of the app sandbox. It's unclear why [SwiftLSPClient](https://github.com/chimehq/SwiftLSPClient) reimplemented all that ...
-* [ ] Add support for C, C++ and Objective-c via `sourcekit-lsp`
+* [ ] Add support for C, C++ and Objective-c via sourcekit-lsp
 * [ ] As soon as [this PR](https://github.com/vapor/vapor/pull/2498) is done: Decline upgrade to Websocket protocol right away for unavailable languages, instead of opening the connection, sending feedback and then closing it again.
 * [ ] Consider adding a web frontend for managing language servers. Possibly use [Plot](https://github.com/JohnSundell/Plot)
 * [ ] Possibly build a Swift package that helps client editors written in Swift to use the Language Service
