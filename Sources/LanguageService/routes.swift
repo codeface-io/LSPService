@@ -161,4 +161,4 @@ var languageServer: LanguageServer?
 
 // MARK: - Websocket
 
-fileprivate var websocket: WebSocket?
+fileprivate var websocket: Vapor.WebSocket?

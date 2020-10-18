@@ -1,5 +1,7 @@
 import Vapor
+import FoundationToolz
 import Foundation
+import SwiftyToolz
 
 class LanguageServer {
     
@@ -50,10 +52,21 @@ class LanguageServer {
         }
         
         do {
-            try inPipe.fileHandleForWriting.write(contentsOf: input)
+            let inputWithProcessID = try addProcessIDToInitializeRequest(input)
+            try inPipe.fileHandleForWriting.write(contentsOf: inputWithProcessID)
         } catch {
             print(error.localizedDescription)
         }
+    }
+    
+    private func addProcessIDToInitializeRequest(_ input: Data) throws -> Data {
+        let messageData = try LSP.extractContent(fromFrame: input)
+        var messageJSON = try JSONObject(messageData)
+        guard (try? messageJSON.str("method")) == "initialize" else { return input }
+        var params = try messageJSON.obj("params")
+        params["processId"] = ProcessInfo.processInfo.processIdentifier
+        messageJSON["params"] = params
+        return LSP.makeFrame(withContent: try messageJSON.data())
     }
     
     private let inPipe = Pipe()
