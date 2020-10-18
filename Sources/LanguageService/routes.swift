@@ -128,7 +128,8 @@ fileprivate func configureAndRunLanguageServer(forLanguage lang: String,
     
     languageServer?.didSendError = { errorData in
         guard errorData.count > 0 else { return }
-        let errorString = errorData.utf8String ?? "error decoding error"
+        var errorString = errorData.utf8String ?? "error decoding error"
+        if errorString.last == "\n" { errorString.removeLast() }
         app.logger.debug("received \(errorData.count) bytes error data from \(lang.capitalized) language server:\n\(errorString)")
         websocket?.send(errorString)
     }
