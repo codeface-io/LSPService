@@ -41,32 +41,32 @@ class LanguageServer {
         process.standardInput = inPipe
     }
     
-    func receive(_ input: Data) {
+    func receive(lspPacket: Data) {
         guard isRunning else {
-            log.error("\(Self.self) cannot receive input while it's not running.")
+            log.error("\(Self.self) cannot receive LSP Packet while not running.")
             return
         }
         
-        if input.count == 0 {
-            log.warning("\(Self.self) received empty input data.")
+        if lspPacket.count == 0 {
+            log.warning("\(Self.self) received empty LSP Packet.")
         }
         
         do {
-            let inputWithProcessID = try addProcessIDToInitializeRequest(input)
-            try inPipe.fileHandleForWriting.write(contentsOf: inputWithProcessID)
+            let lspPacketWithProcessID = try addProcessIDIfNecessary(toLSPPacket: lspPacket)
+            try inPipe.fileHandleForWriting.write(contentsOf: lspPacketWithProcessID)
         } catch {
             log.error("\(error.localizedDescription)")
         }
     }
     
-    private func addProcessIDToInitializeRequest(_ input: Data) throws -> Data {
-        let messageData = try LSP.extractContent(fromFrame: input)
+    private func addProcessIDIfNecessary(toLSPPacket lspPacket: Data) throws -> Data {
+        let messageData = try LSP.getMessageData(fromPacket: lspPacket)
         var messageJSON = try JSONObject(messageData)
-        guard (try? messageJSON.str("method")) == "initialize" else { return input }
+        guard (try? messageJSON.str("method")) == "initialize" else { return lspPacket }
         var params = try messageJSON.obj("params")
         params["processId"] = ProcessInfo.processInfo.processIdentifier
         messageJSON["params"] = params
-        return LSP.makeFrame(withContent: try messageJSON.data())
+        return LSP.makePacket(withMessageData: try messageJSON.data())
     }
     
     private let inPipe = Pipe()

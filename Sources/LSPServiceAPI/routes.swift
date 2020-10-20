@@ -70,11 +70,11 @@ func registerRoutes(onLanguage language: RoutesBuilder, app: Application) {
             return
         }
         
-        newWebsocket.onBinary { ws, byteBuffer in
-            let data = Data(buffer: byteBuffer)
-            let dataString = data.utf8String ?? "error decoding data"
-            app.logger.debug("received data from socket \(ObjectIdentifier(ws).hashValue) at endpoint for \(languageName):\n\(dataString)")
-            languageServer?.receive(data)
+        newWebsocket.onBinary { ws, lspPacketBytes in
+            let lspPacket = Data(buffer: lspPacketBytes)
+            let lspPacketString = lspPacket.utf8String!
+            app.logger.debug("received data from socket \(ObjectIdentifier(ws).hashValue) at endpoint for \(languageName):\n\(lspPacketString)")
+            languageServer?.receive(lspPacket: lspPacket)
         }
         
         websocket?.close(promise: nil)
