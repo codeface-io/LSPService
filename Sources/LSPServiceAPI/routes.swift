@@ -106,8 +106,8 @@ func registerRoutes(onLanguage language: RoutesBuilder, app: Application) {
 
 // MARK: - Language Server
 
-fileprivate func configureAndRunLanguageServer(forLanguage lang: String,
-                                               app: Application) {
+func configureAndRunLanguageServer(forLanguage lang: String,
+                                   app: Application) {
     languageServer?.stop()
     
     guard let newLanguageServer = createLanguageServer(forLanguage: lang,
@@ -161,4 +161,4 @@ var languageServer: LanguageServer?
 
 // MARK: - Websocket
 
-fileprivate var websocket: Vapor.WebSocket?
+var websocket: Vapor.WebSocket?

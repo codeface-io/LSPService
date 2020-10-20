@@ -1,4 +1,4 @@
-import LanguageService
+import LSPServiceAPI
 import Vapor
 
 var env = try Environment.detect()

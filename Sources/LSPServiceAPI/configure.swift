@@ -5,7 +5,7 @@ public func configure(_ app: Application) throws {
     // uncomment to serve files from /Public folder
     // app.middleware.use(FileMiddleware(publicDirectory: app.directory.publicDirectory))
     
-    app.logger.logLevel = .warning
+    app.logger.logLevel = .debug
     app.http.server.configuration.serverName = "Language Service Host"
     try registerRoutes(on: app)
     startProcessingConsoleInput(app: app)
@@ -27,7 +27,7 @@ fileprivate func processNextConsoleInput(app: Application) {
     }
     
     didReadConsole.whenSuccess { input in
-        app.console.output(ConsoleInputProcessing.response(forInput: input).consoleText())
+        app.console.output(ConsoleInputProcessing.response(forInput: input, app).consoleText())
         processNextConsoleInput(app: app)
     }
     

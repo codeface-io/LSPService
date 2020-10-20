@@ -2,12 +2,12 @@
 import PackageDescription
 
 let package = Package(
-    name: "LanguageServiceHost",
+    name: "LSPService",
     platforms: [
        .macOS(.v10_15)
     ],
     products: [
-        .executable(name: "LanguageServiceHost", targets: ["LanguageServiceHost"]),
+        .executable(name: "LSPService", targets: ["LSPService"]),
     ],
     dependencies: [
         .package(url: "https://github.com/vapor/vapor.git", from: "4.0.0"),
@@ -16,7 +16,7 @@ let package = Package(
     ],
     targets: [
         .target(
-            name: "LanguageService",
+            name: "LSPServiceAPI",
             dependencies: [
                 .product(name: "Vapor", package: "vapor"),
                 .product(name: "FoundationToolz", package: "FoundationToolz"),
@@ -30,15 +30,15 @@ let package = Package(
             ]
         ),
         .target(
-            name: "LanguageServiceHost",
+            name: "LSPService",
             dependencies: [
-                .target(name: "LanguageService")
+                .target(name: "LSPServiceAPI")
             ]
         ),
         .testTarget(
-            name: "LanguageServiceTests",
+            name: "LSPServiceAPITests",
             dependencies: [
-                .target(name: "LanguageService"),
+                .target(name: "LSPServiceAPI"),
                 .product(name: "XCTVapor", package: "vapor"),
             ]
         )

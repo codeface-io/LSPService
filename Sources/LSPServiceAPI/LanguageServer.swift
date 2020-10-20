@@ -43,19 +43,19 @@ class LanguageServer {
     
     func receive(_ input: Data) {
         guard isRunning else {
-            print("error: \(Self.self) cannot receive input while it's not running.")
+            log.error("\(Self.self) cannot receive input while it's not running.")
             return
         }
         
         if input.count == 0 {
-            print("warning: \(Self.self) received empty input data.")
+            log.warning("\(Self.self) received empty input data.")
         }
         
         do {
             let inputWithProcessID = try addProcessIDToInitializeRequest(input)
             try inPipe.fileHandleForWriting.write(contentsOf: inputWithProcessID)
         } catch {
-            print(error.localizedDescription)
+            log.error("\(error.localizedDescription)")
         }
     }
     
@@ -164,7 +164,7 @@ func retrieveExecutablePathsForLanguages() -> [String : String] {
     var paths = [String : String]()
     
     paths["swift"] = {
-//        return  "/Users/seb/Library/Developer/Xcode/DerivedData/sourcekit-lsp_Fork-asttkeaysojqnhakomxyeenamaml/Build/Products/Debug/sourcekit-lsp"
+        //return  "/Users/seb/Library/Developer/Xcode/DerivedData/sourcekit-lsp_Fork-asttkeaysojqnhakomxyeenamaml/Build/Products/Debug/sourcekit-lsp"
         
         var path = "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/sourcekit-lsp"
         
