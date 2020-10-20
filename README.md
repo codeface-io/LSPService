@@ -34,7 +34,7 @@ So I thought: **What if a language server was simply a local web service?** Poss
 	* If you want to put your editor into the Mac App Store: Ensure your editor is also usable without LSPService. This should help with the review process.
 2. Provide a download of LSPService to your users:
 	* Build it via `swift build --configuration release`.
-	* Get the resulting binary from `.build/<target architecture>/release/LSPService.
+	* Get the resulting binary from `.build/<target architecture>/release/LSPService`.
 	* Upload the binary to where your users should download it.
 3. Let your editor encourage the user to download and run LSPService:
 	* Give a short explanation for why LSPService is helpful.
