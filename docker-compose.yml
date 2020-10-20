@@ -19,7 +19,7 @@ x-shared_environment: &shared_environment
 
 services:
   app:
-    image: LanguageService:latest
+    image: LSPServiceAPI:latest
     build:
       context: .
     environment:

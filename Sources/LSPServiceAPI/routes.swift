@@ -10,24 +10,24 @@ func registerRoutes(on app: Application) throws {
         "Hello, I'm the Language Service Host.\n\nEndpoints (Vapor Routes):\n\(routeList(for: app))"
     }
     
-    registerRoutes(onLanguageService: app.grouped("languageservice"), on: app)
+    registerRoutes(onLSPService: app.grouped("lspservice"), on: app)
 }
 
-func registerRoutes(onLanguageService languageService: RoutesBuilder,
+func registerRoutes(onLSPService lspService: RoutesBuilder,
                     on app: Application) {
-    languageService.on(.GET) { _ in
+    lspService.on(.GET) { _ in
         "👋🏻 Hello, I'm the Language Service.\n\nEndpoints (Vapor Routes):\n\(routeList(for: app))\n\nAvailable languages:\n\(languagesJoined(by: "\n"))"
     }
 
     let languageNameParameter = "languageName"
 
-    languageService.on(.GET, ":\(languageNameParameter)") { req -> String in
+    lspService.on(.GET, ":\(languageNameParameter)") { req -> String in
         let language = req.parameters.get(languageNameParameter)!
         let executablePath = executablePathsByLanguage[language.lowercased()]
         return "Hello, I'm the Language Service.\n\nThe language \(language.capitalized) has this associated language server:\n\(executablePath ?? "None")"
     }
     
-    registerRoutes(onAPI: languageService.grouped("api"), app: app)
+    registerRoutes(onAPI: lspService.grouped("api"), app: app)
 }
 
 func routeList(for app: Application) -> String {
