@@ -48,7 +48,7 @@ struct ConsoleInputProcessing {
             let language = argumentsToProcess.removeFirst()
             
             guard argumentsToProcess.count > 0 else {
-                if let executablePath = executablePathsByLanguage[language.lowercased()] {
+                if let executablePath = LanguageServer.Config.all[language.lowercased()]?.executablePath {
                     output += "✅  \(language.capitalized) has this LSP server path set:\n   \"\(executablePath)\""
                 } else {
                     output += "🛑  No LSP server path is set for language \"\(language.capitalized)\""
@@ -56,13 +56,14 @@ struct ConsoleInputProcessing {
                 break
             }
             
-            let newExecutablePath = argumentsToProcess.removeFirst()
+            let newPath = argumentsToProcess.removeFirst()
             
-            if URL(fromFilePath: newExecutablePath) != nil {
-                executablePathsByLanguage[language.lowercased()] = newExecutablePath
-                output += "✅  \(language.capitalized) now has a new LSP server path:\n   \"\(newExecutablePath)\""
+            if URL(fromFilePath: newPath) != nil {
+                LanguageServer.Config.all[language.lowercased()] = .init(executablePath: newPath,
+                                                                         arguments: [])
+                output += "✅  \(language.capitalized) now has a new LSP server path:\n   \"\(newPath)\""
             } else {
-                output += "🛑  This is not a valid file path: \"\(newExecutablePath)\""
+                output += "🛑  This is not a valid file path: \"\(newPath)\""
             }
         default:
             return "🛑  That's not an available command"

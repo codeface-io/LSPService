@@ -3,13 +3,24 @@ import FoundationToolz
 import Foundation
 import SwiftyToolz
 
+
+func languagesJoined(by separator: String) -> String {
+    LanguageServer.Config.all.keys.map {
+        $0.capitalized
+    }.joined(separator: separator)
+}
+
+func isAvailable(language: String) -> Bool {
+    LanguageServer.Config.all[language.lowercased()] != nil
+}
+
 class LanguageServer {
     
     // MARK: - Life Cycle
     
-    init?(_ executable: Executable, logger: Logger) {
-        guard FileManager.default.fileExists(atPath: executable.path) else {
-            logger.error("Failed to create \(Self.self). Executable does not exist at given path \(executable.path)")
+    init?(_ config: Config, logger: Logger) {
+        guard FileManager.default.fileExists(atPath: config.executablePath) else {
+            logger.error("Failed to create \(Self.self). Executable does not exist at given path \(config.executablePath)")
             return nil
         }
         
@@ -25,7 +36,7 @@ class LanguageServer {
             print("\(Self.self) did terminate, but termination handler has not been set")
         }
         
-        setupProcess(executable)
+        setupProcess(with: config)
         setupInput()
         setupOutput()
         setupErrorOutput()
@@ -99,10 +110,10 @@ class LanguageServer {
     
     // MARK: - Process
     
-    private func setupProcess(_ executable: Executable) {
-        process.executableURL = URL(fileURLWithPath: executable.path)
+    private func setupProcess(with config: Config) {
+        process.executableURL = URL(fileURLWithPath: config.executablePath)
         process.environment = nil
-        process.arguments = []
+        process.arguments = config.arguments
         process.terminationHandler = { [weak self] process in
             self?.log.info("\(Self.self) terminated. code: \(process.terminationReason.rawValue)")
             self?.didTerminate()
@@ -141,49 +152,19 @@ class LanguageServer {
     
     private let process = Process()
     
-    struct Executable {
-        let path: String
+    struct Config {
+        var executablePath: String
+        var arguments: [String]
+        
+        static var all: [LanguageKey: Config] = [
+            "swift": .init(executablePath: "/usr/bin/xcrun",
+                           arguments: ["sourcekit-lsp"]),
+            "python": .init(executablePath: "/Library/Frameworks/Python.framework/Versions/3.9/bin/pyls",
+                            arguments: [])
+        ]
+        
+        typealias LanguageKey = String
     }
     
     private let log: Logger
-}
-
-// MARK: - Supported Languages
-
-func languagesJoined(by separator: String) -> String {
-    executablePathsByLanguage.keys.map { $0.capitalized }.joined(separator: separator)
-}
-
-func isAvailable(language: String) -> Bool {
-    executablePathsByLanguage[language.lowercased()] != nil
-}
-
-var executablePathsByLanguage = retrieveExecutablePathsForLanguages()
-
-func retrieveExecutablePathsForLanguages() -> [String : String] {
-    var paths = [String : String]()
-    
-    paths["swift"] = {
-        //return  "/Users/seb/Library/Developer/Xcode/DerivedData/sourcekit-lsp_Fork-asttkeaysojqnhakomxyeenamaml/Build/Products/Debug/sourcekit-lsp"
-        
-        var path = "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/sourcekit-lsp"
-        
-        do {
-            let output = try runExecutable(at: "/usr/bin/xcrun",
-                                           arguments: ["--find", "sourcekit-lsp"])
-            if let firstLine = output.components(separatedBy: "\n").first {
-                path = firstLine
-            } else {
-                print("Error: failed to get path from output of '/usr/bin/xcrun --find sourcekit-lsp'\nWill assume this path for sourcekit-lsp:\n\(path)")
-            }
-        } catch {
-            print("Error: failed to run '/usr/bin/xcrun --find sourcekit-lsp': \(error.localizedDescription)\nWill assume this path for sourcekit-lsp:\n\(path)")
-        }
-        
-        return path
-    }()
-    
-    paths["python"] = "/Library/Frameworks/Python.framework/Versions/3.9/bin/pyls"
-    
-    return paths
 }

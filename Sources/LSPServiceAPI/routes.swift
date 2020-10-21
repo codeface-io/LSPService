@@ -23,7 +23,7 @@ func registerRoutes(onLSPService lspService: RoutesBuilder,
 
     lspService.on(.GET, ":\(languageNameParameter)") { req -> String in
         let language = req.parameters.get(languageNameParameter)!
-        let executablePath = executablePathsByLanguage[language.lowercased()]
+        let executablePath = LanguageServer.Config.all[language.lowercased()]?.executablePath
         return "Hello, I'm the Language Service.\n\nThe language \(language.capitalized) has this associated language server:\n\(executablePath ?? "None")"
     }
     
@@ -38,7 +38,7 @@ func routeList(for app: Application) -> String {
 
 func registerRoutes(onAPI api: RoutesBuilder, app: Application) {
     api.on(.GET, "languages") { _ in
-        Array(executablePathsByLanguage.keys)
+        Array(LanguageServer.Config.all.keys)
     }
     
     registerRoutes(onLanguage: api.grouped("language"), app: app)
@@ -85,7 +85,7 @@ func registerRoutes(onLanguage language: RoutesBuilder, app: Application) {
 
     language.on(.GET, ":\(languageNameParameter)") { request -> String in
         let language = request.parameters.get(languageNameParameter)!
-        guard let executablePath = executablePathsByLanguage[language.lowercased()] else {
+        guard let executablePath = LanguageServer.Config.all[language.lowercased()]?.executablePath else {
             throw Abort(.noContent,
                         reason: "No LSP server path has been set for \(language.capitalized)")
         }
@@ -99,7 +99,11 @@ func registerRoutes(onLanguage language: RoutesBuilder, app: Application) {
                         reason: "Request body contains no valid file path")
         }
         let language = request.parameters.get(languageNameParameter)!
-        executablePathsByLanguage[language.lowercased()] = executablePath
+        
+        var config = LanguageServer.Config.all[language.lowercased()]
+        config?.executablePath = executablePath
+        LanguageServer.Config.all[language.lowercased()] = config
+        
         return .ok
     }
 }
@@ -119,11 +123,11 @@ func configureAndRunLanguageServer(forLanguage lang: String,
     
     languageServer = newLanguageServer
     
-    languageServer?.didSendOutput = { outputData in
-        guard outputData.count > 0 else { return }
-        let outputString = outputData.utf8String ?? "error decoding output"
-        app.logger.debug("received \(outputData.count) bytes output data from \(lang.capitalized) language server:\n\(outputString)")
-        websocket?.send([UInt8](outputData))
+    languageServer?.didSendOutput = { lspPacket in
+        guard lspPacket.count > 0 else { return }
+        let outputString = lspPacket.utf8String ?? "error decoding output"
+        app.logger.debug("received \(lspPacket.count) bytes output data from \(lang.capitalized) language server:\n\(outputString)")
+        websocket?.send([UInt8](lspPacket))
     }
     
     languageServer?.didSendError = { errorData in
@@ -148,13 +152,12 @@ func configureAndRunLanguageServer(forLanguage lang: String,
 }
 
 func createLanguageServer(forLanguage lang: String, app: Application) -> LanguageServer? {
-    guard let executablePath = executablePathsByLanguage[lang.lowercased()] else {
-        app.logger.error("No LSP server path set for language \(lang.capitalized)")
+    guard let config = LanguageServer.Config.all[lang.lowercased()] else {
+        app.logger.error("No LSP server config set for language \(lang.capitalized)")
         return nil
     }
     
-    return LanguageServer(LanguageServer.Executable(path: executablePath),
-                          logger: app.logger)
+    return LanguageServer(config, logger: app.logger)
 }
 
 var languageServer: LanguageServer?
