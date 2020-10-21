@@ -22,8 +22,8 @@ So I thought: **What if a language server was simply a local web service?** Poss
 
 * **Editors don't need to install, locate, launch and talk to all the different language server executables.**
 * **On macOS, editors can be sandboxed and probably even be distributed via the App Store.**
-* In the future, the Language Service could be a machine's central place for managing LSP language servers, through a CLI and/or through a web front end.
-* Even further down the road, running the Language Service on actual web servers might have interesting applications, in particular where LSP is used for static code analysis or remote inspection.
+* In the future, LSPService could be a machine's central place for managing LSP language servers, through a CLI and/or through a web front end.
+* Even further down the road, running LSPService as an actual web service might have interesting applications, in particular where LSP is used for static code analysis or remote inspection.
 
 ## How?
 
@@ -104,14 +104,15 @@ Besides LSP messages, there are only two ways the WebSocket gives live feedback:
 * [x] Add a CLI so users can manage the list of language servers from the command line
 * [x] Clean up interfaces: Future proof and rethink API structure, then align CLI, API and web frontend
 * [x] Document how to use LSPService
+* [x] Evaluate whether to build a Swift package that helps clients of LSPService (that are written in Swift) to define, encode and decode LSP messages. Consider suggesting to extract that type system from [SwiftLSPClient](https://github.com/chimehq/SwiftLSPClient) and/or from sourcekit-lsp into a dedicated package.
+	* Result: Extraction already happened anyway in form of sourcekit-lsp's static library product `LSPBindings`. However, `LSPBindings` didn't work for decoding as it's decoding is entangled with matching requests to responses.
+	* Result: [SwiftLSPClient](https://github.com/chimehq/SwiftLSPClient)'s type system is incomplete and obviously not backed by Apple.
+	* Result: The idea to strictly type LSP messages down to every property seems inappropriate for their amorphous "free value" nature anyway. So we opt for a custom, simpler and more [dynamic LSP type system](https://github.com/flowtoolz/FoundationToolz/blob/master/Code/LanguageServerProtocol.swift) which could indeed be extracted as a Swift package.
+* [ ] Get a sourcekit-lsp client project to function with sourcekit-lsp at all, before moving on with LSPService
 * [ ] Add support for C, C++ and Objective-c via sourcekit-lsp
 * [ ] As soon as [this PR](https://github.com/vapor/vapor/pull/2498) is done: Decline upgrade to Websocket protocol right away for unavailable languages, instead of opening the connection, sending feedback and then closing it again.
 * [ ] Consider adding a web frontend for managing language servers. Possibly use [Plot](https://github.com/JohnSundell/Plot)
-* [ ] Evaluate whether to build a Swift package that helps clients of LSPService (that are written in Swift) to define, encode and decode LSP messages. Consider suggesting to extract that type system from [SwiftLSPClient](https://github.com/chimehq/SwiftLSPClient) and/or from sourcekit-lsp into a dedicated package. Both use a similar typesystem for that already ...
-	* Result: Extraction already happened anyway in form of sourcekit-lsp's static library product `LSPBindings`. However, `LSPBindings` didn't work for decoding as it's decoding is entangled with matching requests to responses.
-	* Result: [SwiftLSPClient](https://github.com/chimehq/SwiftLSPClient)'s type system is incomplete and obviously not backed by Apple.
-	* Result: The idea to strictly type LSP messages down to every property seems inappropriate for their nature, in particular considering their many different parameter and result types. So we opt for a custom and slightly weaker type system using JSON serialization, which could indeed be extracted as a Swift package.
-* [ ] Possibly build a Swift package that helps client editors written in Swift to use LSPService
+* [ ] Possibly build a Swift package that helps client editors written in Swift to use LSPService. Possibly also extract the LSP type system from FoundationToolz as a separate package.
 * [ ] Enable serving multiple clients who need services for the same language at the same time
 * [ ] Explore whether this approach would actually fly with the Mac App Store review, because:
   * The editor app would need to encourage the user to download and install LSPService, but apps in the App Store are not allowed to lead the user to some website, at least as it relates to purchase funnels.
