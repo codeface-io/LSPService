@@ -108,9 +108,9 @@ Besides LSP messages, there are only two ways the WebSocket gives live feedback:
 	* Result: Extraction already happened anyway in form of sourcekit-lsp's static library product `LSPBindings`. However, `LSPBindings` didn't work for decoding as it's decoding is entangled with matching requests to responses.
 	* Result: [SwiftLSPClient](https://github.com/chimehq/SwiftLSPClient)'s type system is incomplete and obviously not backed by Apple.
 	* Result: The idea to strictly type LSP messages down to every property seems inappropriate for their amorphous "free value" nature anyway. So we opt for a custom, simpler and more [dynamic LSP type system](https://github.com/flowtoolz/FoundationToolz/blob/master/Code/LanguageServerProtocol.swift) which could indeed be extracted as a Swift package.
-* [ ] Move the "Process ID injection" (for initialize request) to the client, as the client can read out the LSPService's process ID just as well.
-* [ ] Get a sourcekit-lsp client project to function with sourcekit-lsp at all, before moving on with LSPService
+* [x] Get a sourcekit-lsp client project to function with sourcekit-lsp at all, before moving on with LSPService
 * [ ] Add support for C, C++ and Objective-c via sourcekit-lsp
+* [ ] Remove "Process ID injection", and if it's necessary, add endpoint that provides process ID, so client can put the ID into the initialize request.
 * [ ] As soon as [this PR](https://github.com/vapor/vapor/pull/2498) is done: Decline upgrade to Websocket protocol right away for unavailable languages, instead of opening the connection, sending feedback and then closing it again.
 * [ ] Consider adding a web frontend for managing language servers. Possibly use [Plot](https://github.com/JohnSundell/Plot)
 * [ ] Possibly build a Swift package that helps client editors written in Swift to use LSPService. Possibly also extract the LSP type system from FoundationToolz as a separate package.
