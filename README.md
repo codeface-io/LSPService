@@ -107,8 +107,9 @@ Besides LSP messages, there are only two ways the WebSocket gives live feedback:
 * [x] Evaluate whether to build a Swift package that helps clients of LSPService (that are written in Swift) to define, encode and decode LSP messages. Consider suggesting to extract that type system from [SwiftLSPClient](https://github.com/chimehq/SwiftLSPClient) and/or from sourcekit-lsp into a dedicated package.
 	* Result: Extraction already happened anyway in form of sourcekit-lsp's static library product `LSPBindings`. However, `LSPBindings` didn't work for decoding as it's decoding is entangled with matching requests to responses.
 	* Result: [SwiftLSPClient](https://github.com/chimehq/SwiftLSPClient)'s type system is incomplete and obviously not backed by Apple.
-	* Result: The idea to strictly type LSP messages down to every property seems inappropriate for their amorphous "free value" nature anyway. So we opt for a custom, simpler and more [dynamic LSP type system](https://github.com/flowtoolz/FoundationToolz/blob/master/Code/LanguageServerProtocol.swift) which could indeed be extracted as a Swift package.
+	* Result: The idea to strictly type LSP messages down to every property seems inappropriate for their amorphous "free value" nature anyway. So we opt for a custom, simpler and more [dynamic LSP type system](https://github.com/flowtoolz/FoundationToolz/tree/master/Code/SwiftLSP) which could indeed be extracted as a Swift package.
 * [x] Get a sourcekit-lsp client project to function with sourcekit-lsp at all, before moving on with LSPService
+* [ ] Persist language server configurations
 * [ ] Add support for C, C++ and Objective-c via sourcekit-lsp
 * [ ] Remove "Process ID injection", and if it's necessary, add endpoint that provides process ID, so client can put the ID into the initialize request.
 * [ ] As soon as [this PR](https://github.com/vapor/vapor/pull/2498) is done: Decline upgrade to Websocket protocol right away for unavailable languages, instead of opening the connection, sending feedback and then closing it again.
