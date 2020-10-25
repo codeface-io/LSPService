@@ -41,6 +41,10 @@ func registerRoutes(onAPI api: RoutesBuilder, app: Application) {
         Array(LanguageServer.Config.all.keys)
     }
     
+    api.on(.GET, "processID") { _ in
+        Int(ProcessInfo.processInfo.processIdentifier)
+    }
+    
     registerRoutes(onLanguage: api.grouped("language"), app: app)
 }
 

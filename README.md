@@ -69,9 +69,10 @@ The root of the LSPService API is `http://127.0.0.1:8080/lspservice/api/`.
 
 | URL Path |     Types     |      Methods | Usage |
 | :------------ | :---------- | :---------- |:----------- |
-| `languages` | `[String]` | `GET` | Get names of available languages. An available language is one for which the path of the associated language server is set. |
-| `language/<lang>` | `String` | `GET`, `POST` | Get and set the path of the language server associated with language "lang". |
-| `language/<lang>/websocket` | `String`, `Data` | WebSocket | Connect and talk to the language server associated with language "lang". |
+| `processID` | `Int` | `GET` | Get process ID of LSPService, to set it in the [LSP initialize request](https://microsoft.github.io/language-server-protocol/specification#initialize). |
+| `languages` | `[String]` | `GET` | Get names of languages which have the path to their language server set. |
+| `language/<lang>` | `String` | `GET`, `POST` | Get and set the path of the language server associated with language `<lang>`. |
+| `language/<lang>/websocket` | `Data`, `String` | WebSocket | Connect and talk to the language server associated with language `<lang>`. |
 
 ### Using the WebSocket
 
@@ -109,9 +110,9 @@ Besides LSP messages, there are only two ways the WebSocket gives live feedback:
 	* Result: [SwiftLSPClient](https://github.com/chimehq/SwiftLSPClient)'s type system is incomplete and obviously not backed by Apple.
 	* Result: The idea to strictly type LSP messages down to every property seems inappropriate for their amorphous "free value" nature anyway. So we opt for a custom, simpler and more [dynamic LSP type system](https://github.com/flowtoolz/FoundationToolz/tree/master/Code/SwiftLSP) which could indeed be extracted as a Swift package.
 * [x] Get a sourcekit-lsp client project to function with sourcekit-lsp at all, before moving on with LSPService
+* [x] Remove "Process ID injection". Add endpoint that provides process ID, so client can put the ID into the initialize request.
 * [ ] Persist language server configurations
 * [ ] Add support for C, C++ and Objective-c via sourcekit-lsp
-* [ ] Remove "Process ID injection", and if it's necessary, add endpoint that provides process ID, so client can put the ID into the initialize request.
 * [ ] As soon as [this PR](https://github.com/vapor/vapor/pull/2498) is done: Decline upgrade to Websocket protocol right away for unavailable languages, instead of opening the connection, sending feedback and then closing it again.
 * [ ] Consider adding a web frontend for managing language servers. Possibly use [Plot](https://github.com/JohnSundell/Plot)
 * [ ] Possibly build a Swift package that helps client editors written in Swift to use LSPService. Possibly also extract the LSP type system from FoundationToolz as a separate package.
