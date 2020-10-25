@@ -1,8 +1,5 @@
 import Foundation
 
-import Vapor
-//import SwiftLSPClient
-
 /// Pure logic of the CLI. No Vapor here.
 struct ConsoleInputProcessing {
     static var prompt: String { "💬  " }
@@ -17,7 +14,7 @@ struct ConsoleInputProcessing {
         """
     }
 
-    static func response(forInput input: String, _ app: Application) -> String {
+    static func response(forInput input: String) -> String {
         var argumentsToProcess = arguments(fromInput: input)
 
         guard argumentsToProcess.count > 0 else {
@@ -25,15 +22,7 @@ struct ConsoleInputProcessing {
         }
         
         let command = argumentsToProcess.removeFirst()
-        /*
-        if command == "t" {
-//            configureAndRunLanguageServer(forLanguage: "swift", app: app)
-//            languageServer?.receive(Data())
-            
-            testWithSwiftLSPClient()
-            return "did run test"
-        }
-        */
+        
         var output = ""
         
         switch command {
@@ -80,71 +69,3 @@ struct ConsoleInputProcessing {
         input.components(separatedBy: .whitespaces).filter { $0.count > 0 }
     }
 }
-
-
-/*
-//let host = LanguageServerProcessHost(path: "/Library/Frameworks/Python.framework/Versions/3.9/bin/pyls",
-//                                     arguments: [],
-//                                     environment: [:])
-
-let host = LanguageServerProcessHost(path: "/Users/seb/Desktop/sourcekit-lsp",
-                                     arguments: [],
-                                     environment: [:])
-
-func testWithSwiftLSPClient() {
-    host.start { (server) in
-        guard let server = server else {
-            Swift.print("unable to launch server")
-            return
-        }
-        
-        // Set-up notificationResponder to see log/error messages from LSP server
-//        server.notificationResponder = <object conforming to NotificationResponder>
-
-        let processId = Int(ProcessInfo.processInfo.processIdentifier)
-        let capabilities = ClientCapabilities(workspace: nil, textDocument: nil, experimental: nil)
-
-        let params = InitializeParams(processId: processId,
-                                      rootPath: "/Users/seb/Desktop/GitHub Repos/SwiftLSPClient",
-                                      rootURI: nil,
-                                      initializationOptions: nil,
-                                      capabilities: capabilities,
-                                      trace: Tracing.off,
-                                      workspaceFolders: nil)
-
-        server.initialize(params: params, block: { (result) in
-            switch result {
-            case .failure(let error):
-                Swift.print("unable to initialize \(error)")
-            case .success(let value):
-                Swift.print("initialized \(value)")
-                
-                server.initialized(params: InitializedParams()) { error in
-                    if let error = error {
-                        Swift.print("error sending initialized notification: \(error)")
-                        return
-                    }
-                    
-                    let docSymbolParams = DocumentSymbolParams(textDocument: TextDocumentIdentifier(path: "/Users/seb/Desktop/GitHub Repos/SwiftLSPClient/SwiftLSPClient/LanguageServer.swift"))
-                    
-    //                let docSymbolParams = DocumentSymbolParams(textDocument: TextDocumentIdentifier(path: "/Users/seb/Desktop/Sonova Repos/App.Scripts/poeditor/backup_translations.py"))
-                    
-                    server.documentSymbol(params: docSymbolParams) { result in
-                        switch result {
-                        case .success(let response):
-                            switch response {
-                            case .documentSymbols(let symbols):
-                                break
-                            case .symbolInformation(let infos):
-                                break
-                            }
-                        case .failure(let error):
-                            Swift.print("doc symbol error: \(error)")
-                        }
-                    }    
-                }
-            }
-        })
-    }
-}
-*/

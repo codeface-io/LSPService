@@ -27,7 +27,7 @@ fileprivate func processNextConsoleInput(app: Application) {
     }
     
     didReadConsole.whenSuccess { input in
-        app.console.output(ConsoleInputProcessing.response(forInput: input, app).consoleText())
+        app.console.output(ConsoleInputProcessing.response(forInput: input).consoleText())
         processNextConsoleInput(app: app)
     }
     
