@@ -1,13 +1,13 @@
 import Foundation
 
 /// Pure logic of the CLI. No Vapor here.
-struct ConsoleInputProcessing {
+struct ConsoleInputProcessor {
     static var prompt: String { "💬  " }
     
     static func initialOutput() -> String {
         """
         
-        👋🏻  Hello, I'm the Language Service. Configure me via commands. For example:
+        👋🏻  Hello, I'm the LSPService. Configure me via commands. For example:
         ⌨️  languages                      ➡️  get all languages that have a language server path
         ⌨️  language Java                  ➡️  get the path of Java's language server
         ⌨️  language Java /path/to/javaLS  ➡️  set a (new) path for Java's language server

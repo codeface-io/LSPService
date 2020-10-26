@@ -13,12 +13,17 @@ func isAvailable(language: String) -> Bool {
 
 class LanguageServer {
     
+    static var active: LanguageServer?
+    
     // MARK: - Life Cycle
     
-    init?(_ config: Config) {
+    init(languageKey: String) throws {
+        guard let config = Config.all[languageKey.lowercased()] else {
+            throw "No LSP server config set for language \(languageKey.capitalized)"
+        }
+        
         guard FileManager.default.fileExists(atPath: config.executablePath) else {
-            log(error: "Failed to create \(Self.self). Executable does not exist at given path \(config.executablePath)")
-            return nil
+            throw "Executable does not exist at given path \(config.executablePath)"
         }
         
         didSendLSPPacket = { _ in
@@ -37,9 +42,7 @@ class LanguageServer {
         setupErrorOutput()
     }
     
-    deinit {
-        if isRunning { stop() }
-    }
+    deinit { if isRunning { stop() } }
     
     // MARK: - LSP Packet Input
     
@@ -144,6 +147,8 @@ class LanguageServer {
     var isRunning: Bool { process.isRunning }
     
     private let process = Process()
+    
+    // MARK: -
     
     struct Config {
         var executablePath: String
