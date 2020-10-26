@@ -10,6 +10,7 @@ public class LSPServiceApp: LogObserver {
         var env = try Environment.detect()
         try LoggingSystem.bootstrap(from: &env)
         vaporApp = Application(env)
+        Log.shared.minimumLevel = .off
         Log.shared.add(observer: self)
         try setupLSPServiceAPI(on: vaporApp)
     }
