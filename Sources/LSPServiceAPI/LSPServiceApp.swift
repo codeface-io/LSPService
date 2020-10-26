@@ -1,7 +1,85 @@
 import Vapor
-import FoundationToolz
 import Foundation
 import SwiftyToolz
+
+public class LSPServiceApp: LogObserver {
+    
+    // MARK: - Life Cycle
+    
+    public init() throws {
+        var env = try Environment.detect()
+        try LoggingSystem.bootstrap(from: &env)
+        vaporApp = Application(env)
+        Log.shared.add(observer: self)
+        try setupLSPServiceAPI(on: vaporApp)
+    }
+    
+    deinit { vaporApp.shutdown() }
+    
+    // MARK: - Logging
+    
+    public func receive(_ entry: Log.Entry) {
+        switch entry.level {
+        case .info:
+            vaporApp.logger.info("\(entry.description)")
+        case .warning:
+            vaporApp.logger.warning("\(entry.description)")
+        case .error:
+            vaporApp.logger.error("\(entry.description)")
+        case .off:
+            break
+        }
+    }
+    
+    // MARK: - Vapor App
+    
+    public func run() throws {
+        try vaporApp.run()
+    }
+    
+    private let vaporApp: Application
+}
+
+// MARK: - Configure App
+
+func setupLSPServiceAPI(on app: Application) throws {
+    // uncomment to serve files from /Public folder
+    // app.middleware.use(FileMiddleware(publicDirectory: app.directory.publicDirectory))
+    
+    app.http.server.configuration.serverName = "Language Service Host"
+    app.logger.logLevel = .debug
+    
+    try registerRoutes(on: app)
+    
+    startProcessingConsoleInput(app: app)
+}
+
+// MARK: - Console Input
+
+fileprivate func startProcessingConsoleInput(app: Application) {
+    app.console.output(ConsoleInputProcessing.initialOutput().consoleText())
+    processNextConsoleInput(app: app)
+}
+
+fileprivate func processNextConsoleInput(app: Application) {
+    app.console.output(ConsoleInputProcessing.prompt.consoleText(),
+                       newLine: false)
+    
+    let eventLoop = app.eventLoopGroup.next()
+    
+    let didReadConsole = app.threadPool.runIfActive(eventLoop: eventLoop) {
+        app.console.input()
+    }
+    
+    didReadConsole.whenSuccess { input in
+        app.console.output(ConsoleInputProcessing.response(forInput: input).consoleText())
+        processNextConsoleInput(app: app)
+    }
+    
+    didReadConsole.whenFailure { error in
+        app.logger.error(.init(stringLiteral: error.localizedDescription))
+    }
+}
 
 // MARK: - Register Routes
 
@@ -13,8 +91,7 @@ func registerRoutes(on app: Application) throws {
     registerRoutes(onLSPService: app.grouped("lspservice"), on: app)
 }
 
-func registerRoutes(onLSPService lspService: RoutesBuilder,
-                    on app: Application) {
+func registerRoutes(onLSPService lspService: RoutesBuilder, on app: Application) {
     lspService.on(.GET) { _ in
         "👋🏻 Hello, I'm the Language Service.\n\nEndpoints (Vapor Routes):\n\(routeList(for: app))\n\nAvailable languages:\n\(languagesJoined(by: "\n"))"
     }
@@ -27,7 +104,7 @@ func registerRoutes(onLSPService lspService: RoutesBuilder,
         return "Hello, I'm the Language Service.\n\nThe language \(language.capitalized) has this associated language server:\n\(executablePath ?? "None")"
     }
     
-    registerRoutes(onAPI: lspService.grouped("api"), app: app)
+    registerRoutes(onAPI: lspService.grouped("api"))
 }
 
 func routeList(for app: Application) -> String {
@@ -36,7 +113,7 @@ func routeList(for app: Application) -> String {
 
 // MARK: - API
 
-func registerRoutes(onAPI api: RoutesBuilder, app: Application) {
+func registerRoutes(onAPI api: RoutesBuilder) {
     api.on(.GET, "languages") { _ in
         Array(LanguageServer.Config.all.keys)
     }
@@ -45,10 +122,10 @@ func registerRoutes(onAPI api: RoutesBuilder, app: Application) {
         Int(ProcessInfo.processInfo.processIdentifier)
     }
     
-    registerRoutes(onLanguage: api.grouped("language"), app: app)
+    registerRoutes(onLanguage: api.grouped("language"))
 }
 
-func registerRoutes(onLanguage language: RoutesBuilder, app: Application) {
+func registerRoutes(onLanguage language: RoutesBuilder) {
     let languageNameParameter = "languageName"
     
     language.webSocket(":\(languageNameParameter)", "websocket") { request, newWebsocket in
@@ -77,14 +154,14 @@ func registerRoutes(onLanguage language: RoutesBuilder, app: Application) {
         newWebsocket.onBinary { ws, lspPacketBytes in
             let lspPacket = Data(buffer: lspPacketBytes)
             let lspPacketString = lspPacket.utf8String!
-            app.logger.debug("received data from socket \(ObjectIdentifier(ws).hashValue) at endpoint for \(languageName):\n\(lspPacketString)")
+            log("received data from socket \(ObjectIdentifier(ws).hashValue) at endpoint for \(languageName):\n\(lspPacketString)")
             languageServer?.receive(lspPacket: lspPacket)
         }
         
         websocket?.close(promise: nil)
         websocket = newWebsocket
         
-        configureAndRunLanguageServer(forLanguage: languageName, app: app)
+        configureAndRunLanguageServer(forLanguage: languageName)
     }
 
     language.on(.GET, ":\(languageNameParameter)") { request -> String in
@@ -114,23 +191,20 @@ func registerRoutes(onLanguage language: RoutesBuilder, app: Application) {
 
 // MARK: - Language Server
 
-func configureAndRunLanguageServer(forLanguage lang: String,
-                                   app: Application) {
+func configureAndRunLanguageServer(forLanguage lang: String) {
     languageServer?.stop()
     
-    guard let newLanguageServer = createLanguageServer(forLanguage: lang,
-                                                       app: app)
-    else {
-        app.logger.error("Could not create language server")
+    guard let newLanguageServer = createLanguageServer(forLanguage: lang) else {
+        log(error: "Could not create language server")
         return
     }
     
     languageServer = newLanguageServer
     
-    languageServer?.didSendOutput = { lspPacket in
+    languageServer?.didSendLSPPacket = { lspPacket in
         guard lspPacket.count > 0 else { return }
         let outputString = lspPacket.utf8String ?? "error decoding output"
-        app.logger.debug("received \(lspPacket.count) bytes output data from \(lang.capitalized) language server:\n\(outputString)")
+        log("received \(lspPacket.count) bytes output data from \(lang.capitalized) language server:\n\(outputString)")
         websocket?.send([UInt8](lspPacket))
     }
     
@@ -138,7 +212,7 @@ func configureAndRunLanguageServer(forLanguage lang: String,
         guard errorData.count > 0 else { return }
         var errorString = errorData.utf8String ?? "error decoding error"
         if errorString.last == "\n" { errorString.removeLast() }
-        app.logger.debug("received \(errorData.count) bytes error data from \(lang.capitalized) language server:\n\(errorString)")
+        log("received \(errorData.count) bytes error data from \(lang.capitalized) language server:\n\(errorString)")
         websocket?.send(errorString)
     }
     
@@ -155,13 +229,13 @@ func configureAndRunLanguageServer(forLanguage lang: String,
     languageServer?.run()
 }
 
-func createLanguageServer(forLanguage lang: String, app: Application) -> LanguageServer? {
+func createLanguageServer(forLanguage lang: String) -> LanguageServer? {
     guard let config = LanguageServer.Config.all[lang.lowercased()] else {
-        app.logger.error("No LSP server config set for language \(lang.capitalized)")
+        log(error: "No LSP server config set for language \(lang.capitalized)")
         return nil
     }
     
-    return LanguageServer(config, logger: app.logger)
+    return LanguageServer(config)
 }
 
 var languageServer: LanguageServer?

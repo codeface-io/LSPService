@@ -1,7 +1,5 @@
-import Vapor
 import Foundation
 import SwiftyToolz
-
 
 func languagesJoined(by separator: String) -> String {
     LanguageServer.Config.all.keys.map {
@@ -17,22 +15,20 @@ class LanguageServer {
     
     // MARK: - Life Cycle
     
-    init?(_ config: Config, logger: Logger) {
+    init?(_ config: Config) {
         guard FileManager.default.fileExists(atPath: config.executablePath) else {
-            logger.error("Failed to create \(Self.self). Executable does not exist at given path \(config.executablePath)")
+            log(error: "Failed to create \(Self.self). Executable does not exist at given path \(config.executablePath)")
             return nil
         }
         
-        log = logger
-        
-        didSendOutput = { _ in
-            print("\(Self.self) did send output, but output handler has not been set")
+        didSendLSPPacket = { _ in
+            log(warning: "\(Self.self) did send lsp packet, but handler has not been set")
         }
         didSendError = { _ in
-            print("\(Self.self) did send error, but error handler has not been set")
+            log(warning: "\(Self.self) did send error, but handler has not been set")
         }
         didTerminate = {
-            print("\(Self.self) did terminate, but termination handler has not been set")
+            log(warning: "\(Self.self) did terminate, but handler has not been set")
         }
         
         setupProcess(with: config)
@@ -45,7 +41,7 @@ class LanguageServer {
         if isRunning { stop() }
     }
     
-    // MARK: - Input
+    // MARK: - LSP Packet Input
     
     private func setupInput() {
         process.standardInput = inPipe
@@ -53,34 +49,43 @@ class LanguageServer {
     
     func receive(lspPacket: Data) {
         guard isRunning else {
-            log.error("\(Self.self) cannot receive LSP Packet while not running.")
+            log(error: "\(Self.self) cannot receive LSP Packet while not running.")
             return
         }
         
-        if lspPacket.count == 0 {
-            log.warning("\(Self.self) received empty LSP Packet.")
+        if lspPacket.isEmpty {
+            log(warning: "\(Self.self) received empty LSP Packet.")
         }
         
         do {
             try inPipe.fileHandleForWriting.write(contentsOf: lspPacket)
         } catch {
-            log.error("\(error.localizedDescription)")
+            log(error: "\(error.localizedDescription)")
         }
     }
     
     private let inPipe = Pipe()
     
-    // MARK: - Output
+    // MARK: - LSP Packet Output
     
     private func setupOutput() {
         outPipe.fileHandleForReading.readabilityHandler = { [weak self] outHandle in
             let outputData = outHandle.availableData
-            if outputData.count > 0 { self?.didSendOutput(outputData) }
+            if outputData.count > 0 {
+                self?.packetDetector.write(outputData)
+            }
         }
+        
+        packetDetector.didDetectLSPPacket = { [weak self] packet in
+            self?.didSendLSPPacket(packet)
+        }
+        
         process.standardOutput = outPipe
     }
     
-    var didSendOutput: (Data) -> Void
+    private let packetDetector = LSPPacketDetector()
+    
+    var didSendLSPPacket: (Data) -> Void
     private let outPipe = Pipe()
     
     // MARK: - Error Output
@@ -103,7 +108,7 @@ class LanguageServer {
         process.environment = nil
         process.arguments = config.arguments
         process.terminationHandler = { [weak self] process in
-            self?.log.info("\(Self.self) terminated. code: \(process.terminationReason.rawValue)")
+            log("\(Self.self) terminated. code: \(process.terminationReason.rawValue)")
             self?.didTerminate()
         }
     }
@@ -112,12 +117,12 @@ class LanguageServer {
     
     func run() {
         guard process.executableURL != nil else {
-            log.error("\(Self.self) has no valid executable set")
+            log(error: "\(Self.self) has no valid executable set")
             return
         }
         
         guard !isRunning else {
-            log.warning("\(Self.self) is already running.")
+            log(warning: "\(Self.self) is already running.")
             return
         }
         
@@ -128,7 +133,7 @@ class LanguageServer {
         }
         
         if !process.isRunning {
-            log.error("process is not running after successful call to run()")
+            log(error: "process is not running after successful call to run()")
         }
     }
     
@@ -153,6 +158,4 @@ class LanguageServer {
         
         typealias LanguageKey = String
     }
-    
-    private let log: Logger
 }
