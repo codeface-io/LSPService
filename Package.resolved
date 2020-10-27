@@ -33,7 +33,7 @@
         "repositoryURL": "https://github.com/flowtoolz/FoundationToolz.git",
         "state": {
           "branch": "master",
-          "revision": "4039692c6b525d432074003ab8f95af10cce50a4",
+          "revision": "c875cb495a64a5c3577d6832bee50a91f3a0c71e",
           "version": null
         }
       },
@@ -141,7 +141,7 @@
         "repositoryURL": "https://github.com/flowtoolz/SwiftyToolz.git",
         "state": {
           "branch": "master",
-          "revision": "b9337c9a5e7552c7845ba5a27f17ff8fac870e88",
+          "revision": "f435352a6f15b776bef0def970b0d3776c104779",
           "version": null
         }
       },
@@ -150,8 +150,8 @@
         "repositoryURL": "https://github.com/vapor/vapor.git",
         "state": {
           "branch": null,
-          "revision": "29f5370b119593083674a4f7e6795ac2f4d884ef",
-          "version": "4.32.0"
+          "revision": "be07ff46f2730f730e03522696900966d75b4c2e",
+          "version": "4.34.0"
         }
       },
       {
@@ -159,8 +159,8 @@
         "repositoryURL": "https://github.com/vapor/websocket-kit.git",
         "state": {
           "branch": null,
-          "revision": "b0736014be634475dac4c23843811257d86dcdc1",
-          "version": "2.1.1"
+          "revision": "2b06a70dfcfa76a2e5079f60e3ae911511f09db0",
+          "version": "2.1.2"
         }
       }
     ]
