@@ -66,32 +66,18 @@ class LSPPacketDetector {
         return data[0 ..< separatorIndex]
     }
     
-    private static func indexOfSeparator(in packetData: Data) -> Int? {
-        guard !packetData.isEmpty else { return nil }
-        let lastDataIndex = packetData.count - 1
+    private static func indexOfSeparator(in data: Data) -> Int? {
+        guard !data.isEmpty else { return nil }
+        let lastDataIndex = data.count - 1
         let lastPossibleSeparatorIndex = lastDataIndex - (headerContentSeparator.count - 1)
         guard lastPossibleSeparatorIndex >= 0 else { return nil }
         
         for index in 0 ... lastPossibleSeparatorIndex {
-            if data(packetData, containsSeparatorAt: index) { return index }
+            let potentialSeparator = data[index ..< index + headerContentSeparator.count]
+            if potentialSeparator == headerContentSeparator { return index }
         }
 
         return nil
-    }
-    
-    private static func data(_ data: Data, containsSeparatorAt index: Int) -> Bool {
-        guard index >= 0 else { return false }
-        let lastDataIndex = data.count - 1
-        let lastPossibleSeparatorIndex = lastDataIndex - (headerContentSeparator.count - 1)
-        guard index <= lastPossibleSeparatorIndex else { return false }
-        
-        for compareIndex in 0 ..< headerContentSeparator.count {
-            if headerContentSeparator[compareIndex] != data[index + compareIndex] {
-                return false
-            }
-        }
-        
-        return true
     }
     
     private static func contentLength(fromHeader header: Data) -> Int? {
