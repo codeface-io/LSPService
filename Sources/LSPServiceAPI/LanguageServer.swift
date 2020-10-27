@@ -73,9 +73,9 @@ class LanguageServer {
     
     private func setupOutput() {
         outPipe.fileHandleForReading.readabilityHandler = { [weak self] outHandle in
-            let outputData = outHandle.availableData
-            if outputData.count > 0 {
-                self?.packetDetector.write(outputData)
+            let serverOutput = outHandle.availableData
+            if serverOutput.count > 0 {
+                self?.packetDetector.read(serverOutput)
             }
         }
         

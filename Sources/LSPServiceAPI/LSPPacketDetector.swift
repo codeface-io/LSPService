@@ -6,7 +6,7 @@ class LSPPacketDetector {
     
     // MARK: - Interface
     
-    func write(_ data: Data) {
+    func read(_ data: Data) {
         queue += data
         
         while !queue.isEmpty, let lspPacket = removeLSPPacketFromQueue() {
