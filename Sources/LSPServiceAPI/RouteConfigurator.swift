@@ -80,8 +80,6 @@ struct RouteConfigurator {
             
             newWebsocket.onBinary { ws, lspPacketBytes in
                 let lspPacket = Data(buffer: lspPacketBytes)
-                let lspPacketString = lspPacket.utf8String!
-                log("received data from socket \(ObjectIdentifier(ws).hashValue) at endpoint for \(languageName):\n\(lspPacketString)")
                 LanguageServer.active?.receive(lspPacket: lspPacket)
             }
             
@@ -123,17 +121,16 @@ struct RouteConfigurator {
         LanguageServer.active = newLanguageServer
         
         newLanguageServer.didSendLSPPacket = { lspPacket in
-            guard lspPacket.count > 0 else { return }
-            let outputString = lspPacket.utf8String ?? "error decoding output"
-            log("received \(lspPacket.count) bytes output data from \(lang.capitalized) language server:\n\(outputString)")
-            websocket?.send([UInt8](lspPacket))
+            if !lspPacket.isEmpty {
+                websocket?.send([UInt8](lspPacket))
+            }
         }
         
         newLanguageServer.didSendError = { errorData in
             guard errorData.count > 0 else { return }
-            var errorString = errorData.utf8String ?? "error decoding error"
+            var errorString = errorData.utf8String!
             if errorString.last == "\n" { errorString.removeLast() }
-            log("received \(errorData.count) bytes error data from \(lang.capitalized) language server:\n\(errorString)")
+            log(error: "\(lang.capitalized) language server: \(errorString)")
             websocket?.send(errorString)
         }
         
