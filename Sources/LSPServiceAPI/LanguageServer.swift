@@ -132,11 +132,7 @@ class LanguageServer {
         do {
             try process.run()
         } catch {
-            print(error.localizedDescription)
-        }
-        
-        if !process.isRunning {
-            log(error: "process is not running after successful call to run()")
+            log(error)
         }
     }
     
