@@ -104,15 +104,16 @@ The root of the LSPService API is `http://127.0.0.1:8080/lspservice/api/`.
 * [x] Evaluate whether to build a Swift package that helps clients of LSPService (that are written in Swift) to define, encode and decode LSP messages. Consider suggesting to extract that type system from [SwiftLSPClient](https://github.com/chimehq/SwiftLSPClient) and/or from sourcekit-lsp into a dedicated package.
 	* Result: Extraction already happened anyway in form of sourcekit-lsp's static library product `LSPBindings`. However, `LSPBindings` didn't work for decoding as it's decoding is entangled with matching requests to responses.
 	* Result: [SwiftLSPClient](https://github.com/chimehq/SwiftLSPClient)'s type system is incomplete and obviously not backed by Apple.
-	* Result: The idea to strictly type LSP messages down to every property seems inappropriate for their amorphous "free value" nature anyway. So we opt for a custom, simpler and more [dynamic LSP type system](https://github.com/flowtoolz/FoundationToolz/tree/master/Code/SwiftLSP) which could indeed be extracted as a Swift package.
+	* Result: The idea to strictly type LSP messages down to every property seems inappropriate for their amorphous "free value" nature anyway. So we opt for a custom, simpler and more dynamic LSP type system (now as [SwiftLSP](https://github.com/flowtoolz/SwiftLSP)).
 * [x] Get a sourcekit-lsp client project to function with sourcekit-lsp at all, before moving on with LSPService
 * [x] Remove "Process ID injection". Add endpoint that provides process ID.
 * [x] Detect LSP packets properly (piece them together from server process output)
+* [x] Extract general LSP type system (not LSPService specific) into package [SwiftLSP](https://github.com/flowtoolz/SwiftLSP)
 * [ ] Persist language server configurations
 * [ ] Add support for C, C++ and Objective-c via sourcekit-lsp
 * [ ] As soon as [this PR](https://github.com/vapor/vapor/pull/2498) is done: Decline upgrade to Websocket protocol right away for unavailable languages, instead of opening the connection, sending feedback and then closing it again.
 * [ ] Consider adding a web frontend for managing language servers. Possibly use [Plot](https://github.com/JohnSundell/Plot)
-* [ ] Possibly build a Swift package that helps client editors written in Swift to use LSPService. Possibly also extract the LSP type system from FoundationToolz as a separate package.
+* [ ] Possibly build a Swift package that helps client editors written in Swift to use LSPService
 * [ ] Enable serving multiple clients who need services for the same language at the same time
 * [ ] Explore whether this approach would actually fly with the Mac App Store review, because:
   * The editor app would need to encourage the user to download and install LSPService, but apps in the App Store are not allowed to lead the user to some website, at least as it relates to purchase funnels.
