@@ -61,10 +61,12 @@ class LanguageServer {
         }
         
         do {
-            try inPipe.fileHandleForWriting.write(contentsOf: lspPacket)
-        } catch {
-            log(error: "\(error.localizedDescription)")
-        }
+            if #available(OSX 10.15.4, *) {
+                try inPipe.fileHandleForWriting.write(contentsOf: lspPacket)
+            } else {
+                inPipe.fileHandleForWriting.write(lspPacket)
+            }
+        } catch { log(error) }
     }
     
     private let inPipe = Pipe()
