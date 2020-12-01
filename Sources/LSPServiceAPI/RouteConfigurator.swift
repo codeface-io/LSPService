@@ -120,10 +120,8 @@ struct RouteConfigurator {
         LanguageServer.active?.stop()
         LanguageServer.active = newLanguageServer
         
-        newLanguageServer.didSendLSPPacket = { lspPacket in
-            if !lspPacket.isEmpty {
-                websocket?.send([UInt8](lspPacket))
-            }
+        newLanguageServer.didSend = { lspPacket in
+            websocket?.send([UInt8](lspPacket.data))
         }
         
         newLanguageServer.didSendError = { errorData in

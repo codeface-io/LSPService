@@ -1,4 +1,5 @@
 import Foundation
+import SwiftLSP
 import SwiftyToolz
 
 func languagesJoined(by separator: String) -> String {
@@ -26,7 +27,7 @@ class LanguageServer {
             throw "Executable does not exist at given path \(config.executablePath)"
         }
         
-        didSendLSPPacket = { _ in
+        didSend = { _ in
             log(warning: "\(Self.self) did send lsp packet, but handler has not been set")
         }
         didSendError = { _ in
@@ -81,16 +82,16 @@ class LanguageServer {
             }
         }
         
-        packetDetector.didDetectLSPPacket = { [weak self] packet in
-            self?.didSendLSPPacket(packet)
+        packetDetector.didDetect = { [weak self] packet in
+            self?.didSend(packet)
         }
         
         process.standardOutput = outPipe
     }
     
-    private let packetDetector = LSPPacketDetector()
+    private let packetDetector = LSP.PacketDetector()
     
-    var didSendLSPPacket: (Data) -> Void
+    var didSend: (LSP.Packet) -> Void
     private let outPipe = Pipe()
     
     // MARK: - Error Output
