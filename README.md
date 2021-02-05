@@ -1,6 +1,6 @@
 # LSPService
 
-🚨 *This project is at an early experimental stage.*
+🚨 *This project is already in productive use but not mature enough yet to warrant versioning.*
 
 👩🏻‍🚀 *Contributors and pioneers welcome!*
 
