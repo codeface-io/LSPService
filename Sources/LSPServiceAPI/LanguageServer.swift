@@ -154,8 +154,10 @@ class LanguageServer {
         var arguments: [String]
         
         static var all: [LanguageKey: Config] = [
-            "swift": .init(executablePath: "/usr/bin/xcrun",
-                           arguments: ["sourcekit-lsp"]),
+//            "swift": .init(executablePath: "/usr/bin/xcrun",
+//                           arguments: ["sourcekit-lsp"]),
+            "swift": .init(executablePath: "/Users/seb/Desktop/sourcekit-lsp-release",
+                           arguments: []),
             "python": .init(executablePath: "/Library/Frameworks/Python.framework/Versions/3.9/bin/pyls",
                             arguments: [])
         ]
