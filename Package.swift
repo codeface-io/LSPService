@@ -4,13 +4,13 @@ import PackageDescription
 let package = Package(
     name: "LSPService",
     platforms: [
-       .macOS(.v10_15)
+        .macOS(.v10_15)
     ],
     products: [
         .executable(name: "LSPService", targets: ["LSPService"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/vapor/vapor.git", from: "4.0.0"),
+        .package(url: "https://github.com/vapor/vapor.git", from: "4.57.0"),
         .package(url: "https://github.com/flowtoolz/FoundationToolz.git", .branch("master")),
         .package(url: "https://github.com/flowtoolz/SwiftLSP.git", .branch("master")),
         .package(url: "https://github.com/flowtoolz/SwiftyToolz.git", .branch("master"))
