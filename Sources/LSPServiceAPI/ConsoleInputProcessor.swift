@@ -37,8 +37,8 @@ struct ConsoleInputProcessor {
             let language = argumentsToProcess.removeFirst()
             
             guard argumentsToProcess.count > 0 else {
-                if let executablePath = LanguageServer.Config.all[language.lowercased()]?.executablePath {
-                    output += "✅  \(language.capitalized) has this LSP server path set:\n   \"\(executablePath)\""
+                if let config = LanguageServer.Config.all[language.lowercased()] {
+                    output += "✅  \(language.capitalized) has this LSP server executable path and arguments:\n   \"\(config.executablePath + " " + config.arguments.joined(separator: " "))\""
                 } else {
                     output += "🛑  No LSP server path is set for language \"\(language.capitalized)\""
                 }
