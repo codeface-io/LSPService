@@ -111,7 +111,7 @@ class LanguageServer {
     
     private func setupProcess(with config: Config) {
         process.executableURL = URL(fileURLWithPath: config.executablePath)
-        process.environment = nil
+        process.environment = ["SOURCEKIT_LOGGING": "3"]
         process.arguments = config.arguments
         process.terminationHandler = { [weak self] process in
             log("\(Self.self) terminated. code: \(process.terminationReason.rawValue)")
