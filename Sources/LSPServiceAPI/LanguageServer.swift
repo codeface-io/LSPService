@@ -111,7 +111,7 @@ class LanguageServer {
     
     private func setupProcess(with config: Config) {
         process.executableURL = URL(fileURLWithPath: config.executablePath)
-        process.environment = ["SOURCEKIT_LOGGING": "3"]
+        process.environment = config.environmentVariables
         process.arguments = config.arguments
         process.terminationHandler = { [weak self] process in
             log("\(Self.self) terminated. code: \(process.terminationReason.rawValue)")
@@ -152,10 +152,12 @@ class LanguageServer {
     struct Config {
         var executablePath: String
         var arguments: [String]
+        var environmentVariables: [String: String]?
         
         static var all: [LanguageKey: Config] = [
             "swift": .init(executablePath: "/usr/bin/xcrun",
-                           arguments: ["sourcekit-lsp"]),
+                           arguments: ["sourcekit-lsp"],
+                           environmentVariables: ["SOURCEKIT_LOGGING": "0"]),
             "python": .init(executablePath: "/Library/Frameworks/Python.framework/Versions/3.9/bin/pyls",
                             arguments: [])
         ]
