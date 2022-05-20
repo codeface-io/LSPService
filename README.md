@@ -85,7 +85,7 @@ The root of the LSPService API is `http://127.0.0.1:8080/lspservice/api/`.
 	* It sends the language server's [error output](https://en.wikipedia.org/wiki/Standard_streams#Standard_error_(stderr)) via the text channel. These are unstructured pure text strings that are useful error logs for debugging.
 	* It terminates the connection if some serious problem occured, for example if the language server in use had to shut down.
 
-## To Do
+## To Do / Roadmap
 
 * [x] Implement proof of concept with WebSockets and sourcekit-lsp
 * [x] Have a dynamic endpoint for all languages, like `127.0.0.1:<service port>/lspservice/api/<language>`
@@ -109,12 +109,14 @@ The root of the LSPService API is `http://127.0.0.1:8080/lspservice/api/`.
 * [x] Remove "Process ID injection". Add endpoint that provides process ID.
 * [x] Detect LSP packets properly (piece them together from server process output)
 * [x] Extract general LSP type system (not LSPService specific) into package [SwiftLSP](https://github.com/flowtoolz/SwiftLSP)
-* [ ] Persist language server configurations
-* [ ] Add support for C, C++ and Objective-c via sourcekit-lsp
+* [x] Build a Swift package that helps client editors written in Swift to use LSPService
+    * Result: [LSPServiceKit](https://github.com/flowtoolz/LSPServiceKit)
 * [ ] As soon as [this PR](https://github.com/vapor/vapor/pull/2498) is done: Decline upgrade to Websocket protocol right away for unavailable languages, instead of opening the connection, sending feedback and then closing it again.
-* [ ] Consider adding a web frontend for managing language servers. Possibly use [Plot](https://github.com/JohnSundell/Plot)
-* [ ] Possibly build a Swift package that helps client editors written in Swift to use LSPService
-* [ ] Enable serving multiple clients who need services for the same language at the same time
+* [ ] Persist language server configurations
+* [ ] **Milestone** General "releasability": professional CLI, failure tolerance, expressive error logs ... 
 * [ ] Explore whether this approach would actually fly with the Mac App Store review, because:
   * The editor app would need to encourage the user to download and install LSPService, but apps in the App Store are not allowed to lead the user to some website, at least as it relates to purchase funnels.
   * It could be argued that LSPService is more of a plugin that effects the behaviour of the editor app, which would break App Store rules.
+* [ ] Ensure sourcekit-lsp can be used to support C, C++ and Objective-c 
+* [ ] Consider adding a web frontend for managing language servers. Possibly use [Plot](https://github.com/JohnSundell/Plot)
+* [ ] Enable serving multiple clients who need services for the same language at the same time
