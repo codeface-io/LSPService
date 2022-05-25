@@ -153,23 +153,23 @@ class LanguageServer {
     
     private let process = Process()
     
-    // MARK: -
+    // MARK: - Configuration
     
     struct Config {
+        
+        static var all: [LanguageKey: Config] = [
+            "swift": .init(
+                executablePath: "/usr/bin/xcrun",
+                arguments: ["sourcekit-lsp"],
+                environmentVariables: ["SOURCEKIT_LOGGING": "0"]
+            ),
+//            "python": .init(executablePath: "/Library/Frameworks/Python.framework/Versions/3.9/bin/pyls",
+//                            arguments: [])
+        ]
+        
         var executablePath: String
         var arguments: [String]
         var environmentVariables: [String: String]?
-        
-        static var all: [LanguageKey: Config] = [
-            "swift": .init(executablePath: "/usr/bin/xcrun",
-                           arguments: ["sourcekit-lsp"],
-                           environmentVariables: ["SOURCEKIT_LOGGING": "3"]),
-//            "swift": .init(executablePath: "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/sourcekit-lsp",
-//                           arguments: [],
-//                           environmentVariables: ["SOURCEKIT_LOGGING": "3"]),
-            "python": .init(executablePath: "/Library/Frameworks/Python.framework/Versions/3.9/bin/pyls",
-                            arguments: [])
-        ]
         
         typealias LanguageKey = String
     }
