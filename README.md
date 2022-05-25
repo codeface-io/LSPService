@@ -56,7 +56,7 @@ Of course, we assume here the editor supports LSPService.
 
 The singular purpose of LSPService is to make local LSP language servers accessible via WebSockets.
 
-LSPService forwards LSP messages from some editor (incoming via websockets) to some language server (outgoing to stdin) and vice versa. It knows nothing about the LSP standard itself. Encoding and decoding LSP messages and generally representing LSP with proper types remains a concern of the editor. 
+LSPService forwards LSP messages from some editor (incoming via WebSockets) to some language server (outgoing to stdin) and vice versa. It knows nothing about the LSP standard itself (except for how to detect LSP packets in the output of language servers). Encoding and decoding LSP messages and generally representing LSP with proper types remains a concern of the editor. 
 
 The editor, on the other hand, knows nothing about how to configure, locate, launch and talk to language servers. This remains a concern of LSPService.
 
@@ -111,6 +111,7 @@ The root of the LSPService API is `http://127.0.0.1:8080/lspservice/api/`.
 * [x] Extract general LSP type system (not LSPService specific) into package [SwiftLSP](https://github.com/flowtoolz/SwiftLSP)
 * [x] Build a Swift package that helps client editors written in Swift to use LSPService
     * Result: [LSPServiceKit](https://github.com/flowtoolz/LSPServiceKit)
+* [ ] Add a trouble shooting FAQ or the like for client developers to the sourcekit-lsp repo (mostly from my forum topics)
 * [ ] Since [this PR](https://github.com/vapor/vapor/pull/2498) is done: Decline upgrade to Websocket protocol right away for unavailable languages, instead of opening the connection, sending feedback and then closing it again.
 * [ ] The CLI must allow to set arguments and environment variables, not just the plain executable path
 * [ ] Persist language server configurations
