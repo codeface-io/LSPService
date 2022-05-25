@@ -1,6 +1,6 @@
 # LSPService
 
-🚨 *This project is already in productive use but not mature enough yet to warrant versioning.*
+🚨 *This project already serves clients but is not mature enough yet to warrant versioning.*
 
 👩🏻‍🚀 *Contributors and pioneers welcome!*
 
@@ -31,14 +31,14 @@ So I thought: **What if a language server was simply a local web service?** Poss
 
 1. Let your editor use LSPService:
 	* [The API](#API) allows talking to language servers and configuring them.
-	* If you want to put your editor into the Mac App Store: Ensure your editor is also usable without LSPService. This should help with the review process.
+	* If you want to put your editor into the Mac App Store: Ensure it's also usable without LSPService. This should help with the review process.
 2. Provide a download of LSPService to your users:
 	* Build it via `swift build --configuration release`.
 	* Get the resulting binary: `.build/<target architecture>/release/LSPService`.
-	* Upload the binary to where your users should download it.
-3. Let your editor encourage the user to download and run LSPService:
-	* Give a short explanation for why LSPService is helpful.
-	* Offer a convenient way to download and save LSPService.
+	* Upload the binary so users can download it.
+3. Let your editor encourage users to download and run LSPService:
+	* Succinctly describe which features LSPService unlocks.
+	* Offer a link to a user friendly download page (or similar).
 
 ### As the User of an Editor
 
@@ -47,18 +47,18 @@ Of course, we assume here the editor supports LSPService.
 1. Download and open LSPService. It will run in Terminal, and as long as it's running there, the service is available. Check: <http://localhost:8080/lspservice>
 3. Set the language server locations (file paths) for the languages you want to have supported. 
 	* There's a command line interface for that. After LSPService launches in Terminal, it explains all commands there.
-	* LSPService automatically finds the Swift language server (if Xcode is installed), and it guesses the location of a [python language server](https://github.com/palantir/python-language-server). But in general, users still must locate language servers manually.
+	* LSPService finds the Swift language server automatically if Xcode is installed. But in general, users still must locate language servers manually.
 
 
 ## API
 
 ### Editor vs. LSPService – Who's Responsible?
 
-The singular purpose of LSPService to present LSP language servers as WebSockets.
+The singular purpose of LSPService is to make local LSP language servers accessible via WebSockets.
 
-LSPService forwards LSP messages from some editor to some language server and vice versa. It knows nothing about the LSP standard itself. Encoding and decoding LSP messages and generally representing LSP with proper types remains a concern of the editor. 
+LSPService forwards LSP messages from some editor (incoming via websockets) to some language server (outgoing to stdin) and vice versa. It knows nothing about the LSP standard itself. Encoding and decoding LSP messages and generally representing LSP with proper types remains a concern of the editor. 
 
-The editor, on the other hand, knows nothing about how to locate, install, run and talk to language servers. This remains a concern of LSPService.
+The editor, on the other hand, knows nothing about how to configure, locate, launch and talk to language servers. This remains a concern of LSPService.
 
 ### Endpoints
 
@@ -83,7 +83,7 @@ The root of the LSPService API is `http://127.0.0.1:8080/lspservice/api/`.
 
 * Besides LSP messages, there are only two ways the WebSocket gives live feedback:
 	* It sends the language server's [error output](https://en.wikipedia.org/wiki/Standard_streams#Standard_error_(stderr)) via the text channel. These are unstructured pure text strings that are useful error logs for debugging.
-	* It terminates the connection if some serious problem occured, for example if the language server in use had to shut down.
+	* It terminates the connection when some serious problem occured, for example when the language server in use had to shut down.
 
 ## To Do / Roadmap
 
@@ -111,12 +111,16 @@ The root of the LSPService API is `http://127.0.0.1:8080/lspservice/api/`.
 * [x] Extract general LSP type system (not LSPService specific) into package [SwiftLSP](https://github.com/flowtoolz/SwiftLSP)
 * [x] Build a Swift package that helps client editors written in Swift to use LSPService
     * Result: [LSPServiceKit](https://github.com/flowtoolz/LSPServiceKit)
-* [ ] As soon as [this PR](https://github.com/vapor/vapor/pull/2498) is done: Decline upgrade to Websocket protocol right away for unavailable languages, instead of opening the connection, sending feedback and then closing it again.
+* [ ] Since [this PR](https://github.com/vapor/vapor/pull/2498) is done: Decline upgrade to Websocket protocol right away for unavailable languages, instead of opening the connection, sending feedback and then closing it again.
+* [ ] The CLI must allow to set arguments and environment variables, not just the plain executable path
 * [ ] Persist language server configurations
-* [ ] **Milestone** General "releasability": professional CLI, failure tolerance, expressive error logs ... 
+* [ ] 💎 **Milestone** General "releasability": [professional CLI](https://github.com/apple/swift-argument-parser), failure tolerance, expressive error logs, versioning, upload binary ... 
 * [ ] Explore whether this approach would actually fly with the Mac App Store review, because:
   * The editor app would need to encourage the user to download and install LSPService, but apps in the App Store are not allowed to lead the user to some website, at least as it relates to purchase funnels.
   * It could be argued that LSPService is more of a plugin that effects the behaviour of the editor app, which would break App Store rules.
+* [ ] Experiment again with python language servers (and get one to work)
+* [ ] Get this project out there: documentation, promo, collaboration, contact [potential client apps](https://github.com/CodeEditApp/CodeEdit) etc. ...
 * [ ] Ensure sourcekit-lsp can be used to support C, C++ and Objective-c 
-* [ ] Consider adding a web frontend for managing language servers. Possibly use [Plot](https://github.com/JohnSundell/Plot)
-* [ ] Enable serving multiple clients who need services for the same language at the same time
+* [ ] Make the web frontend fully equivalent to the CLI and also pretty. Possibly use [Plot](https://github.com/JohnSundell/Plot)
+* [ ] What about clients which can't be released in the app store anyway and want to use LSPService as an imported Swift package rather than a local webservice? This requires moving more functionality to SwiftLSP and defining a precise boundary/abstraction for it.
+* [ ] Enable serving multiple clients who need services for the same language at the same time?
