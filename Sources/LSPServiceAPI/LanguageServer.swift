@@ -110,14 +110,15 @@ class LanguageServer {
     // MARK: - Process
     
     private func setupProcess(with config: Config) throws {
-        let executableURL = URL(fileURLWithPath: config.executablePath)
+        process.executableURL = URL(fileURLWithPath: config.executablePath)
         
-//        try FileManager.default.setAttributes([.posixPermissions: 0o555],
-//                                              ofItemAtPath: executableURL.path)
+        let currentEnvironment = ProcessInfo.processInfo.environment
+        let configEnvironment = config.environmentVariables ?? [:]
+        let languageServerEnvironment = currentEnvironment.merging(configEnvironment) { $1 }
+        process.environment = languageServerEnvironment
         
-        process.executableURL = executableURL
-        process.environment = config.environmentVariables
         process.arguments = config.arguments
+        
         process.terminationHandler = { [weak self] process in
             log("\(Self.self) terminated. code: \(process.terminationReason.rawValue)")
             self?.didTerminate()

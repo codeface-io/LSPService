@@ -128,10 +128,7 @@ struct RouteConfigurator {
             guard errorData.count > 0 else { return }
             var errorString = errorData.utf8String!
             if errorString.last == "\n" { errorString.removeLast() }
-            
-            print(errorString)
-                
-//            log(error: "\(lang.capitalized) language server: \(errorString)")
+            log(warning: "\(lang.capitalized) language server stdErr:\n\(errorString)")
             websocket?.send(errorString)
         }
         
