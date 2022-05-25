@@ -37,7 +37,7 @@ class LanguageServer {
             log(warning: "\(Self.self) did terminate, but handler has not been set")
         }
         
-        setupProcess(with: config)
+        try setupProcess(with: config)
         setupInput()
         setupOutput()
         setupErrorOutput()
@@ -109,8 +109,13 @@ class LanguageServer {
     
     // MARK: - Process
     
-    private func setupProcess(with config: Config) {
-        process.executableURL = URL(fileURLWithPath: config.executablePath)
+    private func setupProcess(with config: Config) throws {
+        let executableURL = URL(fileURLWithPath: config.executablePath)
+        
+//        try FileManager.default.setAttributes([.posixPermissions: 0o555],
+//                                              ofItemAtPath: executableURL.path)
+        
+        process.executableURL = executableURL
         process.environment = config.environmentVariables
         process.arguments = config.arguments
         process.terminationHandler = { [weak self] process in
@@ -158,6 +163,9 @@ class LanguageServer {
             "swift": .init(executablePath: "/usr/bin/xcrun",
                            arguments: ["sourcekit-lsp"],
                            environmentVariables: ["SOURCEKIT_LOGGING": "3"]),
+//            "swift": .init(executablePath: "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/sourcekit-lsp",
+//                           arguments: [],
+//                           environmentVariables: ["SOURCEKIT_LOGGING": "3"]),
             "python": .init(executablePath: "/Library/Frameworks/Python.framework/Versions/3.9/bin/pyls",
                             arguments: [])
         ]
