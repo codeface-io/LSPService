@@ -91,8 +91,10 @@ The root of the LSPService API is `http://127.0.0.1:8080/lspservice/api/`.
 * [x] Have a dynamic endpoint for all languages, like `127.0.0.1:<service port>/lspservice/api/<language>`
 * [x] Let LSPService locate sourcekit-lsp for the Swift endpoint
 * [x] Evaluate whether client editors need to to receive the [error output](https://en.wikipedia.org/wiki/Standard_streams#Standard_error_(stderr)) from language server processes.
+  
   * Result: LSP errors come as regular LSP messages from standard output, and using different streams is not part of the LSP standard and a totally different abstraction level anyway. So stdErr should be irrelevant to the editor. But for debugging, we provide it via the WebSocket's text channel.
 * [x] Explore whether sourcekit-lsp can be adjusted to send error feedback when it fails to decode incoming data. This would likely accelerate development of LSPService and of other sourcekit-lsp clients.
+  
   * Result: sourcekit-lsp [now sends an LSP error response message](https://github.com/apple/sourcekit-lsp/pull/334) in response to an undecodable message, if that message has at least a [valid header](https://microsoft.github.io/language-server-protocol/specifications/specification-current/#headerPart). Prepending that header is easy, so development of LSPService can now rely on immediate well formed feedback from sourcekit-lsp.
 * [x] Add an endpoint for client editors to detect what languages are available
 * [x] Properly handle websocket connection attempt for unavailable languages: send feedback, then close connection.
@@ -109,20 +111,20 @@ The root of the LSPService API is `http://127.0.0.1:8080/lspservice/api/`.
 * [x] Remove "Process ID injection". Add endpoint that provides process ID.
 * [x] Detect LSP packets properly (piece them together from server process output)
 * [x] Extract general LSP type system (not LSPService specific) into package [SwiftLSP](https://github.com/flowtoolz/SwiftLSP)
-* [x] Build a Swift package that helps client editors written in Swift to use LSPService
-    * Result: [LSPServiceKit](https://github.com/flowtoolz/LSPServiceKit)
-* [ ] Add a trouble shooting FAQ or the like for client developers to the sourcekit-lsp repo (mostly from my forum topics)
+* [x] Build a Swift package that helps client editors written in Swift to use LSPService: [LSPServiceKit](https://github.com/flowtoolz/LSPServiceKit)
+
+* [x]     Get "find references" request to work via LSPService
+* [ ] 💡 Add trouble shooting guide for client developers to sourcekit-lsp repo (from the insights gained developing LSPService and SwiftLSP)
 * [ ] Since [this PR](https://github.com/vapor/vapor/pull/2498) is done: Decline upgrade to Websocket protocol right away for unavailable languages, instead of opening the connection, sending feedback and then closing it again.
-* [ ] The CLI must allow to set arguments and environment variables, not just the plain executable path
-* [ ] Persist language server configurations
-* [ ] 💎 **Milestone** General "releasability": [professional CLI](https://github.com/apple/swift-argument-parser), failure tolerance, expressive error logs, versioning, upload binary ... 
-* [ ] Explore whether this approach would actually fly with the Mac App Store review, because:
-  * The editor app would need to encourage the user to download and install LSPService, but apps in the App Store are not allowed to lead the user to some website, at least as it relates to purchase funnels.
-  * It could be argued that LSPService is more of a plugin that effects the behaviour of the editor app, which would break App Store rules.
-* [ ] Experiment again with python language servers (and get one to work)
-* [ ] Get this project out there: documentation, promo, collaboration, contact [potential client apps](https://github.com/CodeEditApp/CodeEdit) etc. ...
+* [ ] 📺 The CLI must allow to set arguments and environment variables, not just the plain executable path
+* [ ] 🪲 Fix this: Clients (at least Codeface) lose websocket connection to LSPService on large Swift packages like sourcekit-lsp itself. Are some LSP messages too large to be sent at once via websockets?
+* [ ] 💎 **MILESTONE** "Releasability": [professional CLI](https://github.com/apple/swift-argument-parser), failure tolerance, expressive error logs, versioning, upload binaries for Intel and Apple chips ... 
+* [ ] 🍏 Explore whether an editor app that kind of requires LSPService would actually pass the Mac App Store review.
+* [ ] ❗️ Persist language server configurations (Almost required for releasability!)
+* [ ] 🐍 Experiment again with python language servers (and get one to work)
+* [ ] 📢 Get this project out there: documentation, promo, collaboration, contact [potential client apps](https://github.com/CodeEditApp/CodeEdit) etc. ...
 * [ ] Ensure sourcekit-lsp can be used to support C, C++ and Objective-c 
 * [ ] Make the web frontend fully equivalent to the CLI and also pretty. Possibly use [Plot](https://github.com/JohnSundell/Plot)
 * [ ] What about clients which can't be released in the app store anyway and want to use LSPService as an imported Swift package rather than a local webservice? This requires moving more functionality to SwiftLSP and defining a precise boundary/abstraction for it.
-* [ ] What about building / running LSPService on Linux? It and SwiftLSP depend on Foundation, maybe compiler directives are needed or generally sticking to [this](https://github.com/apple/swift-corelibs-foundation) or to `import CoreFoundation` 
-* [ ] Enable serving multiple clients who need services for the same language at the same time?
+* [ ] What about building / running LSPService on Linux? LSPService and SwiftLSP depend on Foundation, maybe compiler directives are needed or generally sticking to [this](https://github.com/apple/swift-corelibs-foundation).
+* [ ] What about multiple clients who need services for the same language at the same time?
