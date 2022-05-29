@@ -6,7 +6,7 @@
 
 ## What?
 
-LSPService is an app that locally hosts a web service which presents local [LSP language servers](https://langserver.org) as WebSockets:
+LSPService is a local web service that allows editors to talk to any local [LSP language server](https://langserver.org) via [WebSocket](https://en.wikipedia.org/wiki/WebSocket):
 
 ![LSPService](https://raw.githubusercontent.com/flowtoolz/LSPService/master/Documentation/lspservice_idea.jpg)
 
@@ -21,6 +21,7 @@ For instance, I want to distribute a developer tool via the Mac App Store, so it
 So I thought: **What if a language server was simply a local web service?** Possible benefits:
 
 * **Editors don't need to install, locate, launch, configure and talk to different language server executables.**
+  * Today's tendency of each editor needing some sort of "extension" or "plugin" developed for each language in part defeats [the whole idea](https://langserver.org/) of the Language Server **Protocol**. LSPService aims to solve that by centralizing and abstracting away the low level issues involved in leveraging language servers.
 * **On macOS, editors can be sandboxed and probably even be distributed via the App Store.**
 * In the future, LSPService could be a machine's central place for managing LSP language servers, through a CLI and/or through a web front end.
 * Even further down the road, running LSPService as an actual web service might have interesting applications, in particular where LSP is used for static code analysis or remote inspection.
@@ -31,9 +32,9 @@ So I thought: **What if a language server was simply a local web service?** Poss
 
 There are three ways LSPService can know where language servers are and how to launch them:
 
-1. LSPService will automatically find installed language servers for more selected languages in the future
+1. LSPService **will** automatically find installed language servers for selected languages in the future
    * Right now, that only works for Swift.
-2. A user or admin can configure LSPService via its CLI and (in the future) its web front end.
+2. A user or admin **should** configure LSPService via its CLI and (in the future) its web front end.
 3. The editor itself **could** configure LSPService via the [API](#API).
    * But that's optional, and it is a goal of LSPService to free editors of that concern.
 
