@@ -125,13 +125,13 @@ The root of the LSPService API is `http://127.0.0.1:8080/lspservice/api/`.
 * [x] Build a Swift package that helps client editors written in Swift to use LSPService: [LSPServiceKit](https://github.com/flowtoolz/LSPServiceKit)
 * [x]     Get "find references" request to work via LSPService
 * [ ] 💡 Add trouble shooting guide for client developers to sourcekit-lsp repo (from the insights gained developing LSPService and SwiftLSP)
-* [ ] Since [this PR](https://github.com/vapor/vapor/pull/2498) is done: Decline upgrade to Websocket protocol right away for unavailable languages, instead of opening the connection, sending feedback and then closing it again.
 * [ ] CLI / API must allow to set arguments and environment variables, not just the plain executable path
   * Then adjust LSPServiceKit
 * [ ] 🪲 Fix this: Clients (at least Codeface) lose websocket connection to LSPService on large Swift packages like sourcekit-lsp itself. Are some LSP messages too large to be sent in one chunk via websockets?
 * [ ] 💎 **MILESTONE** "Releasability": [professional CLI](https://github.com/apple/swift-argument-parser), failure tolerance, expressive error logs, versioning, upload binaries for Intel and Apple chips ... 
 * [ ] 🍏 Explore whether an editor app that kind of requires LSPService would actually pass the Mac App Store review.
 * [ ] ❗️ Persist language server configurations (Almost required for releasability!)
+* [ ] Since [this PR](https://github.com/vapor/vapor/pull/2498) is done: Decline upgrade to Websocket protocol right away for unavailable languages, instead of opening the connection, sending feedback and then closing it again.
 * [ ] 🐍 Experiment again with python language servers (and get one to work)
 * [ ] 📢 Get this project out there: documentation, promo, collaboration, contact [potential client apps](https://github.com/CodeEditApp/CodeEdit) etc. ...
 * [ ] Ensure sourcekit-lsp can be used to support C, C++ and Objective-c 
