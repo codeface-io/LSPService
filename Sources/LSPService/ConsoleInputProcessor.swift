@@ -27,7 +27,7 @@ struct ConsoleInputProcessor {
         
         switch command {
         case "languages":
-            let languages = ServerConfigStore.languages.joined(separator: ", ")
+            let languages = ServerExecutableConfigs.languages.joined(separator: ", ")
             output += "✅  LSP server paths are set for: \(languages)"
         case "language":
             guard argumentsToProcess.count > 0 else {
@@ -37,8 +37,8 @@ struct ConsoleInputProcessor {
             let language = argumentsToProcess.removeFirst()
             
             guard argumentsToProcess.count > 0 else {
-                if let config = ServerConfigStore.config(language: language) {
-                    output += "✅  \(language.capitalized) has this LSP server executable path and arguments:\n   \"\(config.executablePath + " " + config.arguments.joined(separator: " "))\""
+                if let config = ServerExecutableConfigs.config(language: language) {
+                    output += "✅  \(language.capitalized) has this LSP server executable path and arguments:\n   \"\(config.path + " " + config.arguments.joined(separator: " "))\""
                 } else {
                     output += "🛑  No LSP server path is set for language \"\(language.capitalized)\""
                 }
@@ -48,8 +48,7 @@ struct ConsoleInputProcessor {
             let newPath = argumentsToProcess.removeFirst()
             
             if URL(fromFilePath: newPath) != nil {
-                ServerConfigStore.set(.init(executablePath: newPath),
-                                      forLanguage: language)
+                ServerExecutableConfigs.set(.init(path: newPath), forLanguage: language)
                 output += "✅  \(language.capitalized) now has a new LSP server path:\n   \"\(newPath)\""
             } else {
                 output += "🛑  This is not a valid file path: \"\(newPath)\""

@@ -15,14 +15,14 @@ struct RouteConfigurator {
 
     private func registerRoutes(onLSPService lspService: RoutesBuilder, on app: Application) {
         lspService.on(.GET) { _ in
-            "👋🏻 Hello, I'm the Language Service.\n\nEndpoints (Vapor Routes):\n\(routeList(for: app))\n\nAvailable languages:\n\(ServerConfigStore.languages.joined(separator: "\n"))"
+            "👋🏻 Hello, I'm the Language Service.\n\nEndpoints (Vapor Routes):\n\(routeList(for: app))\n\nAvailable languages:\n\(ServerExecutableConfigs.languages.joined(separator: "\n"))"
         }
 
         let languageNameParameter = "languageName"
 
         lspService.on(.GET, ":\(languageNameParameter)") { req -> String in
             let language = req.parameters.get(languageNameParameter)!
-            let executablePath = ServerConfigStore.config(language: language)?.executablePath
+            let executablePath = ServerExecutableConfigs.config(language: language)?.path
             return "Hello, I'm the Language Service.\n\nThe language \(language.capitalized) has this associated language server:\n\(executablePath ?? "None")"
         }
         
@@ -37,7 +37,7 @@ struct RouteConfigurator {
 
     private func registerRoutes(onAPI api: RoutesBuilder) {
         api.on(.GET, "languages") { _ in
-            ServerConfigStore.languages
+            ServerExecutableConfigs.languages
         }
         
         api.on(.GET, "processID") { _ in
@@ -90,7 +90,7 @@ struct RouteConfigurator {
 
         language.on(.GET, ":\(languageNameParameter)") { request -> String in
             let language = request.parameters.get(languageNameParameter)!
-            guard let executablePath = ServerConfigStore.config(language: language)?.executablePath else {
+            guard let executablePath = ServerExecutableConfigs.config(language: language)?.path else {
                 throw Abort(.noContent,
                             reason: "No LSP server path has been set for \(language.capitalized)")
             }
@@ -106,14 +106,14 @@ struct RouteConfigurator {
             
             let language = request.parameters.get(languageNameParameter)!
             
-            if var config = ServerConfigStore.config(language: language)
+            if var config = ServerExecutableConfigs.config(language: language)
             {
-                config.executablePath = executablePath
-                ServerConfigStore.set(config, forLanguage: language)
+                config.path = executablePath
+                ServerExecutableConfigs.set(config, forLanguage: language)
             }
             else
             {
-                ServerConfigStore.set(.init(executablePath: executablePath),
+                ServerExecutableConfigs.set(.init(path: executablePath),
                                       forLanguage: language)
             }
             
@@ -124,7 +124,7 @@ struct RouteConfigurator {
     // MARK: - Language Server
 
     private func configureAndRunLanguageServer(forLanguage lang: String) throws {
-        guard let config = ServerConfigStore.config(language: lang) else {
+        guard let config = ServerExecutableConfigs.config(language: lang) else {
             throw "No LSP server config set for language \(lang.capitalized)"
         }
         
