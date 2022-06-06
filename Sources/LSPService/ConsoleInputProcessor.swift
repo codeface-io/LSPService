@@ -37,7 +37,7 @@ struct ConsoleInputProcessor {
             let language = argumentsToProcess.removeFirst()
             
             guard argumentsToProcess.count > 0 else {
-                if let config = LanguageServer.Config.all[language.lowercased()] {
+                if let config = ServerConfigStore.configs[language.lowercased()] {
                     output += "✅  \(language.capitalized) has this LSP server executable path and arguments:\n   \"\(config.executablePath + " " + config.arguments.joined(separator: " "))\""
                 } else {
                     output += "🛑  No LSP server path is set for language \"\(language.capitalized)\""
@@ -48,7 +48,7 @@ struct ConsoleInputProcessor {
             let newPath = argumentsToProcess.removeFirst()
             
             if URL(fromFilePath: newPath) != nil {
-                LanguageServer.Config.all[language.lowercased()] = .init(executablePath: newPath,
+                ServerConfigStore.configs[language.lowercased()] = .init(executablePath: newPath,
                                                                          arguments: [])
                 output += "✅  \(language.capitalized) now has a new LSP server path:\n   \"\(newPath)\""
             } else {

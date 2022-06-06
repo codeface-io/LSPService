@@ -2,27 +2,11 @@ import Foundation
 import SwiftLSP
 import SwiftyToolz
 
-func languagesJoined(by separator: String) -> String {
-    LanguageServer.Config.all.keys.map {
-        $0.capitalized
-    }.joined(separator: separator)
-}
-
-func isAvailable(language: String) -> Bool {
-    LanguageServer.Config.all[language.lowercased()] != nil
-}
-
 class LanguageServer {
-    
-    static var active: LanguageServer?
     
     // MARK: - Life Cycle
     
-    init(languageKey: String) throws {
-        guard let config = Config.all[languageKey.lowercased()] else {
-            throw "No LSP server config set for language \(languageKey.capitalized)"
-        }
-        
+    init(config: Config) throws {
         guard FileManager.default.fileExists(atPath: config.executablePath) else {
             throw "Executable does not exist at given path \(config.executablePath)"
         }
@@ -30,9 +14,11 @@ class LanguageServer {
         didSend = { _ in
             log(warning: "\(Self.self) did send lsp packet, but handler has not been set")
         }
+        
         didSendError = { _ in
             log(warning: "\(Self.self) did send error, but handler has not been set")
         }
+        
         didTerminate = {
             log(warning: "\(Self.self) did terminate, but handler has not been set")
         }
@@ -156,21 +142,8 @@ class LanguageServer {
     // MARK: - Configuration
     
     struct Config {
-        
-        static var all: [LanguageKey: Config] = [
-            "swift": .init(
-                executablePath: "/usr/bin/xcrun",
-                arguments: ["sourcekit-lsp"],
-                environmentVariables: ["SOURCEKIT_LOGGING": "0"]
-            ),
-//            "python": .init(executablePath: "/Library/Frameworks/Python.framework/Versions/3.9/bin/pyls",
-//                            arguments: [])
-        ]
-        
         var executablePath: String
         var arguments: [String]
         var environmentVariables: [String: String]?
-        
-        typealias LanguageKey = String
     }
 }
