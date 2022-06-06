@@ -1,4 +1,4 @@
-import SwiftLSP
+import FoundationToolz
 
 struct ServerExecutableConfigs {
     
@@ -6,16 +6,16 @@ struct ServerExecutableConfigs {
         configs.keys.map { $0.capitalized }
     }
     
-    static func config(language: String) -> LSP.ServerExecutable.Configuration? {
+    static func config(language: String) -> Executable.Configuration? {
         configs[language.lowercased()]
     }
     
-    static func set(_ config: LSP.ServerExecutable.Configuration,
+    static func set(_ config: Executable.Configuration,
                     forLanguage language: String) {
         configs[language.lowercased()] = config
     }
     
-    private static var configs: [LanguageKey: LSP.ServerExecutable.Configuration] = [
+    private static var configs: [LanguageKey: Executable.Configuration] = [
         "swift": .init(
             path: "/usr/bin/xcrun",
             arguments: ["sourcekit-lsp"],

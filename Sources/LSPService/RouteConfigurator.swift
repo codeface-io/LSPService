@@ -81,7 +81,7 @@ struct RouteConfigurator {
             
             newWebsocket.onBinary { ws, lspPacketBytes in
                 let lspPacket = Data(buffer: lspPacketBytes)
-                activeServerExecutable?.receive(lspPacket: lspPacket)
+                activeServerExecutable?.receive(input: lspPacket)
             }
             
             websocket?.close(promise: nil)
