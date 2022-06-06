@@ -35,7 +35,7 @@ There are three ways LSPService can know where language servers are and how to l
 1. LSPService **will** automatically find installed language servers for selected languages in the future
    * Right now, that only works for Swift.
 2. A user or admin **should** configure LSPService via its CLI and (in the future) its web front end.
-3. The editor itself **could** configure LSPService via the [API](#API).
+3. The editor **could** configure LSPService via the [API](#API).
    * But that's optional, and it is a goal of LSPService to free editors of that concern.
 
 ### As the Developer of an Editor
@@ -133,7 +133,7 @@ The root of the LSPService API is `http://127.0.0.1:8080/lspservice/api/`.
 * [ ] ❗️ Persist language server configurations (Almost required for releasability!)
 * [ ] Since [this PR](https://github.com/vapor/vapor/pull/2498) is done: Decline upgrade to Websocket protocol right away for unavailable languages, instead of opening the connection, sending feedback and then closing it again.
 * [ ] 🐍 Experiment again with python language servers (and get one to work)
-* [ ] 📢 Get this project out there: documentation, promo, collaboration, contact [potential client apps](https://github.com/CodeEditApp/CodeEdit) etc. ...
+* [ ] 📢 Get this project out there: documentation, promo, collaboration, contact potential client apps etc. ...
 * [ ] Ensure sourcekit-lsp can be used to support C, C++ and Objective-c 
 * [ ] Make the web frontend fully equivalent to the CLI and also pretty. Possibly use [Plot](https://github.com/JohnSundell/Plot)
 * [ ] What about clients which can't be released in the app store anyway and want to use LSPService as an imported Swift package rather than a local webservice? This requires moving more functionality to SwiftLSP and defining a precise boundary/abstraction for it.
