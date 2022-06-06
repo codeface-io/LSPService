@@ -1,15 +1,21 @@
-func languagesJoined(by separator: String) -> String {
-    ServerConfigStore.configs.keys.map {
-        $0.capitalized
-    }.joined(separator: separator)
-}
-
-func isAvailable(language: String) -> Bool {
-    ServerConfigStore.configs[language.lowercased()] != nil
-}
+import SwiftLSP
 
 struct ServerConfigStore {
-    static var configs: [LanguageKey: LanguageServer.Config] = [
+    
+    static var languages: [String] {
+        configs.keys.map { $0.capitalized }
+    }
+    
+    static func config(language: String) -> LSP.ServerExecutable.Configuration? {
+        configs[language.lowercased()]
+    }
+    
+    static func set(_ config: LSP.ServerExecutable.Configuration,
+                    forLanguage language: String) {
+        configs[language.lowercased()] = config
+    }
+    
+    private static var configs: [LanguageKey: LSP.ServerExecutable.Configuration] = [
         "swift": .init(
             executablePath: "/usr/bin/xcrun",
             arguments: ["sourcekit-lsp"],
