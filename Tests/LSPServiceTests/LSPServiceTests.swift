@@ -1,4 +1,4 @@
-@testable import LSPServiceAPI
+@testable import LSPService
 import XCTVapor
 
 final class AppTests: XCTestCase {

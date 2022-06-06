@@ -17,7 +17,7 @@ let package = Package(
     ],
     targets: [
         .target(
-            name: "LSPServiceAPI",
+            name: "LSPService",
             dependencies: [
                 .product(name: "Vapor", package: "vapor"),
                 .product(name: "FoundationToolz", package: "FoundationToolz"),
@@ -31,16 +31,10 @@ let package = Package(
                 .unsafeFlags(["-cross-module-optimization"], .when(configuration: .release))
             ]
         ),
-        .target(
-            name: "LSPService",
-            dependencies: [
-                .target(name: "LSPServiceAPI")
-            ]
-        ),
         .testTarget(
-            name: "LSPServiceAPITests",
+            name: "LSPServiceTests",
             dependencies: [
-                .target(name: "LSPServiceAPI"),
+                .target(name: "LSPService"),
                 .product(name: "XCTVapor", package: "vapor"),
             ]
         )
