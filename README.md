@@ -23,32 +23,28 @@ So I thought: **What if a language server was simply a local web service?** Poss
 * **Editors don't need to install, locate, launch, configure and talk to different language server executables.**
   * Today's tendency of each editor needing some sort of "extension" or "plugin" developed for each language in part defeats [the whole idea](https://langserver.org/) of the Language Server **Protocol**. LSPService aims to solve that by centralizing and abstracting away the low level issues involved in leveraging language servers.
 * **On macOS, editors can be sandboxed and probably even be distributed via the App Store.**
-* In the future, LSPService could be a machine's central place for managing LSP language servers, through a CLI and/or through a web front end.
+* In the future, LSPService could be a machine's central place for managing and monitoring LSP language servers, possibly via a local web frontend.
 * Even further down the road, running LSPService as an actual web service might have interesting applications, in particular where LSP is used for static code analysis or remote inspection.
 
 ## How?
 
 ### First of All: Who Shall Configure LSPService?
 
-There are three ways LSPService can know where language servers are and how to launch them:
+`LSPService` creates an `LSPServiceConfig.json` file on launch if the file doesn't exist yet. If the file exists, it loads server configurations from the file.
 
-1. LSPService **will** automatically find installed language servers for selected languages in the future
-   * Right now, that only works for Swift.
-2. A user or admin **should** configure LSPService via its CLI and (in the future) its web front end.
-3. The editor **could** configure LSPService via the [API](#API).
-   * But that's optional, and it is a goal of LSPService to free editors of that concern.
+A user or admin **should** configure `LSPService` by editing `LSPServiceConfig.json`. In the future, the config file that `LSPService` creates **will** already contain entries for selected installed language servers. Right now, that automatic detection only works for Swift.
 
 ### As the Developer of an Editor
 
 1. Let your editor use LSPService:
-	* [The API](#API) allows talking to language servers and configuring them.
+	* [The API](#API) allows connecting to a language server via WebSocket.
 	* If you write the editor in Swift, you may use [LSPServiceKit](https://github.com/flowtoolz/LSPServiceKit).
 	* If you want to put your editor into the Mac App Store: Ensure it's also usable without LSPService. This should help with the review process.
 2. Provide a download of LSPService to your users:
 	* Build it via `swift build --configuration release`.
 	* Get the resulting binary: `.build/<target architecture>/release/LSPService`.
 	* Upload the binary so users can download it.
-3. Let your editor encourage users to download and run LSPService:
+3. Let your editor encourage users to download and run `LSPService`:
 	* Succinctly describe which features LSPService unlocks.
 	* Offer a link to a user friendly download page (or similar).
 
@@ -56,10 +52,8 @@ There are three ways LSPService can know where language servers are and how to l
 
 Of course, we assume here the editor supports LSPService.
 
-1. Download and open LSPService. It will run in Terminal, and as long as it's running there, the service is available. Check: <http://localhost:8080/lspservice>
-3. Set the language server locations (file paths) for the languages you want to have supported. 
-	* There's a command line interface for that. After LSPService launches in Terminal, it explains all commands there.
-	* LSPService finds the Swift language server automatically if Xcode is installed. But in general, users still must locate language servers manually, if the editor doesn't help with that.
+1. Download and open `LSPService`. It will run in terminal, and as long as it's running there, the service is available. Check: <http://localhost:8080/lspservice>
+2.  To add language servers, add corresponding entries to `LSPServiceConfig.json` and restart `LSPService`.
 
 ## API
 
@@ -69,7 +63,7 @@ The singular purpose of LSPService is to make local LSP language servers accessi
 
 LSPService forwards LSP messages from some editor (incoming via WebSockets) to some language server (outgoing to stdin) and vice versa. It knows nothing about the LSP standard itself (except for how to detect LSP packets in the output of language servers). Encoding and decoding LSP messages and generally representing LSP with proper types remains a concern of the editor. 
 
-The editor, on the other hand, knows nothing about how to talk to language servers and also doesn't need to know how to locate and launch them. Those remain concerns of LSPService. What editors should primarily require from the API is the WebSocket connection.
+The editor, on the other hand, knows nothing about how to talk to-, locate and launch language servers. Those remain concerns of LSPService.
 
 ### Endpoints
 
@@ -78,8 +72,6 @@ The root of the LSPService API is `http://127.0.0.1:8080/lspservice/api/`.
 | URL Path |     Types     |      Methods | Usage |
 | :------------ | :---------- | :---------- |:----------- |
 | `processID` | `Int` | `GET` | Get process ID of LSPService, to set it in the [LSP initialize request](https://microsoft.github.io/language-server-protocol/specification#initialize). |
-| `languages` | `[String]` | `GET` | Get names of languages which have the path to their language server set. |
-| `language/<lang>` | `String` | `GET`, `POST` | Get and set the path of the language server associated with language `<lang>`. |
 | `language/<lang>/websocket` | `Data`, `String` | WebSocket | Connect and talk to the language server associated with language `<lang>`. |
 
 ### Using the WebSocket
@@ -125,11 +117,12 @@ The root of the LSPService API is `http://127.0.0.1:8080/lspservice/api/`.
 * [x] Build a Swift package that helps client editors written in Swift to use LSPService: [LSPServiceKit](https://github.com/flowtoolz/LSPServiceKit)
 * [x]     Get "find references" request to work via LSPService
 * [x] Add [trouble shooting guide](Documentation/build_a_sourcekit-lsp_client.md) for client developers to sourcekit-lsp repo (from the insights gained developing LSPService and SwiftLSP)
-* [ ] 📄 Replace CLI with a json file, which defines server paths, arguments and environment variables. This also makes a web frontend unnecessary for mere configuration, adds persistency and bumps usability ...
+* [x] Replace CLI with a json file, which defines server paths, arguments and environment variables. This also makes a web frontend unnecessary for mere configuration, adds persistency and bumps usability ...
+* [x] Adjust API and documentation: Remove all routes except for ProcessID and websocket. If we provide a configuration API at all in the future, it will be based on a proper language config type / JSON.
 * [ ] 🪲 Fix this: Clients (at least Codeface) lose websocket connection to LSPService on large Swift packages like sourcekit-lsp itself. Are some LSP messages too large to be sent in one chunk via websockets?
 * [ ] 💎 **MILESTONE** "Releasability": failure tolerance, expressive error logs, versioning, upload binaries for Intel and Apple chips ... 
 * [ ] 🍏 Explore whether an editor app that kind of requires LSPService would actually pass the Mac App Store review.
-* [ ] 🗑 Adjust API, LSPServiceKit and documentation: Remove all routes except for the ProcessID and websocket. If we provide a configuration API at all in the future, it will be based on a proper language config type / JSON.
+* [ ] 🗑 Adjust LSPServiceKit to the radically pruned new API ...
 * [ ] Since [this PR](https://github.com/vapor/vapor/pull/2498) is done: Decline upgrade to Websocket protocol right away for unavailable languages, instead of opening the connection, sending feedback and then closing it again.
 * [ ] 🐍 Experiment again with python language servers (and get one to work)
 * [ ] 📢 Get this project out there: documentation, promo, collaboration, contact potential client apps etc. ...
