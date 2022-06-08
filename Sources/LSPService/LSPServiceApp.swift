@@ -13,34 +13,9 @@ public class LSPServiceApp: LogObserver {
         Log.shared.minimumLevel = .off
         Log.shared.add(observer: self)
         ServerExecutableConfigs.preload()
-        Self.startProcessingConsoleInput(app: vaporApp)
     }
     
     deinit { vaporApp.shutdown() }
-    
-    // MARK: - CLI
-
-    private static func startProcessingConsoleInput(app: Application) {
-        app.console.output(ConsoleInputProcessor.initialOutput().consoleText())
-        processNextConsoleInput(app: app)
-    }
-
-    private static func processNextConsoleInput(app: Application) {
-        app.console.output(ConsoleInputProcessor.prompt.consoleText(), newLine: false)
-        
-        let eventLoop = app.eventLoopGroup.next()
-        
-        let didReadConsole = app.threadPool.runIfActive(eventLoop: eventLoop) {
-            app.console.input()
-        }
-        
-        didReadConsole.whenSuccess { input in
-            app.console.output(ConsoleInputProcessor.response(forInput: input).consoleText())
-            processNextConsoleInput(app: app)
-        }
-        
-        didReadConsole.whenFailure { log($0) }
-    }
     
     // MARK: - Logging
     

@@ -7,26 +7,10 @@ struct RouteConfigurator {
 
     func registerRoutes(on app: Application) throws {
         app.on(.GET) { req in
-            "Hello, I'm the Language Service Host.\n\nEndpoints (Vapor Routes):\n\(routeList(for: app))"
+            "LSPService Endpoints (Vapor Routes):\n\(routeList(for: app))"
         }
         
-        registerRoutes(onLSPService: app.grouped("lspservice"), on: app)
-    }
-
-    private func registerRoutes(onLSPService lspService: RoutesBuilder, on app: Application) {
-        lspService.on(.GET) { _ in
-            "👋🏻 Hello, I'm the Language Service.\n\nEndpoints (Vapor Routes):\n\(routeList(for: app))\n\nAvailable languages:\n\(ServerExecutableConfigs.languages.joined(separator: "\n"))"
-        }
-
-        let languageNameParameter = "languageName"
-
-        lspService.on(.GET, ":\(languageNameParameter)") { req -> String in
-            let language = req.parameters.get(languageNameParameter)!
-            let executablePath = ServerExecutableConfigs.config(language: language)?.path
-            return "Hello, I'm the Language Service.\n\nThe language \(language.capitalized) has this associated language server:\n\(executablePath ?? "None")"
-        }
-        
-        registerRoutes(onAPI: lspService.grouped("api"))
+        registerRoutes(onAPI: app.grouped("lspservice").grouped("api"))
     }
 
     private func routeList(for app: Application) -> String {
@@ -36,10 +20,6 @@ struct RouteConfigurator {
     // MARK: - API
 
     private func registerRoutes(onAPI api: RoutesBuilder) {
-        api.on(.GET, "languages") { _ in
-            ServerExecutableConfigs.languages
-        }
-        
         api.on(.GET, "processID") { _ in
             Int(ProcessInfo.processInfo.processIdentifier)
         }
@@ -86,38 +66,6 @@ struct RouteConfigurator {
             
             websocket?.close(promise: nil)
             websocket = newWebsocket
-        }
-
-        language.on(.GET, ":\(languageNameParameter)") { request -> String in
-            let language = request.parameters.get(languageNameParameter)!
-            guard let executablePath = ServerExecutableConfigs.config(language: language)?.path else {
-                throw Abort(.noContent,
-                            reason: "No LSP server path has been set for \(language.capitalized)")
-            }
-            return executablePath
-        }
-        
-        language.on(.POST, ":\(languageNameParameter)") { request -> HTTPStatus in
-            let executablePath = request.body.string ?? ""
-            guard URL(fromFilePath: executablePath) != nil else {
-                throw Abort(.badRequest,
-                            reason: "Request body contains no valid file path")
-            }
-            
-            let language = request.parameters.get(languageNameParameter)!
-            
-            if var config = ServerExecutableConfigs.config(language: language)
-            {
-                config.path = executablePath
-                ServerExecutableConfigs.set(config, forLanguage: language)
-            }
-            else
-            {
-                ServerExecutableConfigs.set(.init(path: executablePath),
-                                      forLanguage: language)
-            }
-            
-            return .ok
         }
     }
     

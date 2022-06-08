@@ -4,17 +4,8 @@ import SwiftyToolz
 
 struct ServerExecutableConfigs {
     
-    static var languages: [String] {
-        configs.keys.map { $0.capitalized }
-    }
-    
     static func config(language: String) -> Executable.Configuration? {
         configs[language.lowercased()]
-    }
-    
-    static func set(_ config: Executable.Configuration,
-                    forLanguage language: String) {
-        configs[language.lowercased()] = config
     }
     
     static func preload() {
