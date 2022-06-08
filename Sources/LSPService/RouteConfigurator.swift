@@ -42,12 +42,9 @@ struct RouteConfigurator {
             
             let languageName = request.parameters.get(languageNameParameter)!
             
-            do
-            {
+            do {
                 try configureAndRunLanguageServer(forLanguage: languageName)
-            }
-            catch
-            {
+            } catch {
                 let errorFeedbackWasSent = request.eventLoop.makePromise(of: Void.self)
                 errorFeedbackWasSent.futureResult.whenComplete { _ in
                     newWebsocket.close(promise: nil)
@@ -110,5 +107,4 @@ struct RouteConfigurator {
 // MARK: - Basic Objects
 
 fileprivate var websocket: Vapor.WebSocket?
-
 fileprivate var activeServerExecutable: LSP.ServerExecutable?
