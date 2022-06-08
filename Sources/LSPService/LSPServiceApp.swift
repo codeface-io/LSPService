@@ -12,6 +12,7 @@ public class LSPServiceApp: LogObserver {
         try RouteConfigurator().registerRoutes(on: vaporApp)
         Log.shared.minimumLevel = .off
         Log.shared.add(observer: self)
+        ServerExecutableConfigs.preload()
         Self.startProcessingConsoleInput(app: vaporApp)
     }
     
