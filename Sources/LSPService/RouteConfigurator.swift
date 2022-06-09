@@ -31,7 +31,17 @@ struct RouteConfigurator {
         let languageNameParameter = "languageName"
         
         language.webSocket(":\(languageNameParameter)", "websocket",
-                           maxFrameSize: 1048576) { request, newWebsocket in
+                           maxFrameSize: 1048576) { request in
+            let languageName = request.parameters.get(languageNameParameter)!
+            
+            do {
+                try configureAndRunLanguageServer(forLanguage: languageName)
+                return request.eventLoop.makeSucceededFuture([:])
+            } catch {
+                log(error)
+                return request.eventLoop.makeSucceededFuture(nil)
+            }
+        } onUpgrade: { request, newWebsocket in
             newWebsocket.onClose.whenComplete { result in
                 switch result {
                 case .success:
@@ -39,22 +49,6 @@ struct RouteConfigurator {
                 case .failure(let error):
                     request.logger.error("websocket failed to close: \(error.localizedDescription)")
                 }
-            }
-            
-            let languageName = request.parameters.get(languageNameParameter)!
-            
-            do {
-                try configureAndRunLanguageServer(forLanguage: languageName)
-            } catch {
-                let errorFeedbackWasSent = request.eventLoop.makePromise(of: Void.self)
-                errorFeedbackWasSent.futureResult.whenComplete { _ in
-                    newWebsocket.close(promise: nil)
-                }
-                
-                let errorMessage = "\(languageName.capitalized) language server couldn't be initialized: \(error.readable.message)"
-                newWebsocket.send(errorMessage, promise: errorFeedbackWasSent)
-                
-                return
             }
             
             newWebsocket.onBinary { ws, lspPacketBytes in
