@@ -10,7 +10,7 @@ struct ServerExecutableConfigs {
     
     static func preload() {
         if configs.isEmpty {
-            log(error: "Loading executable configurations failed")
+            log(warning: "There are no server executables configured.")
         }
     }
     

@@ -30,7 +30,8 @@ struct RouteConfigurator {
     private func registerRoutes(onLanguage language: RoutesBuilder) {
         let languageNameParameter = "languageName"
         
-        language.webSocket(":\(languageNameParameter)", "websocket") { request, newWebsocket in
+        language.webSocket(":\(languageNameParameter)", "websocket",
+                           maxFrameSize: 1048576) { request, newWebsocket in
             newWebsocket.onClose.whenComplete { result in
                 switch result {
                 case .success:
