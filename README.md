@@ -127,7 +127,6 @@ The root of the LSPService API is `http://127.0.0.1:8080/lspservice/api/`.
 * [ ] 🐍 Experiment again with python language servers (and get one to work)
 * [ ] 📢 Get this project out there: documentation, promo, collaboration, contact potential client apps etc. ...
 * [ ] Ensure sourcekit-lsp can be used to support C, C++ and Objective-c 
-* [ ] Make the web frontend fully equivalent to the CLI and also pretty. Possibly use [Plot](https://github.com/JohnSundell/Plot)
 * [ ] What about clients which can't be released in the app store anyway and want to use LSPService as an imported Swift package rather than a local webservice? This requires moving more functionality to SwiftLSP and defining a precise boundary/abstraction for it.
 * [ ] What about building / running LSPService on Linux? LSPService and SwiftLSP depend on Foundation, maybe compiler directives are needed or generally sticking to [this](https://github.com/apple/swift-corelibs-foundation).
 * [ ] What about multiple clients who need services for the same language at the same time?
