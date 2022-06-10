@@ -22,13 +22,13 @@ So I thought: **What if a language server was simply a local web service?** Poss
 
 * **Editors don't need to install, locate, launch, configure and talk to different language server executables.**
   * Today's tendency of each editor needing some sort of "extension" or "plugin" developed for each language in part defeats [the whole idea](https://langserver.org/) of the Language Server **Protocol**. LSPService aims to solve that by centralizing and abstracting away the low level issues involved in leveraging language servers.
-* **On macOS, editors can be sandboxed and probably even be distributed via the App Store.**
+* **On macOS, apps that require no other tooling except for LSP servers can be sandboxed and probably even be distributed via the App Store.**
 * In the future, LSPService could be a machine's central place for managing and monitoring LSP language servers, possibly via a local web frontend.
-* Even further down the road, running LSPService as an actual web service might have interesting applications, in particular where LSP is used for static code analysis or remote inspection.
+* Even further down the road, running LSPService as an actual web service unlocks interesting possibilities for remote inspection and monitoring of code bases.
 
 ## How?
 
-### First of All: Who Shall Configure LSPService?
+### First of All: How to Configure LSPService
 
 `LSPService` creates an `LSPServiceConfig.json` file on launch if the file doesn't exist yet. If the file exists, it loads server configurations from the file.
 
@@ -50,10 +50,8 @@ A user or admin **should** configure `LSPService` by editing `LSPServiceConfig.j
 
 ### As the User of an Editor
 
-Of course, we assume here the editor supports LSPService.
-
 1. Download and open `LSPService`. It will run in terminal, and as long as it's running there, the service is available. Check: <http://localhost:8080/lspservice>
-2.  To add language servers, add corresponding entries to `LSPServiceConfig.json` and restart `LSPService`.
+2.  To add language servers, add corresponding entries to `LSPServiceConfig.json` and restart `LSPService`. The `LSPServiceConfig.json` file created by `LSPService` already contains at least one entry, and the JSON structure is quite self-explanatory.
 
 ## API
 
