@@ -1,8 +1,6 @@
 # LSPService
 
-🚨 *This project already serves clients but is not mature enough yet to warrant versioning.*
-
-👩🏻‍🚀 *Contributors and pioneers welcome!*
+👩🏻‍🚀 *This project is still a tad experimental. Contributors and pioneers welcome!*
 
 ## What?
 
