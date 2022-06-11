@@ -45,9 +45,9 @@ struct RouteConfigurator {
             newWebsocket.onClose.whenComplete { result in
                 switch result {
                 case .success:
-                    request.logger.info("websocket did close")
+                    log("WebSocket did close")
                 case .failure(let error):
-                    request.logger.error("websocket failed to close: \(error.localizedDescription)")
+                    log(error: "WebSocket failed to close: \(error.localizedDescription)")
                 }
             }
             
@@ -56,8 +56,8 @@ struct RouteConfigurator {
                 activeServerExecutable?.receive(input: lspPacket)
             }
             
-            websocket?.close(promise: nil)
-            websocket = newWebsocket
+            activeWebSocket?.close(promise: nil)
+            activeWebSocket = newWebsocket
         }
     }
     
@@ -65,7 +65,7 @@ struct RouteConfigurator {
 
     private func configureAndRunLanguageServer(forLanguage lang: String) throws {
         guard let config = ServerExecutableConfigs.config(language: lang) else {
-            throw "No LSP server config set for language \(lang.capitalized)"
+            throw "No LSP server config found for language \(lang.capitalized)"
         }
         
         let newServerExecutable = try LSP.ServerExecutable(config: config)
@@ -74,25 +74,36 @@ struct RouteConfigurator {
         activeServerExecutable = newServerExecutable
         
         newServerExecutable.didSend = { lspPacket in
-            websocket?.send([UInt8](lspPacket.data))
+            activeWebSocket?.send([UInt8](lspPacket.data))
         }
         
-        newServerExecutable.didSendError = { errorData in
-            guard errorData.count > 0 else { return }
-            var errorString = errorData.utf8String!
-            if errorString.last == "\n" { errorString.removeLast() }
-            log(warning: "\(lang.capitalized) language server stdErr:\n\(errorString)")
-            websocket?.send(errorString)
+        newServerExecutable.didSendError = { stdErrData in
+            guard stdErrData.count > 0, var stdErrString = stdErrData.utf8String else {
+                log(error: "\(lang.capitalized) language server sent empty or undecodable data via stdErr")
+                return
+            }
+            
+            if stdErrString.last == "\n" { stdErrString.removeLast() }
+            
+            log("\(lang.capitalized) language server sent message via stdErr:\n\(stdErrString)")
+            
+            activeWebSocket?.send(stdErrString)
         }
         
         newServerExecutable.didTerminate = {
-            guard let websocket = websocket, !websocket.isClosed else { return }
-            let errorFeedbackWasSent = websocket.eventLoop.makePromise(of: Void.self)
+            log(warning: "\(lang.capitalized) language server did terminate")
+            
+            guard let ws = activeWebSocket, !ws.isClosed else { return }
+            
+            let errorFeedbackWasSent = ws.eventLoop.makePromise(of: Void.self)
+            
             errorFeedbackWasSent.futureResult.whenComplete { _ in
-                websocket.close(promise: nil)
+                ws.close(promise: nil)
+                activeWebSocket = nil
             }
-            websocket.send("\(lang.capitalized) language server did terminate",
-                           promise: errorFeedbackWasSent)
+            
+            ws.send("\(lang.capitalized) language server did terminate. LSPService will close the websocket.",
+                    promise: errorFeedbackWasSent)
         }
 
         newServerExecutable.run()
@@ -101,5 +112,5 @@ struct RouteConfigurator {
 
 // MARK: - Basic Objects
 
-fileprivate var websocket: Vapor.WebSocket?
+fileprivate var activeWebSocket: Vapor.WebSocket?
 fileprivate var activeServerExecutable: LSP.ServerExecutable?
