@@ -31,7 +31,8 @@ struct ServerExecutableConfigs {
             //                            arguments: [])
         ]
         
-        if hardcodedConfigs.save(toFilePath: filePath) == nil {
+        if hardcodedConfigs.save(toFilePath: filePath,
+                                 options: [.prettyPrinted, .withoutEscapingSlashes]) == nil {
             log(error: "Failed to save server executable configs to \(filePath)")
         }
         
