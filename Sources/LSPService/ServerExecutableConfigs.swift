@@ -17,7 +17,7 @@ struct ServerExecutableConfigs {
     private static var configs = loadConfigs()
     
     private static func loadConfigs() -> Configs {
-        let filePath = "LSPServiceConfig.json"
+        let filePath = Bundle.main.bundlePath + "/LSPServiceConfig.json"
         
         if let configsFromFile = Configs(fromFilePath: filePath), !configsFromFile.isEmpty {
             return configsFromFile
