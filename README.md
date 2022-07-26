@@ -145,7 +145,8 @@ The root of the LSPService API is `http://127.0.0.1:8080/lspservice/api/`.
 
 * [x] **MILESTONE** "Releasability": review code and error logs, versioning, upload binaries for Intel and Apple chips ... 
 
-* [ ] 🍏 Explore whether an editor app that kind of requires LSPService would actually pass the Mac App Store review.
+* [x] Explore whether an editor app that effectively requires LSPService would actually pass the Mac App Store review.
+    * Result: [it passed](https://apps.apple.com/app/codeface/id1578175415) 🥳 with a) only the help menu pointing to a web page about how to use LSPService and b) the app store page not mentioning LSPService nor showing screenshots that would require it. So: future updates will disclose more and more of the quasi dependence on LSPService to reveal what Apple accepts.
 
 * [ ] 🐍 Experiment again with python language servers (and get one to work)
 
