@@ -10,17 +10,19 @@ LSPService is a local web service that allows editors to talk to any local [LSP 
 
 I use mainly the [Swift language server (sourcekit-lsp)](https://github.com/apple/sourcekit-lsp) as my example language server, and LSPService is itself written in Swift. **But in principle, LSPService runs on macOS and Linux and can connect to all language servers**. 
 
+The LSPService package itself comprises very little code because it heavily leverages [Vapor](https://github.com/vapor/vapor) and I extracted much of what it does into [SwiftLSP](https://github.com/flowtoolz/SwiftLSP) and [FoundationToolz](https://github.com/flowtoolz/FoundationToolz).
+
 ## Why?
 
 The [Language Server Protocol](https://microsoft.github.io/language-server-protocol/) is the present and future of software development tools. But leveraging it for a tool project turned out to be difficult. 
 
-For instance, I want to distribute a developer tool via the Mac App Store, so it must be sandboxed, which makes it impossible to directly deal with language servers or any other "tooling" of the tech world.
+For instance, I distribute [a developer tool](https://apps.apple.com/app/codeface/id1578175415) via the Mac App Store, so it must be sandboxed, which makes it impossible to directly deal with language servers or any other "tooling" of the tech world.
 
 So I thought: **What if a language server was simply a local web service?** Possible benefits:
 
 * **Editors don't need to install, locate, launch, configure and talk to different language server executables.**
   * Today's tendency of each editor needing some sort of "extension" or "plugin" developed for each language in part defeats [the whole idea](https://langserver.org/) of the Language Server **Protocol**. LSPService aims to solve that by centralizing and abstracting away the low level issues involved in leveraging language servers.
-* **On macOS, apps that require no other tooling except for LSP servers can be sandboxed and probably even be distributed via the App Store.**
+* **macOS apps that require no other tooling except for LSP servers can be sandboxed and even be distributed via the App Store.**
 * In the future, LSPService could be a machine's central place for managing and monitoring LSP language servers, possibly via a local web frontend.
 * Even further down the road, running LSPService as an actual web service unlocks interesting possibilities for remote inspection and monitoring of code bases.
 
@@ -37,10 +39,10 @@ A user or admin **should** configure `LSPService` by editing `LSPServiceConfig.j
 1. Let your editor use LSPService:
 	* [The API](#API) allows connecting to a language server via WebSocket.
 	* If you write the editor in Swift, you may use [LSPServiceKit](https://github.com/flowtoolz/LSPServiceKit).
-	* If you want to put your editor into the Mac App Store: Ensure it's also usable without LSPService. This should help with the review process.
-2. Provide a download of LSPService to your users:
-	* Build it via `swift build --configuration release`.
-	* Get the resulting binary: `.build/<target architecture>/release/LSPService`.
+	* If you want to put your editor into the Mac App Store: Ensure it's also valuable without LSPService. This should help with the review process.
+2. Provide a download of the LSPService binary to your users:
+	* Either build it yourself via `swift build --configuration release` and get it from `.build/<target architecture>/release/LSPService`
+	* ... or just use the [download links](https://www.flowtoolz.com/codeface/lspservice) I provide for Codeface
 	* Upload the binary so users can download it.
 3. Let your editor encourage users to download and run `LSPService`:
 	* Succinctly describe which features LSPService unlocks.
@@ -48,7 +50,7 @@ A user or admin **should** configure `LSPService` by editing `LSPServiceConfig.j
 
 ### As the User of an Editor
 
-1. Download and open `LSPService`. It will run in terminal, and as long as it's running there, the service is available. Check: <http://localhost:8080/lspservice>
+1. Download and open `LSPService`. It will run in terminal, and as long as it's running there, the service is available. Check: <http://localhost:8080>
 2.  To add language servers, add corresponding entries to `LSPServiceConfig.json` and restart `LSPService`. The `LSPServiceConfig.json` file created by `LSPService` already contains at least one entry, and the JSON structure is quite self-explanatory.
 
 ## API
@@ -145,8 +147,8 @@ The root of the LSPService API is `http://127.0.0.1:8080/lspservice/api/`.
 
 * [x] **MILESTONE** "Releasability": review code and error logs, versioning, upload binaries for Intel and Apple chips ... 
 
-* [x] Explore whether an editor app that effectively requires LSPService would actually pass the Mac App Store review.
-    * Result: [it passed](https://apps.apple.com/app/codeface/id1578175415) 🥳 with a) only the help menu pointing to a web page about how to use LSPService and b) the app store page not mentioning LSPService nor showing screenshots that would require it. So: future updates will disclose more and more of the quasi dependence on LSPService to reveal what Apple accepts.
+* [x] Explore whether an app that effectively requires LSPService would pass the Mac App Store review.
+    * Result: [it passed](https://apps.apple.com/app/codeface/id1578175415) 🥳 with a) only the help menu pointing to a web page about how to use LSPService and b) the app store page not mentioning LSPService nor showing screenshots that would require it. So: future updates will disclose more of the quasi dependence on LSPService to reveal what Apple tolerates.
 
 * [ ] 🐍 Experiment again with python language servers (and get one to work)
 
