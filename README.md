@@ -37,9 +37,9 @@ A user or admin **should** configure `LSPService` by editing `LSPServiceConfig.j
 ### As the Developer of an Editor
 
 1. Let your editor use LSPService:
-	* [The API](#API) allows connecting to a language server via WebSocket.
-	* If you write the editor in Swift, you may use [LSPServiceKit](https://github.com/flowtoolz/LSPServiceKit).
-	* If you want to put your editor into the Mac App Store: Ensure it's also valuable without LSPService. This may help with the review process.
+  * [The API](#API) allows connecting to a language server via WebSocket.
+  * If you write the editor in Swift, you may use [LSPServiceKit](https://github.com/flowtoolz/LSPServiceKit).
+  * If you want to put your editor into the Mac App Store: Ensure it's also valuable without LSPService. This may help with the review process.
 2. Provide downloads of the LSPService binaries (for Apple + Intel chips) to your users:
   * Either build them yourself:
     - `swift build --configuration release --arch arm64`
@@ -48,8 +48,8 @@ A user or admin **should** configure `LSPService` by editing `LSPServiceConfig.j
     - upload them somewhere ...
   * ... or just use the [download links](https://www.flowtoolz.com/codeface/lspservice) I provide for Codeface
 3. Let your editor encourage users to download and run `LSPService`:
-	* Succinctly describe which features LSPService unlocks.
-	* Offer a link to a user friendly download page (or similar), like [this one](https://www.flowtoolz.com/codeface/lspservice).
+  * Succinctly describe which features LSPService unlocks.
+  * Offer a link to a user friendly download page (or similar), like [this one](https://www.flowtoolz.com/codeface/lspservice).
 
 ### As the User of an Editor
 
