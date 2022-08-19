@@ -10,7 +10,7 @@ LSPService is a local web service that allows editors to talk to any local [LSP 
 
 I use mainly the [Swift language server (sourcekit-lsp)](https://github.com/apple/sourcekit-lsp) as my example language server, and LSPService is itself written in Swift. **But in principle, LSPService runs on macOS and Linux and can connect to all language servers**. 
 
-The LSPService package itself comprises very little code because it heavily leverages [Vapor](https://github.com/vapor/vapor) and I extracted much of what it does into [SwiftLSP](https://github.com/flowtoolz/SwiftLSP) and [FoundationToolz](https://github.com/flowtoolz/FoundationToolz).
+The LSPService package itself comprises very little code because a) it heavily leverages [Vapor](https://github.com/vapor/vapor) and b) I extracted much of what it does into [SwiftLSP](https://github.com/flowtoolz/SwiftLSP) and [FoundationToolz](https://github.com/flowtoolz/FoundationToolz).
 
 ## Why?
 
@@ -39,14 +39,17 @@ A user or admin **should** configure `LSPService` by editing `LSPServiceConfig.j
 1. Let your editor use LSPService:
 	* [The API](#API) allows connecting to a language server via WebSocket.
 	* If you write the editor in Swift, you may use [LSPServiceKit](https://github.com/flowtoolz/LSPServiceKit).
-	* If you want to put your editor into the Mac App Store: Ensure it's also valuable without LSPService. This should help with the review process.
-2. Provide a download of the LSPService binary to your users:
-	* Either build it yourself via `swift build --configuration release` and get it from `.build/<target architecture>/release/LSPService`
-	* ... or just use the [download links](https://www.flowtoolz.com/codeface/lspservice) I provide for Codeface
-	* Upload the binary so users can download it.
+	* If you want to put your editor into the Mac App Store: Ensure it's also valuable without LSPService. This may help with the review process.
+2. Provide downloads of the LSPService binaries (for Apple + Intel chips) to your users:
+  * Either build them yourself:
+    - `swift build --configuration release --arch arm64`
+    - `swift build --configuration release --arch x86_64`
+    - get them from `.build/<target architecture>/release/LSPService`
+    - upload them somewhere ...
+  * ... or just use the [download links](https://www.flowtoolz.com/codeface/lspservice) I provide for Codeface
 3. Let your editor encourage users to download and run `LSPService`:
 	* Succinctly describe which features LSPService unlocks.
-	* Offer a link to a user friendly download page (or similar).
+	* Offer a link to a user friendly download page (or similar), like [this one](links](https://www.flowtoolz.com/codeface/lspservice)).
 
 ### As the User of an Editor
 
@@ -148,7 +151,7 @@ The root of the LSPService API is `http://127.0.0.1:8080/lspservice/api/`.
 * [x] **MILESTONE** "Releasability": review code and error logs, versioning, upload binaries for Intel and Apple chips ... 
 
 * [x] Explore whether an app that effectively requires LSPService would pass the Mac App Store review.
-    * Result: [it passed](https://apps.apple.com/app/codeface/id1578175415) 🥳 with a) only the help menu pointing to a web page about how to use LSPService and b) the app store page not mentioning LSPService nor showing screenshots that would require it. So: future updates will disclose more of the quasi dependence on LSPService to reveal what Apple tolerates.
+    * Result: [it does](https://apps.apple.com/app/codeface/id1578175415) 🥳. The second update was also accepted with full on promotion of features that depend on LSPService, but still referencing LSPService only from within the app.
 
 * [ ] 🐍 Experiment again with python language servers (and get one to work)
 
