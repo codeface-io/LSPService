@@ -49,7 +49,7 @@ A user or admin **should** configure `LSPService` by editing `LSPServiceConfig.j
   * ... or just use the [download links](https://www.flowtoolz.com/codeface/lspservice) I provide for Codeface
 3. Let your editor encourage users to download and run `LSPService`:
 	* Succinctly describe which features LSPService unlocks.
-	* Offer a link to a user friendly download page (or similar), like [this one](links](https://www.flowtoolz.com/codeface/lspservice)).
+	* Offer a link to a user friendly download page (or similar), like [this one](https://www.flowtoolz.com/codeface/lspservice).
 
 ### As the User of an Editor
 
