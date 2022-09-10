@@ -89,6 +89,14 @@ The root of the LSPService API is `http://127.0.0.1:8080/lspservice/api/`.
 	* It sends the language server's [error output](https://en.wikipedia.org/wiki/Standard_streams#Standard_error_(stderr)) via the text channel. These are unstructured pure text strings that are useful error logs for debugging.
 	* It terminates the connection when some serious problem occured, for example when the language server in use had to shut down.
 
+## Architecture
+
+Here are the internal composition and dependencies of LSPService:
+
+![](Documentation/architecture.png)
+
+The above image was created with the [Codeface.io](https://www.codeface.io) app.
+
 ## To Do / Roadmap
 
 * [x] Implement proof of concept with WebSockets and sourcekit-lsp
