@@ -34,6 +34,11 @@ So I thought: **What if a language server was simply a local web service?** Poss
 
 A user or admin **should** configure `LSPService` by editing `LSPServiceConfig.json`. In the future, the config file that `LSPService` creates **will** already contain entries for selected installed language servers. Right now, that automatic detection only works for Swift.
 
+### As the User of an Editor
+
+1. Download and open `LSPService`. It will run in terminal, and as long as it's running there, the service is available. Check: <http://localhost:8080>
+2. To add language servers, add corresponding entries to `LSPServiceConfig.json` and restart `LSPService`. The `LSPServiceConfig.json` file created by `LSPService` already contains at least one entry, and the JSON structure is quite self-explanatory.
+
 ### As the Developer of an Editor
 
 1. Let your editor use LSPService:
@@ -50,11 +55,6 @@ A user or admin **should** configure `LSPService` by editing `LSPServiceConfig.j
 3. Let your editor encourage users to download and run `LSPService`:
   * Succinctly describe which features LSPService unlocks.
   * Offer a link to a user friendly download page (or similar), like [this one](https://www.flowtoolz.com/codeface/lspservice).
-
-### As the User of an Editor
-
-1. Download and open `LSPService`. It will run in terminal, and as long as it's running there, the service is available. Check: <http://localhost:8080>
-2.  To add language servers, add corresponding entries to `LSPServiceConfig.json` and restart `LSPService`. The `LSPServiceConfig.json` file created by `LSPService` already contains at least one entry, and the JSON structure is quite self-explanatory.
 
 ## API
 
