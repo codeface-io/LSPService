@@ -6,7 +6,7 @@
 
 LSPService is a local web service that allows editors to talk to any local [LSP language server](https://langserver.org) via [WebSocket](https://en.wikipedia.org/wiki/WebSocket):
 
-![LSPService](https://raw.githubusercontent.com/flowtoolz/LSPService/master/Documentation/lspservice_idea.jpg)
+![](Documentation/lspservice_idea.jpg)
 
 I use mainly the [Swift language server (sourcekit-lsp)](https://github.com/apple/sourcekit-lsp) as my example language server, and LSPService is itself written in Swift. **But in principle, LSPService runs on macOS and Linux and can connect to all language servers**. 
 
@@ -43,7 +43,7 @@ A user or admin **should** configure `LSPService` by editing `LSPServiceConfig.j
 
 1. Let your editor use LSPService:
   * [The API](#API) allows connecting to a language server via WebSocket.
-  * If you write the editor in Swift, you may use [LSPServiceKit](https://github.com/flowtoolz/LSPServiceKit).
+  * If you write the editor in Swift, you may use [LSPServiceKit](https://github.com/codeface-io/LSPServiceKit).
   * If you want to put your editor into the Mac App Store: Ensure it's also valuable without LSPService. This may help with the review process.
 2. Provide downloads of the LSPService binaries (for Apple + Intel chips) to your users:
   * Either build them yourself:
@@ -140,7 +140,7 @@ The above image was created with the [Codeface.io](https://www.codeface.io) app.
 
 * [x] Extract general LSP type system (not LSPService specific) into package [SwiftLSP](https://github.com/flowtoolz/SwiftLSP)
 
-* [x] Build a Swift package that helps client editors written in Swift to use LSPService: [LSPServiceKit](https://github.com/flowtoolz/LSPServiceKit)
+* [x] Build a Swift package that helps client editors written in Swift to use LSPService: [LSPServiceKit](https://github.com/codeface-io/LSPServiceKit)
 
 * [x] Get "find references" request to work via LSPService
 
