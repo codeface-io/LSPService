@@ -12,7 +12,7 @@ let package = Package(
     dependencies: [
         .package(url: "https://github.com/vapor/vapor.git", from: "4.57.0"),
         .package(url: "https://github.com/flowtoolz/FoundationToolz.git", .branch("master")),
-        .package(url: "https://github.com/flowtoolz/SwiftLSP.git", .branch("master")),
+        .package(url: "https://github.com/codeface-io/SwiftLSP.git", .branch("master")),
         .package(url: "https://github.com/flowtoolz/SwiftyToolz.git", .branch("master"))
     ],
     targets: [
