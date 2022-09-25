@@ -10,7 +10,7 @@ LSPService is a local web service that allows editors to talk to any local [LSP 
 
 I use mainly the [Swift language server (sourcekit-lsp)](https://github.com/apple/sourcekit-lsp) as my example language server, and LSPService is itself written in Swift. **But in principle, LSPService runs on macOS and Linux and can connect to all language servers**. 
 
-The LSPService package itself comprises very little code because a) it heavily leverages [Vapor](https://github.com/vapor/vapor) and b) I extracted much of what it does into [SwiftLSP](https://github.com/flowtoolz/SwiftLSP) and [FoundationToolz](https://github.com/flowtoolz/FoundationToolz).
+The LSPService package itself comprises very little code because a) it heavily leverages [Vapor](https://github.com/vapor/vapor) and b) I extracted much of what it does into [SwiftLSP](https://github.com/codeface-io/SwiftLSP) and [FoundationToolz](https://github.com/flowtoolz/FoundationToolz).
 
 ## Why?
 
@@ -130,7 +130,7 @@ The above image was created with the [Codeface.io](https://www.codeface.io) app.
 * [x] Evaluate whether to build a Swift package that helps clients of LSPService (that are written in Swift) to define, encode and decode LSP messages. Consider suggesting to extract that type system from [SwiftLSPClient](https://github.com/chimehq/SwiftLSPClient) and/or from sourcekit-lsp into a dedicated package.
 	* Result: Extraction already happened anyway in form of sourcekit-lsp's static library product `LSPBindings`. However, `LSPBindings` didn't work for decoding as it's decoding is entangled with matching requests to responses.
 	* Result: [SwiftLSPClient](https://github.com/chimehq/SwiftLSPClient)'s type system is incomplete and obviously not backed by Apple.
-	* Result: The idea to strictly type LSP messages down to every property seems inappropriate for their amorphous "free value" nature anyway. So we opt for a custom, simpler and more dynamic LSP type system (now as [SwiftLSP](https://github.com/flowtoolz/SwiftLSP)).
+	* Result: The idea to strictly type LSP messages down to every property seems inappropriate for their amorphous "free value" nature anyway. So we opt for a custom, simpler and more dynamic LSP type system (now as [SwiftLSP](https://github.com/codeface-io/SwiftLSP)).
 	
 * [x] Get a sourcekit-lsp client project to function with sourcekit-lsp at all, before moving on with LSPService
 
@@ -138,7 +138,7 @@ The above image was created with the [Codeface.io](https://www.codeface.io) app.
 
 * [x] Detect LSP packets properly (piece them together from server process output)
 
-* [x] Extract general LSP type system (not LSPService specific) into package [SwiftLSP](https://github.com/flowtoolz/SwiftLSP)
+* [x] Extract general LSP type system (not LSPService specific) into package [SwiftLSP](https://github.com/codeface-io/SwiftLSP)
 
 * [x] Build a Swift package that helps client editors written in Swift to use LSPService: [LSPServiceKit](https://github.com/codeface-io/LSPServiceKit)
 
