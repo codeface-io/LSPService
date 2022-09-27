@@ -24,6 +24,7 @@ let package = Package(
                 .product(name: "SwiftLSP", package: "SwiftLSP"),
                 .product(name: "SwiftyToolz", package: "SwiftyToolz")
             ],
+            path: "Sources",
             swiftSettings: [
                 // Enable better optimizations when building in Release configuration. Despite the use of
                 // the `.unsafeFlags` construct required by SwiftPM, this flag is recommended for Release
@@ -36,7 +37,8 @@ let package = Package(
             dependencies: [
                 .target(name: "LSPService"),
                 .product(name: "XCTVapor", package: "vapor"),
-            ]
+            ],
+            path: "Tests"
         )
     ]
 )
