@@ -33,13 +33,13 @@ struct RouteConfigurator {
         language.webSocket(":\(languageNameParameter)", "websocket",
                            maxFrameSize: 1048576) { request in
             let languageName = request.parameters.get(languageNameParameter)!
-            
+
             do {
                 try configureAndRunLanguageServer(forLanguage: languageName)
-                return request.eventLoop.makeSucceededFuture([:])
+                return .init()
             } catch {
-                log(error)
-                return request.eventLoop.makeSucceededFuture(nil)
+                SwiftyToolz.log(error.readable)
+                throw error
             }
         } onUpgrade: { request, newWebsocket in
             newWebsocket.onClose.whenComplete { result in
@@ -50,12 +50,12 @@ struct RouteConfigurator {
                     log(error: "WebSocket failed to close: \(error.localizedDescription)")
                 }
             }
-            
+
             newWebsocket.onBinary { ws, lspPacketBytes in
                 let lspPacket = Data(buffer: lspPacketBytes)
                 activeServerExecutable?.receive(input: lspPacket)
             }
-            
+
             activeWebSocket?.close(promise: nil)
             activeWebSocket = newWebsocket
         }
