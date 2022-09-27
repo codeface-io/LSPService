@@ -2,14 +2,39 @@
 import XCTVapor
 
 final class AppTests: XCTestCase {
-    func testHelloWorld() throws {
-//        let app = Application(.testing)
-//        defer { app.shutdown() }
-//        try setupLSPServiceAPI(on: app)
-//
-//        try app.test(.GET, "hello", afterResponse: { res in
-//            XCTAssertEqual(res.status, .ok)
-//            XCTAssertEqual(res.body.string, "Hello, world!")
-//        })
+    
+    func testNonExistingPathIsNotFound() throws {
+        let lspServiceApp = try LSPServiceApp(useTestEnvironment: true)
+        
+        try lspServiceApp.vaporApp.test(.GET, "invalidPath") { response in
+            XCTAssertEqual(response.status, .notFound)
+        }
+    }
+    
+    func testGetProcessID() throws {
+        let lspServiceApp = try LSPServiceApp(useTestEnvironment: true)
+        
+        try lspServiceApp.vaporApp.test(.GET, "lspservice/api/processID") { response in
+            XCTAssertEqual(response.status, .ok)
+            XCTAssertNotNil(Int(response.body.string))
+        }
+    }
+    
+    // TODO: how do we test the websocket route?
+//    func testGetSwiftWebSocket() throws {
+//        let lspServiceApp = try LSPServiceApp(useTestEnvironment: true)
+//        
+//        try lspServiceApp.vaporApp.test(.GET,
+//                                        "lspservice/api/swift/websocket") { response in
+//            XCTAssertEqual(response.status, .ok)
+//        }
+//    }
+    
+    func testConfigForLanguageOfRandomNameIsNotSet() throws {
+        XCTAssertNil(ServerExecutableConfigs.config(language: "jdfhbqrufghuidrgb"))
+    }
+    
+    func testSwiftConfigIsSet() throws {
+        XCTAssertNotNil(ServerExecutableConfigs.config(language: "swift"))
     }
 }

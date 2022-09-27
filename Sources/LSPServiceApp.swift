@@ -6,8 +6,8 @@ public class LSPServiceApp: LogObserver {
     
     // MARK: - Life Cycle
     
-    public init() throws {
-        vaporApp = try Self.makeVaporApp()
+    public init(useTestEnvironment: Bool = false) throws {
+        vaporApp = useTestEnvironment ? Application(.testing) : try Self.makeVaporApp()
         configureVaporApp()
         try RouteConfigurator().registerRoutes(on: vaporApp)
         Log.shared.minimumLevel = .off
@@ -49,5 +49,5 @@ public class LSPServiceApp: LogObserver {
         vaporApp.logger.logLevel = .debug
     }
     
-    private let vaporApp: Application
+    internal let vaporApp: Application
 }
