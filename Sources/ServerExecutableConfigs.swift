@@ -5,7 +5,7 @@ import SwiftyToolz
 struct ServerExecutableConfigs {
     
     static func config(language: String) -> Executable.Configuration? {
-        configs[language.lowercased()]
+        configs[language] ?? configs[language.lowercased()]
     }
     
     static func preload() {
