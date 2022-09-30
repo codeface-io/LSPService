@@ -51,9 +51,9 @@ struct RouteConfigurator {
                 }
             }
 
-            newWebsocket.onBinary { ws, lspPacketBytes in
-                let lspPacket = Data(buffer: lspPacketBytes)
-                activeServerExecutable?.receive(input: lspPacket)
+            newWebsocket.onBinary { ws, bufferedBytesFromWebSocket in
+                let dataFromWebSocket = Data(buffer: bufferedBytesFromWebSocket)
+                activeServerExecutable?.receive(input: dataFromWebSocket)
             }
 
             activeWebSocket?.close(promise: nil)
@@ -73,8 +73,8 @@ struct RouteConfigurator {
         activeServerExecutable?.stop()
         activeServerExecutable = newServerExecutable
         
-        newServerExecutable.didSend = { lspPacket in
-            activeWebSocket?.send([UInt8](lspPacket.data))
+        newServerExecutable.didSend = { packetFromServer in
+            activeWebSocket?.send([UInt8](packetFromServer.data))
         }
         
         newServerExecutable.didSendError = { stdErrData in
