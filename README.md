@@ -99,7 +99,7 @@ The above image was created with the [Codeface.io](https://www.codeface.io) app.
 
 ## Development Status
 
-From version/tag 0.1.0 on, LSPService adheres to [semantic versioning](https://semver.org). So until we've reached 1.0.0, the REST API or setup mechanism may still break frequently, but this will be expressed in version bumps.
+From version/tag 0.1.0 on, LSPService adheres to [semantic versioning](https://semver.org). So until it has reached 1.0.0, the REST API or setup mechanism may still break frequently, but this will be expressed in version bumps.
 
 LSPService is already being used in production, but [Codeface](https://codeface.io) is still its primary client. LSPService will move to version 1.0.0 as soon as:
 
