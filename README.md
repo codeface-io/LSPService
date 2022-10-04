@@ -1,6 +1,6 @@
 # LSPService
 
-👩🏻‍🚀 *This project is still a tad experimental. Contributors and pioneers welcome!*
+👩🏻‍🚀 *This project [is still a tad experimental](#development-status). Contributors and pioneers welcome!*
 
 ## What?
 
@@ -97,6 +97,15 @@ Here are the internal composition and dependencies of LSPService:
 
 The above image was created with the [Codeface.io](https://www.codeface.io) app.
 
+## Development Status
+
+From version/tag 0.1.0 on, LSPService adheres to [semantic versioning](https://semver.org). So until we've reached 1.0.0, the REST API or setup mechanism may still break frequently, but this will be expressed in version bumps.
+
+LSPService is already being used in production, but [Codeface](https://codeface.io) is still its primary client. LSPService will move to version 1.0.0 as soon as:
+
+1. Basic practicality and conceptual soundness have been validated by serving multiple real-world clients.
+2. LSPService has a versioning mechanism (see roadmap).
+
 ## To Do / Roadmap
 
 * [x] Implement proof of concept with WebSockets and sourcekit-lsp
@@ -162,6 +171,13 @@ The above image was created with the [Codeface.io](https://www.codeface.io) app.
   
 * Result: [it does](https://apps.apple.com/app/codeface/id1578175415) 🥳. The second update was also accepted with full on promotion of features that depend on LSPService, but still referencing LSPService only from within the app.
   
+* [ ] 🔢 Add a versioning mechanism that allows developing LSPService while multiple editors/clients depend on it. This may need to involve:
+  * The REST API provides available versions via a GET request
+  * The REST API includes explicit version numbers in its endpoint URLs
+  * LSPService outputs its version on launch
+  * Downloadable binaries somehow indicate their version
+  * Codeface (as proof of concept by the pioneering client) can handle an outdated installation of LSPService
+
 * [ ] ✍🏻 Sign/notarize LSPService so it's easier to install and trust
   
 * [ ] 🐍 Experiment again with python language servers (and get one to work)
