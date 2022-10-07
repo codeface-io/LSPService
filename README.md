@@ -51,10 +51,10 @@ A user or admin **should** configure `LSPService` by editing `LSPServiceConfig.j
     - `swift build --configuration release --arch x86_64`
     - get them from `.build/<target architecture>/release/LSPService`
     - upload them somewhere ...
-  * ... or just use the [download links](https://www.codeface.io/blog/posts/using-lsp-servers-in-codeface-via-lspservice/index.html) I provide for Codeface
+  * ... or just use the [download links](https://codeface.io/blog/posts/using-lsp-servers-in-codeface-via-lspservice/index.html) I provide for Codeface
 3. Let your editor encourage users to download and run `LSPService`:
   * Succinctly describe which features LSPService unlocks.
-  * Offer a link to a user friendly download page (or similar), like [this one](https://www.codeface.io/blog/posts/using-lsp-servers-in-codeface-via-lspservice/index.html).
+  * Offer a link to a user friendly download page (or similar), like [this one](https://codeface.io/blog/posts/using-lsp-servers-in-codeface-via-lspservice/index.html).
 
 ## API
 
@@ -95,7 +95,7 @@ Here are the internal composition and dependencies of LSPService:
 
 ![](Documentation/architecture.png)
 
-The above image was created with the [Codeface.io](https://www.codeface.io) app.
+The above image was created with the [Codeface.io](https://codeface.io) app.
 
 ## Development Status
 
