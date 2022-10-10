@@ -68,14 +68,12 @@ struct RouteConfigurator {
             throw "No LSP server config found for language \(lang.capitalized)"
         }
         
-        let newServerExecutable = try LSP.ServerExecutable(config: config)
+        let newServerExecutable = try LSP.ServerExecutable(config: config) { packetFromServer in
+            activeWebSocket?.send([UInt8](packetFromServer.data))
+        }
         
         activeServerExecutable?.stop()
         activeServerExecutable = newServerExecutable
-        
-        newServerExecutable.didSend = { packetFromServer in
-            activeWebSocket?.send([UInt8](packetFromServer.data))
-        }
         
         newServerExecutable.didSendError = { stdErrData in
             guard stdErrData.count > 0, var stdErrString = stdErrData.utf8String else {

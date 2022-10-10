@@ -1,4 +1,4 @@
-// swift-tools-version:5.7
+// swift-tools-version:5.6
 import PackageDescription
 
 let package = Package(
@@ -10,10 +10,14 @@ let package = Package(
         .executable(name: "LSPService", targets: ["LSPService"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/vapor/vapor.git", from: "4.57.0"),
-        .package(url: "https://github.com/flowtoolz/FoundationToolz.git", branch: "master"),
-        .package(url: "https://github.com/codeface-io/SwiftLSP.git", branch: "master"),
-        .package(url: "https://github.com/flowtoolz/SwiftyToolz.git", branch: "master")
+        .package(url: "https://github.com/vapor/vapor.git",
+                 from: "4.57.0"),
+        .package(url: "https://github.com/codeface-io/SwiftLSP.git",
+                 exact: "0.3.0"),
+        .package(url: "https://github.com/flowtoolz/FoundationToolz.git",
+                 exact: "0.1.0"),
+        .package(url: "https://github.com/flowtoolz/SwiftyToolz.git",
+                 exact: "0.1.0")
     ],
     targets: [
         .executableTarget(
