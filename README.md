@@ -8,7 +8,8 @@
 
 LSPService is a local web service that allows editors to talk to any local [LSP language server](https://langserver.org) via [WebSocket](https://en.wikipedia.org/wiki/WebSocket):
 
-![](Documentation/lspservice_idea.jpg)
+![](Documentation/lspservice_idea_dark.png#gh-dark-mode-only)
+![](Documentation/lspservice_idea_light.png#gh-light-mode-only)
 
 I use mainly the [Swift language server (sourcekit-lsp)](https://github.com/apple/sourcekit-lsp) as my example language server, and LSPService is itself written in Swift. **But in principle, LSPService runs on macOS and Linux and can connect to all language servers**. 
 
