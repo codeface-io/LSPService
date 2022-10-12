@@ -11,7 +11,7 @@ LSPService is a local web service that allows editors to talk to any local [LSP 
 ![](Documentation/lspservice_idea_dark.png#gh-dark-mode-only)
 ![](Documentation/lspservice_idea_light.png#gh-light-mode-only)
 
-I use mainly the [Swift language server (sourcekit-lsp)](https://github.com/apple/sourcekit-lsp) as my example language server, and LSPService is itself written in Swift. **But in principle, LSPService runs on macOS and Linux and can connect to all language servers**. 
+LSPService is itself written in Swift and also mainly tested with the [Swift language server (sourcekit-lsp)](https://github.com/apple/sourcekit-lsp). **But in principle, LSPService can connect to all language servers and will run on Linux in the future**.
 
 The LSPService package itself comprises very little code because a) it heavily leverages [Vapor](https://github.com/vapor/vapor) and b) I extracted much of what it does into [SwiftLSP](https://github.com/codeface-io/SwiftLSP) and [FoundationToolz](https://github.com/flowtoolz/FoundationToolz).
 
