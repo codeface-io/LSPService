@@ -11,7 +11,7 @@ LSPService is a local web service that allows editors to talk to any local [LSP 
 ![](Documentation/lspservice_idea_dark.png#gh-dark-mode-only)
 ![](Documentation/lspservice_idea_light.png#gh-light-mode-only)
 
-LSPService is itself written in Swift and also mainly tested with the [Swift language server (sourcekit-lsp)](https://github.com/apple/sourcekit-lsp). **But in principle, LSPService can connect to all language servers and will run on Linux in the future**.
+LSPService is itself written in Swift and also mainly tested with the [Swift language server (sourcekit-lsp)](https://github.com/apple/sourcekit-lsp). **But in principle, LSPService can connect to all language servers and Linux support can easily be added in the future**.
 
 The LSPService package itself comprises very little code because a) it heavily leverages [Vapor](https://github.com/vapor/vapor) and b) I extracted much of what it does into [SwiftLSP](https://github.com/codeface-io/SwiftLSP) and [FoundationToolz](https://github.com/flowtoolz/FoundationToolz).
 
@@ -94,11 +94,11 @@ The root of the LSPService API is `http://127.0.0.1:8080/lspservice/api/`.
 
 ## Architecture
 
-Here are the internal composition and dependencies of LSPService:
+Here is the internal architecture (composition and [essential](https://en.wikipedia.org/wiki/Transitive_reduction#In_acyclic_directed_graphs) dependencies) of LSPService:
 
 ![](Documentation/architecture.png)
 
-The above image was created with the [Codeface.io](https://codeface.io) app.
+The above image was generated with [Codeface](https://codeface.io).
 
 ## Development Status
 
@@ -179,7 +179,7 @@ LSPService is already being used in production, but [Codeface](https://codeface.
   * The REST API includes explicit version numbers in its endpoint URLs
   * LSPService outputs its version on launch
   * Downloadable binaries somehow indicate their version
-  * Codeface (as proof of concept by the pioneering client) can handle an outdated installation of LSPService
+  * Codeface (as proof of concept by the pioneering client) can handle an outdated LSPService
 
 * [ ] ✍🏻 Sign/notarize LSPService so it's easier to install and trust
   
