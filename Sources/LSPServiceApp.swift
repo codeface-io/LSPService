@@ -2,8 +2,14 @@ import Vapor
 import Foundation
 import SwiftyToolz
 
+@main
 public class LSPServiceApp: LogObserver {
     
+    static func main() throws {
+        let lspServiceApp = try LSPServiceApp()
+        try lspServiceApp.run()
+    }
+
     // MARK: - Life Cycle
     
     public init(useTestEnvironment: Bool = false) throws {
