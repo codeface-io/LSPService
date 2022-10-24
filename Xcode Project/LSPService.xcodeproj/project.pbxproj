@@ -33,6 +33,9 @@
 		9674732029072519008D06F5 /* ServerExecutableConfigs.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ServerExecutableConfigs.swift; path = ../Sources/ServerExecutableConfigs.swift; sourceTree = "<group>"; };
 		9674732229072598008D06F5 /* LSPServiceApp.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = LSPServiceApp.swift; path = ../Sources/LSPServiceApp.swift; sourceTree = "<group>"; };
 		96A3A5D029071C4B0099F3EB /* LSPService */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = LSPService; sourceTree = BUILT_PRODUCTS_DIR; };
+		96EAC22629073CC1009545F9 /* FoundationToolz */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = FoundationToolz; path = ../../FoundationToolz; sourceTree = "<group>"; };
+		96EAC22729073CC9009545F9 /* SwiftLSP */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = SwiftLSP; path = ../../SwiftLSP; sourceTree = "<group>"; };
+		96EAC22929073D07009545F9 /* SwiftyToolz */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = SwiftyToolz; path = ../../SwiftyToolz; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -56,6 +59,9 @@
 				9674732229072598008D06F5 /* LSPServiceApp.swift */,
 				9674732029072519008D06F5 /* ServerExecutableConfigs.swift */,
 				9674731B29072392008D06F5 /* RouteConfigurator.swift */,
+				96EAC22729073CC9009545F9 /* SwiftLSP */,
+				96EAC22629073CC1009545F9 /* FoundationToolz */,
+				96EAC22929073D07009545F9 /* SwiftyToolz */,
 				96A3A5D129071C4B0099F3EB /* Products */,
 			);
 			sourceTree = "<group>";
