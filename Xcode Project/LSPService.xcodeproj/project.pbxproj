@@ -1,0 +1,350 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		9674731429071DBC008D06F5 /* SwiftyToolz in Frameworks */ = {isa = PBXBuildFile; productRef = 9674731329071DBC008D06F5 /* SwiftyToolz */; };
+		9674731729071E04008D06F5 /* FoundationToolz in Frameworks */ = {isa = PBXBuildFile; productRef = 9674731629071E04008D06F5 /* FoundationToolz */; };
+		9674731A29072203008D06F5 /* SwiftLSP in Frameworks */ = {isa = PBXBuildFile; productRef = 9674731929072203008D06F5 /* SwiftLSP */; };
+		96A3A5DB29071C750099F3EB /* TestSomeShit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96A3A5DA29071C750099F3EB /* TestSomeShit.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		96A3A5CE29071C4B0099F3EB /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		96A3A5D029071C4B0099F3EB /* LSPService */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = LSPService; sourceTree = BUILT_PRODUCTS_DIR; };
+		96A3A5DA29071C750099F3EB /* TestSomeShit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestSomeShit.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		96A3A5CD29071C4B0099F3EB /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9674731A29072203008D06F5 /* SwiftLSP in Frameworks */,
+				9674731729071E04008D06F5 /* FoundationToolz in Frameworks */,
+				9674731429071DBC008D06F5 /* SwiftyToolz in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		96A3A5C729071C4B0099F3EB = {
+			isa = PBXGroup;
+			children = (
+				96A3A5D229071C4B0099F3EB /* LSPService */,
+				96A3A5D129071C4B0099F3EB /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		96A3A5D129071C4B0099F3EB /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				96A3A5D029071C4B0099F3EB /* LSPService */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		96A3A5D229071C4B0099F3EB /* LSPService */ = {
+			isa = PBXGroup;
+			children = (
+				96A3A5DA29071C750099F3EB /* TestSomeShit.swift */,
+			);
+			path = LSPService;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		96A3A5CF29071C4B0099F3EB /* LSPService */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 96A3A5D729071C4B0099F3EB /* Build configuration list for PBXNativeTarget "LSPService" */;
+			buildPhases = (
+				96A3A5CC29071C4B0099F3EB /* Sources */,
+				96A3A5CD29071C4B0099F3EB /* Frameworks */,
+				96A3A5CE29071C4B0099F3EB /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = LSPService;
+			packageProductDependencies = (
+				9674731329071DBC008D06F5 /* SwiftyToolz */,
+				9674731629071E04008D06F5 /* FoundationToolz */,
+				9674731929072203008D06F5 /* SwiftLSP */,
+			);
+			productName = LSPService;
+			productReference = 96A3A5D029071C4B0099F3EB /* LSPService */;
+			productType = "com.apple.product-type.tool";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		96A3A5C829071C4B0099F3EB /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1400;
+				LastUpgradeCheck = 1400;
+				TargetAttributes = {
+					96A3A5CF29071C4B0099F3EB = {
+						CreatedOnToolsVersion = 14.0;
+					};
+				};
+			};
+			buildConfigurationList = 96A3A5CB29071C4B0099F3EB /* Build configuration list for PBXProject "LSPService" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 96A3A5C729071C4B0099F3EB;
+			packageReferences = (
+				9674731229071DBC008D06F5 /* XCRemoteSwiftPackageReference "SwiftyToolz" */,
+				9674731529071E04008D06F5 /* XCRemoteSwiftPackageReference "FoundationToolz" */,
+				9674731829072203008D06F5 /* XCRemoteSwiftPackageReference "SwiftLSP" */,
+			);
+			productRefGroup = 96A3A5D129071C4B0099F3EB /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				96A3A5CF29071C4B0099F3EB /* LSPService */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		96A3A5CC29071C4B0099F3EB /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				96A3A5DB29071C750099F3EB /* TestSomeShit.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		96A3A5D529071C4B0099F3EB /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 12.3;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		96A3A5D629071C4B0099F3EB /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 12.3;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = macosx;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+			};
+			name = Release;
+		};
+		96A3A5D829071C4B0099F3EB /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 8T3R57GCBV;
+				ENABLE_HARDENED_RUNTIME = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		96A3A5D929071C4B0099F3EB /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 8T3R57GCBV;
+				ENABLE_HARDENED_RUNTIME = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		96A3A5CB29071C4B0099F3EB /* Build configuration list for PBXProject "LSPService" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				96A3A5D529071C4B0099F3EB /* Debug */,
+				96A3A5D629071C4B0099F3EB /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		96A3A5D729071C4B0099F3EB /* Build configuration list for PBXNativeTarget "LSPService" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				96A3A5D829071C4B0099F3EB /* Debug */,
+				96A3A5D929071C4B0099F3EB /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		9674731229071DBC008D06F5 /* XCRemoteSwiftPackageReference "SwiftyToolz" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/flowtoolz/SwiftyToolz";
+			requirement = {
+				kind = exactVersion;
+				version = 0.1.0;
+			};
+		};
+		9674731529071E04008D06F5 /* XCRemoteSwiftPackageReference "FoundationToolz" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/flowtoolz/FoundationToolz";
+			requirement = {
+				kind = exactVersion;
+				version = 0.1.0;
+			};
+		};
+		9674731829072203008D06F5 /* XCRemoteSwiftPackageReference "SwiftLSP" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/codeface-io/SwiftLSP";
+			requirement = {
+				kind = exactVersion;
+				version = 0.3.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		9674731329071DBC008D06F5 /* SwiftyToolz */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 9674731229071DBC008D06F5 /* XCRemoteSwiftPackageReference "SwiftyToolz" */;
+			productName = SwiftyToolz;
+		};
+		9674731629071E04008D06F5 /* FoundationToolz */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 9674731529071E04008D06F5 /* XCRemoteSwiftPackageReference "FoundationToolz" */;
+			productName = FoundationToolz;
+		};
+		9674731929072203008D06F5 /* SwiftLSP */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 9674731829072203008D06F5 /* XCRemoteSwiftPackageReference "SwiftLSP" */;
+			productName = SwiftLSP;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = 96A3A5C829071C4B0099F3EB /* Project object */;
+}

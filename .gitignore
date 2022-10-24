@@ -2,4 +2,3 @@ xcuserdata/
 .build/
 .swiftpm/
 Package.resolved
-*.xcodeproj
