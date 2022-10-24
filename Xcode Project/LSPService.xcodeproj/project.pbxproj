@@ -13,7 +13,7 @@
 		9674731C29072392008D06F5 /* RouteConfigurator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9674731B29072392008D06F5 /* RouteConfigurator.swift */; };
 		9674731F290724AC008D06F5 /* Vapor in Frameworks */ = {isa = PBXBuildFile; productRef = 9674731E290724AC008D06F5 /* Vapor */; };
 		9674732129072519008D06F5 /* ServerExecutableConfigs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9674732029072519008D06F5 /* ServerExecutableConfigs.swift */; };
-		96A3A5DB29071C750099F3EB /* TestSomeShit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96A3A5DA29071C750099F3EB /* TestSomeShit.swift */; };
+		9674732329072598008D06F5 /* LSPServiceApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9674732229072598008D06F5 /* LSPServiceApp.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -31,8 +31,8 @@
 /* Begin PBXFileReference section */
 		9674731B29072392008D06F5 /* RouteConfigurator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = RouteConfigurator.swift; path = ../Sources/RouteConfigurator.swift; sourceTree = "<group>"; };
 		9674732029072519008D06F5 /* ServerExecutableConfigs.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ServerExecutableConfigs.swift; path = ../Sources/ServerExecutableConfigs.swift; sourceTree = "<group>"; };
+		9674732229072598008D06F5 /* LSPServiceApp.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = LSPServiceApp.swift; path = ../Sources/LSPServiceApp.swift; sourceTree = "<group>"; };
 		96A3A5D029071C4B0099F3EB /* LSPService */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = LSPService; sourceTree = BUILT_PRODUCTS_DIR; };
-		96A3A5DA29071C750099F3EB /* TestSomeShit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestSomeShit.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -53,9 +53,9 @@
 		96A3A5C729071C4B0099F3EB = {
 			isa = PBXGroup;
 			children = (
+				9674732229072598008D06F5 /* LSPServiceApp.swift */,
 				9674732029072519008D06F5 /* ServerExecutableConfigs.swift */,
 				9674731B29072392008D06F5 /* RouteConfigurator.swift */,
-				96A3A5D229071C4B0099F3EB /* LSPService */,
 				96A3A5D129071C4B0099F3EB /* Products */,
 			);
 			sourceTree = "<group>";
@@ -66,14 +66,6 @@
 				96A3A5D029071C4B0099F3EB /* LSPService */,
 			);
 			name = Products;
-			sourceTree = "<group>";
-		};
-		96A3A5D229071C4B0099F3EB /* LSPService */ = {
-			isa = PBXGroup;
-			children = (
-				96A3A5DA29071C750099F3EB /* TestSomeShit.swift */,
-			);
-			path = LSPService;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -148,7 +140,7 @@
 			files = (
 				9674731C29072392008D06F5 /* RouteConfigurator.swift in Sources */,
 				9674732129072519008D06F5 /* ServerExecutableConfigs.swift in Sources */,
-				96A3A5DB29071C750099F3EB /* TestSomeShit.swift in Sources */,
+				9674732329072598008D06F5 /* LSPServiceApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
