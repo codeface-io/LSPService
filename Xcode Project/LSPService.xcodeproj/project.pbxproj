@@ -10,6 +10,9 @@
 		9674731429071DBC008D06F5 /* SwiftyToolz in Frameworks */ = {isa = PBXBuildFile; productRef = 9674731329071DBC008D06F5 /* SwiftyToolz */; };
 		9674731729071E04008D06F5 /* FoundationToolz in Frameworks */ = {isa = PBXBuildFile; productRef = 9674731629071E04008D06F5 /* FoundationToolz */; };
 		9674731A29072203008D06F5 /* SwiftLSP in Frameworks */ = {isa = PBXBuildFile; productRef = 9674731929072203008D06F5 /* SwiftLSP */; };
+		9674731C29072392008D06F5 /* RouteConfigurator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9674731B29072392008D06F5 /* RouteConfigurator.swift */; };
+		9674731F290724AC008D06F5 /* Vapor in Frameworks */ = {isa = PBXBuildFile; productRef = 9674731E290724AC008D06F5 /* Vapor */; };
+		9674732129072519008D06F5 /* ServerExecutableConfigs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9674732029072519008D06F5 /* ServerExecutableConfigs.swift */; };
 		96A3A5DB29071C750099F3EB /* TestSomeShit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96A3A5DA29071C750099F3EB /* TestSomeShit.swift */; };
 /* End PBXBuildFile section */
 
@@ -26,6 +29,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		9674731B29072392008D06F5 /* RouteConfigurator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = RouteConfigurator.swift; path = ../Sources/RouteConfigurator.swift; sourceTree = "<group>"; };
+		9674732029072519008D06F5 /* ServerExecutableConfigs.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ServerExecutableConfigs.swift; path = ../Sources/ServerExecutableConfigs.swift; sourceTree = "<group>"; };
 		96A3A5D029071C4B0099F3EB /* LSPService */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = LSPService; sourceTree = BUILT_PRODUCTS_DIR; };
 		96A3A5DA29071C750099F3EB /* TestSomeShit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestSomeShit.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -36,6 +41,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				9674731A29072203008D06F5 /* SwiftLSP in Frameworks */,
+				9674731F290724AC008D06F5 /* Vapor in Frameworks */,
 				9674731729071E04008D06F5 /* FoundationToolz in Frameworks */,
 				9674731429071DBC008D06F5 /* SwiftyToolz in Frameworks */,
 			);
@@ -47,6 +53,8 @@
 		96A3A5C729071C4B0099F3EB = {
 			isa = PBXGroup;
 			children = (
+				9674732029072519008D06F5 /* ServerExecutableConfigs.swift */,
+				9674731B29072392008D06F5 /* RouteConfigurator.swift */,
 				96A3A5D229071C4B0099F3EB /* LSPService */,
 				96A3A5D129071C4B0099F3EB /* Products */,
 			);
@@ -88,6 +96,7 @@
 				9674731329071DBC008D06F5 /* SwiftyToolz */,
 				9674731629071E04008D06F5 /* FoundationToolz */,
 				9674731929072203008D06F5 /* SwiftLSP */,
+				9674731E290724AC008D06F5 /* Vapor */,
 			);
 			productName = LSPService;
 			productReference = 96A3A5D029071C4B0099F3EB /* LSPService */;
@@ -121,6 +130,7 @@
 				9674731229071DBC008D06F5 /* XCRemoteSwiftPackageReference "SwiftyToolz" */,
 				9674731529071E04008D06F5 /* XCRemoteSwiftPackageReference "FoundationToolz" */,
 				9674731829072203008D06F5 /* XCRemoteSwiftPackageReference "SwiftLSP" */,
+				9674731D290724AC008D06F5 /* XCRemoteSwiftPackageReference "vapor" */,
 			);
 			productRefGroup = 96A3A5D129071C4B0099F3EB /* Products */;
 			projectDirPath = "";
@@ -136,6 +146,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9674731C29072392008D06F5 /* RouteConfigurator.swift in Sources */,
+				9674732129072519008D06F5 /* ServerExecutableConfigs.swift in Sources */,
 				96A3A5DB29071C750099F3EB /* TestSomeShit.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -326,6 +338,14 @@
 				version = 0.3.0;
 			};
 		};
+		9674731D290724AC008D06F5 /* XCRemoteSwiftPackageReference "vapor" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/vapor/vapor.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 4.57.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -343,6 +363,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 9674731829072203008D06F5 /* XCRemoteSwiftPackageReference "SwiftLSP" */;
 			productName = SwiftLSP;
+		};
+		9674731E290724AC008D06F5 /* Vapor */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 9674731D290724AC008D06F5 /* XCRemoteSwiftPackageReference "vapor" */;
+			productName = Vapor;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
