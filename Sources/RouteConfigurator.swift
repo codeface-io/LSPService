@@ -45,7 +45,7 @@ struct RouteConfigurator {
             newWebsocket.onClose.whenComplete { result in
                 switch result {
                 case .success:
-                    log("WebSocket did close")
+                    log("WebSocket did close without error")
                 case .failure(let error):
                     log(error: "WebSocket failed to close: \(error.localizedDescription)")
                 }
@@ -89,6 +89,13 @@ struct RouteConfigurator {
         }
         
         newServerExecutable.didTerminate = {
+            /**
+             FIXME: sometimes the server terminates but this handler is never called, leading to this log:
+             
+             ℹ️ Running LSP server /Users/seb/Desktop/sourcekit-lsp
+             ℹ️ ServerExecutable terminated. code: 2
+             ℹ️ WebSocket did close
+             */
             log(warning: "\(lang.capitalized) language server did terminate")
             
             guard let ws = activeWebSocket, !ws.isClosed else { return }
@@ -103,6 +110,8 @@ struct RouteConfigurator {
             ws.send("\(lang.capitalized) language server did terminate. LSPService will close the websocket.",
                     promise: errorFeedbackWasSent)
         }
+        
+        log("Running LSP server " + config.path)
 
         newServerExecutable.run()
     }
