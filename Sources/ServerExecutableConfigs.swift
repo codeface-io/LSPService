@@ -19,6 +19,10 @@ struct ServerExecutableConfigs {
     private static func loadConfigs() -> Configs {
         let filePath = Bundle.main.bundlePath + "/LSPServiceConfig.json"
         
+//        if isDebugBuild {
+//            return [ "swift": .init(path: "/Users/seb/Desktop/sourcekit-lsp") ]
+//        }
+        
         if let configsFromFile = Configs(fromFilePath: filePath), !configsFromFile.isEmpty {
             return configsFromFile
         }
@@ -38,6 +42,14 @@ struct ServerExecutableConfigs {
         
         return hardcodedConfigs
     }
+    
+//    private static var isDebugBuild: Bool {
+//        #if DEBUG
+//        true
+//        #else
+//        false
+//        #endif
+//    }
     
     typealias Configs = [LanguageKey: Executable.Configuration]
     typealias LanguageKey = String
