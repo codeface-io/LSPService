@@ -3,7 +3,7 @@ import Foundation
 import SwiftyToolz
 
 @main
-public class LSPServiceApp: LogObserver {
+public class LSPServiceApp {
     
     static func main() throws {
         let lspServiceApp = try LSPServiceApp()
@@ -16,27 +16,10 @@ public class LSPServiceApp: LogObserver {
         vaporApp = useTestEnvironment ? Application(.testing) : try Self.makeVaporApp()
         configureVaporApp()
         try RouteConfigurator().registerRoutes(on: vaporApp)
-        Log.shared.minimumLevel = .off
-        Log.shared.add(observer: self)
         ServerExecutableConfigs.preload()
     }
     
     deinit { vaporApp.shutdown() }
-    
-    // MARK: - Logging
-    
-    public func receive(_ entry: Log.Entry) {
-        switch entry.level {
-        case .info:
-            vaporApp.logger.info("\(entry.description)")
-        case .warning:
-            vaporApp.logger.warning("\(entry.description)")
-        case .error:
-            vaporApp.logger.error("\(entry.description)")
-        case .off:
-            break
-        }
-    }
     
     // MARK: - Vapor App
     
