@@ -28,9 +28,7 @@ struct ServerExecutableConfigs {
         }
         
         let hardcodedConfigs: Configs = [
-            "swift": .init(path: "/usr/bin/xcrun",
-                           arguments: ["sourcekit-lsp"],
-                           environment: ["SOURCEKIT_LOGGING": "0"]),
+            "swift": .sourceKitLSP
             //            "python": .init(executablePath: "/Library/Frameworks/Python.framework/Versions/3.9/bin/pyls",
             //                            arguments: [])
         ]
