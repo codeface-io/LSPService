@@ -45,7 +45,7 @@ A user or admin **should** configure `LSPService` by editing `LSPServiceConfig.j
 ### As the Developer of an Editor
 
 1. Let your editor use LSPService:
-  * [The API](#API) allows connecting to a language server via WebSocket.
+  * [Make a WebSocket connection to LSPService](#Developing-an-Editor) for a specified language.
   * If you write the editor in Swift, you may use [LSPServiceKit](https://github.com/codeface-io/LSPServiceKit).
   * If you want to put your editor into the Mac App Store: Ensure it's also valuable without LSPService. This may help with the review process.
 2. Provide downloads of the LSPService binaries (for Apple + Intel chips) to your users:
@@ -59,7 +59,7 @@ A user or admin **should** configure `LSPService` by editing `LSPServiceConfig.j
   * Succinctly describe which features LSPService unlocks.
   * Offer a link to a user friendly download page (or similar), like [this one](https://codeface.io/blog/posts/using-lsp-servers-in-codeface-via-lspservice/index.html).
 
-## Using the API
+## Developing an Editor
 
 ### Editor vs. LSPService – Who's Responsible?
 
@@ -69,12 +69,14 @@ LSPService forwards LSP messages from some editor (incoming via WebSockets) to s
 
 The editor, on the other hand, knows nothing about how to talk to-, locate and launch language servers. Those remain concerns of LSPService.
 
-### Using the WebSocket
+### The WebSocket
+
+* See [LSPServiceKit](https://github.com/codeface-io/LSPServiceKit) as example code or use it directly if your client is written in Swift.
 
 * LSPService has basically one endpoint. You connect to a websocket on it in order to talk to the language server associated with language `<lang>`: 
 
 	```
-	http://127.0.0.1:8080/lspservice/api/`language/<lang>/websocket
+	http://127.0.0.1:8080/lspservice/api/language/<lang>/websocket
 	```
 
 * Depending on the frameworks you use, you may need to set the URL scheme `ws://` explicitly.
@@ -171,7 +173,7 @@ LSPService is already being used in production, but [Codeface](https://codeface.
   
 * Result: [it does](https://apps.apple.com/app/codeface/id1578175415) 🥳. The second update was also accepted with full on promotion of features that depend on LSPService, but still referencing LSPService only from within the app.
   
-* [ ] 🙅🏼‍♂️ Research: There are new indications we might be able to launch LSP servers from the sandbox via XPC afterall. This would delight users (of [Codeface](https://codeface.io)) and make LSPService basically **obsolete** ...
+* [ ] 🙅🏼‍♂️ Research: There are new indications we might be able to launch LSP servers from the sandbox via XPC afterall. This would delight users (of [Codeface](https://codeface.io)) and add a whole new technical pathway (and package product) to LSPService.
 * [ ] 🔢 Add a versioning mechanism that allows developing LSPService while multiple editors/clients depend on it. This may need to involve:
   * The REST API provides available versions via a GET request
   * The REST API includes explicit version numbers in its endpoint URLs
