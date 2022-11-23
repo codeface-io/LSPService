@@ -59,7 +59,7 @@ A user or admin **should** configure `LSPService` by editing `LSPServiceConfig.j
   * Succinctly describe which features LSPService unlocks.
   * Offer a link to a user friendly download page (or similar), like [this one](https://codeface.io/blog/posts/using-lsp-servers-in-codeface-via-lspservice/index.html).
 
-## API
+## Using the API
 
 ### Editor vs. LSPService – Who's Responsible?
 
@@ -69,16 +69,13 @@ LSPService forwards LSP messages from some editor (incoming via WebSockets) to s
 
 The editor, on the other hand, knows nothing about how to talk to-, locate and launch language servers. Those remain concerns of LSPService.
 
-### Endpoints
-
-The root of the LSPService API is `http://127.0.0.1:8080/lspservice/api/`.
-
-| URL Path |     Types     |      Methods | Usage |
-| :------------ | :---------- | :---------- |:----------- |
-| `processID` | `Int` | `GET` | Get process ID of LSPService, to set it in the [LSP initialize request](https://microsoft.github.io/language-server-protocol/specification#initialize). |
-| `language/<lang>/websocket` | `Data`, `String` | WebSocket | Connect and talk to the language server associated with language `<lang>`. |
-
 ### Using the WebSocket
+
+* LSPService has basically one endpoint. You connect to a websocket on it in order to talk to the language server associated with language `<lang>`: 
+
+	```
+	http://127.0.0.1:8080/lspservice/api/`language/<lang>/websocket
+	```
 
 * Depending on the frameworks you use, you may need to set the URL scheme `ws://` explicitly.
 

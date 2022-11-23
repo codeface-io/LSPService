@@ -20,10 +20,6 @@ struct RouteConfigurator {
     // MARK: - API
 
     private func registerRoutes(onAPI api: RoutesBuilder) {
-        api.on(.GET, "processID") { _ in
-            Int(ProcessInfo.processInfo.processIdentifier)
-        }
-        
         registerRoutes(onLanguage: api.grouped("language"))
     }
 
