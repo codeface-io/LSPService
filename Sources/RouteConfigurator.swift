@@ -40,6 +40,11 @@ struct RouteConfigurator {
         } onUpgrade: { request, newWebsocket in
             // FIXME: fucking Vapor calls this handler and provides the WebSocket for configuration AFTER returning a websocket connection to the client! that means the client (Codeface) might (and does!) send data to the websocket before Vapor gives us a chance to configure the damn thing! 🤬
             
+            newWebsocket.onBinary { ws, bufferedBytesFromWebSocket in
+                let dataFromWebSocket = Data(buffer: bufferedBytesFromWebSocket)
+                activeServerExecutable?.receive(input: dataFromWebSocket)
+            }
+            
             newWebsocket.onClose.whenComplete { result in
                 switch result {
                 case .success:
@@ -47,11 +52,6 @@ struct RouteConfigurator {
                 case .failure(let error):
                     log(error: "WebSocket failed to close: \(error.localizedDescription)")
                 }
-            }
-
-            newWebsocket.onBinary { ws, bufferedBytesFromWebSocket in
-                let dataFromWebSocket = Data(buffer: bufferedBytesFromWebSocket)
-                activeServerExecutable?.receive(input: dataFromWebSocket)
             }
 
             activeWebSocket?.close(promise: nil)
