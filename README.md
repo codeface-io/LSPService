@@ -173,7 +173,11 @@ LSPService is already being used in production, but [Codeface](https://codeface.
   
 * Result: [it does](https://apps.apple.com/app/codeface/id1578175415) 🥳. The second update was also accepted with full on promotion of features that depend on LSPService, but still referencing LSPService only from within the app.
   
-* [ ] 🙅🏼‍♂️ Research: There are new indications we might be able to launch LSP servers from the sandbox via XPC afterall. This would delight users (of [Codeface](https://codeface.io)) and add a whole new technical pathway (and package product) to LSPService.
+* [x] Research: There are new indications we might be able to launch LSP servers from the sandbox via XPC afterall. This would delight users (of [Codeface](https://codeface.io)) and add a whole new technical pathway (and package product) to LSPService.
+    * Result: No success. It seems to be impossible, so we stick to LSPService and WebSockets.
+
+* [ ] 🐣 Make LSPService independent of LSP and turn it into a service that allows any app to use any local executable ("LocalSocket"?). Also add endpoints that allow the client app to configure LSPService so the client can even provide a graphical UI for that.
+
 * [ ] 🔢 Add a versioning mechanism that allows developing LSPService while multiple editors/clients depend on it. This may need to involve:
   * The REST API provides available versions via a GET request
   * The REST API includes explicit version numbers in its endpoint URLs
@@ -182,7 +186,7 @@ LSPService is already being used in production, but [Codeface](https://codeface.
   * Codeface (as proof of concept by the pioneering client) can handle an outdated LSPService
 
 * [ ] ✍🏻 Sign/notarize LSPService so it's easier to install and trust
-  
+
 * [ ] 🐍 Experiment again with python language servers (and get one to work)
 
 * [ ] 📢 Get this project out there: documentation, promo, collaboration, contact potential client apps etc. ...
