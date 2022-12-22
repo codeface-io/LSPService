@@ -6,7 +6,7 @@ import SwiftyToolz
 struct RouteConfigurator {
 
     func registerRoutes(on app: Application) throws {
-        app.on(.GET) { req in
+        app.get { req in
             "LSPService Endpoints (Vapor Routes):\n\(routeList(for: app))"
         }
         
@@ -20,10 +20,19 @@ struct RouteConfigurator {
     // MARK: - API
 
     private func registerRoutes(onAPI api: RoutesBuilder) {
-        registerRoutes(onLanguage: api.grouped("language"))
+        registerWebSocketRoute(onLanguage: api.grouped("language"))
     }
 
-    private func registerRoutes(onLanguage language: RoutesBuilder) {
+    /**
+     FIXME: Vapor calls `onUpgrade` and provides us the WebSocket for configuration AFTER returning a WebSocket connection to the client!
+     
+     That means the client (Codeface) might (and does!) send data via the WebSocket before Vapor gives us a chance to even configure the damn thing! 🤬
+     
+     Current workaround in Codeface is merely stochastic: wait 100 ms before sending first data (lsp request)
+     
+     https://github.com/vapor/vapor/issues/2927
+     */
+    private func registerWebSocketRoute(onLanguage language: RoutesBuilder) {
         let languageNameParameter = "languageName"
         
         language.webSocket(":\(languageNameParameter)", "websocket",
@@ -38,8 +47,6 @@ struct RouteConfigurator {
                 throw error
             }
         } onUpgrade: { request, newWebsocket in
-            // FIXME: fucking Vapor calls this handler and provides the WebSocket for configuration AFTER returning a websocket connection to the client! that means the client (Codeface) might (and does!) send data to the websocket before Vapor gives us a chance to configure the damn thing! 🤬
-            
             newWebsocket.onBinary { ws, bufferedBytesFromWebSocket in
                 let dataFromWebSocket = Data(buffer: bufferedBytesFromWebSocket)
                 activeServerExecutable?.receive(input: dataFromWebSocket)
