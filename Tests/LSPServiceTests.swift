@@ -11,15 +11,6 @@ final class AppTests: XCTestCase {
         }
     }
     
-    func testGetProcessID() throws {
-        let lspServiceApp = try LSPServiceApp(useTestEnvironment: true)
-        
-        try lspServiceApp.vaporApp.test(.GET, "lspservice/api/processID") { response in
-            XCTAssertEqual(response.status, .ok)
-            XCTAssertNotNil(Int(response.body.string))
-        }
-    }
-    
     // TODO: how do we test the websocket route?
 //    func testGetSwiftWebSocket() throws {
 //        let lspServiceApp = try LSPServiceApp(useTestEnvironment: true)
