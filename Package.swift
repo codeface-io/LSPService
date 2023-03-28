@@ -13,11 +13,11 @@ let package = Package(
         .package(url: "https://github.com/vapor/vapor.git",
                  from: "4.57.0"),
         .package(url: "https://github.com/codeface-io/SwiftLSP.git",
-                 exact: "0.3.9"),
+                 exact: "0.3.10"),
         .package(url: "https://github.com/flowtoolz/FoundationToolz.git",
-                 exact: "0.2.0"),
+                 exact: "0.3.0"),
         .package(url: "https://github.com/flowtoolz/SwiftyToolz.git",
-                 exact: "0.4.0")
+                 exact: "0.5.0")
     ],
     targets: [
         .executableTarget(
