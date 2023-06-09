@@ -19,18 +19,26 @@ struct ServerExecutableConfigs {
     private static func loadConfigs() -> Configs {
         let filePath = Bundle.main.bundlePath + "/LSPServiceConfig.json"
         
-//        if isDebugBuild {
-//            return [ "swift": .init(path: "/Users/seb/Desktop/sourcekit-lsp") ]
-//        }
-        
         if let configsFromFile = Configs(fromFilePath: filePath), !configsFromFile.isEmpty {
+            log("Found config file with \(configsFromFile.count) server entries: " + filePath)
             return configsFromFile
         }
         
         let hardcodedConfigs: Configs = [
-            "swift": .sourceKitLSP
-            //            "python": .init(executablePath: "/Library/Frameworks/Python.framework/Versions/3.9/bin/pyls",
-            //                            arguments: [])
+            "swift": .sourceKitLSP,
+            
+            /**
+             the following are experimental example entries
+             
+             if you wann use or change them, remember to first delete the LSPServiceConfig.json file so it gets regenerated on next launch with these hardcoded defaults
+             */
+             
+//            "dart": .init(path: "/Users/seb/Desktop/flutter/bin/dart",
+//                          arguments: ["language-server"]),
+            
+//            "kotlin": .init(path: "/opt/homebrew/bin/kotlin-language-server"),
+            
+//            "python": .init(path: "/Library/Frameworks/Python.framework/Versions/3.9/bin/pyls")
         ]
         
         if hardcodedConfigs.save(toFilePath: filePath,
@@ -38,16 +46,10 @@ struct ServerExecutableConfigs {
             log(error: "Failed to save server executable configs to \(filePath)")
         }
         
+        log("Created config file with \(hardcodedConfigs.count) server entries: " + filePath)
+        
         return hardcodedConfigs
     }
-    
-//    private static var isDebugBuild: Bool {
-//        #if DEBUG
-//        true
-//        #else
-//        false
-//        #endif
-//    }
     
     typealias Configs = [LanguageKey: Executable.Configuration]
     typealias LanguageKey = String
