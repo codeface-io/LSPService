@@ -6,6 +6,7 @@ import SwiftyToolz
 public class LSPServiceApp {
     
     static func main() throws {
+        Log.shared.minimumPrintLevel = .info // adjust log level for development
         let lspServiceApp = try LSPServiceApp()
         try lspServiceApp.run()
     }
