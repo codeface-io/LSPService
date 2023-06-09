@@ -311,7 +311,7 @@
 			repositoryURL = "https://github.com/flowtoolz/SwiftyToolz";
 			requirement = {
 				kind = exactVersion;
-				version = 0.2.0;
+				version = 0.5.1;
 			};
 		};
 		9674731529071E04008D06F5 /* XCRemoteSwiftPackageReference "FoundationToolz" */ = {
@@ -319,7 +319,7 @@
 			repositoryURL = "https://github.com/flowtoolz/FoundationToolz";
 			requirement = {
 				kind = exactVersion;
-				version = 0.1.3;
+				version = 0.3.1;
 			};
 		};
 		9674731829072203008D06F5 /* XCRemoteSwiftPackageReference "SwiftLSP" */ = {
@@ -327,7 +327,7 @@
 			repositoryURL = "https://github.com/codeface-io/SwiftLSP";
 			requirement = {
 				kind = exactVersion;
-				version = 0.3.4;
+				version = 0.3.11;
 			};
 		};
 		9674731D290724AC008D06F5 /* XCRemoteSwiftPackageReference "vapor" */ = {
