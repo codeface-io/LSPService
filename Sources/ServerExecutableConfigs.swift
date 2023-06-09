@@ -37,6 +37,7 @@ struct ServerExecutableConfigs {
 //                          arguments: ["language-server"]),
             
 //            "kotlin": .init(path: "/opt/homebrew/bin/kotlin-language-server"),
+            // the "SEVERE ..." log might be irrelevant https://github.com/eclipse-lsp4j/lsp4j/issues/658 ... or it might indicate that the KLS is in a "screwed up" state and that's the reason it does not react to the initialize request ...
             
 //            "python": .init(path: "/Library/Frameworks/Python.framework/Versions/3.9/bin/pyls")
         ]
