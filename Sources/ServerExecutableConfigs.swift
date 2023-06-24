@@ -32,6 +32,10 @@ struct ServerExecutableConfigs {
              
              if you wann use or change them, remember to first delete the LSPServiceConfig.json file so it gets regenerated on next launch with these hardcoded defaults
              */
+            
+//            "python": .init(path: "/opt/homebrew/bin/pylsp",
+//                            arguments: ["-v"], // verbose
+//                            environment: [:])
              
 //            "dart": .init(path: "/Users/seb/Desktop/flutter/bin/dart",
 //                          arguments: ["language-server"]),
