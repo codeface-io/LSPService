@@ -176,7 +176,11 @@ LSPService is already being used in production, but [Codeface](https://codeface.
 * [x] Research: There are new indications we might be able to launch LSP servers from the sandbox via XPC afterall. This would delight users (of [Codeface](https://codeface.io)) and add a whole new technical pathway (and package product) to LSPService.
     * Result: No success. It seems to be impossible, so we stick to LSPService and WebSockets.
 
-* [ ] 🐣 Make LSPService independent of LSP and turn it into a service that allows any app to use any local executable ("LocalSocket"?). Also add endpoints that allow the client app to configure LSPService so the client can even provide a graphical UI for that.
+* [ ] 🐍 Experiment again with python language servers (and get one to work)
+
+* [ ] 🐣 Make LSPService independent of LSP and turn it into a service that allows any app to use any local commands and tools.
+
+* [ ] ✍🏻 Sign/notarize LSPService so it's easier to install and trust
 
 * [ ] 🔢 Add a versioning mechanism that allows developing LSPService while multiple editors/clients depend on it. This may need to involve:
   * The REST API provides available versions via a GET request
@@ -184,10 +188,6 @@ LSPService is already being used in production, but [Codeface](https://codeface.
   * LSPService outputs its version on launch
   * Downloadable binaries somehow indicate their version
   * Codeface (as proof of concept by the pioneering client) can handle an outdated LSPService
-
-* [ ] ✍🏻 Sign/notarize LSPService so it's easier to install and trust
-
-* [ ] 🐍 Experiment again with python language servers (and get one to work)
 
 * [ ] 📢 Get this project out there: documentation, promo, collaboration, contact potential client apps etc. ...
 
