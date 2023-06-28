@@ -34,17 +34,14 @@ struct ServerExecutableConfigs {
              if you wann use or change them, remember to first delete the LSPServiceConfig.json file so it gets regenerated on next launch with these hardcoded defaults
              */
             
-//            "python": .init(path: "/opt/homebrew/bin/pylsp",
-//                            arguments: ["-v"], // verbose
-//                            environment: [:])
+            "python": .init(path: "/opt/homebrew/bin/pylsp",
+                            arguments: ["-v"], // verbose
+                            environment: [:]),
              
 //            "dart": .init(path: "/Users/seb/Desktop/flutter/bin/dart",
 //                          arguments: ["language-server"]),
             
-//            "kotlin": .init(path: "/opt/homebrew/bin/kotlin-language-server"),
-            // the "SEVERE ..." log might be irrelevant https://github.com/eclipse-lsp4j/lsp4j/issues/658 ... or it might indicate that the KLS is in a "screwed up" state and that's the reason it does not react to the initialize request ...
-            
-//            "python": .init(path: "/Library/Frameworks/Python.framework/Versions/3.9/bin/pyls")
+            "kotlin": .init(path: "/opt/homebrew/bin/kotlin-language-server")
         ]
         
         if hardcodedConfigs.save(toFilePath: filePath,
