@@ -118,7 +118,7 @@ struct RouteConfigurator {
         
         try newServerExecutable.run()
         
-        log("Launched LSP server " + config.path + " " + config.arguments.joined(separator: " "))
+        log("Launched LSP server " + config.command + " " + config.arguments.joined(separator: " "))
     }
 }
 

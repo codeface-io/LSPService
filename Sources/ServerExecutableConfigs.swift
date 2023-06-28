@@ -73,7 +73,7 @@ extension Executable.Configuration: CustomStringConvertible, CustomDebugStringCo
     public var debugDescription: String { description }
     
     public var description: String {
-        path + " " + arguments.joined(separator: " ") + "\(environment.isEmpty ? "" : "\n\(environmentDescription)")"
+        command + " " + arguments.joined(separator: " ") + "\(environment.isEmpty ? "" : "\n\(environmentDescription)")"
     }
     
     private var environmentDescription: String {
