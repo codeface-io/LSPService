@@ -116,9 +116,9 @@ struct RouteConfigurator {
                     promise: errorFeedbackWasSent)
         }
         
-        log("Running LSP server " + config.path + " " + config.arguments.joined(separator: " "))
-
-        newServerExecutable.run()
+        try newServerExecutable.run()
+        
+        log("Launched LSP server " + config.path + " " + config.arguments.joined(separator: " "))
     }
 }
 
