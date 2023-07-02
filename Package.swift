@@ -14,10 +14,10 @@ let package = Package(
                  exact: "4.77.0"),
 //        .package(path: "../SwiftLSP"),
         .package(url: "https://github.com/codeface-io/SwiftLSP.git",
-                 exact: "0.3.15"),
+                 exact: "0.3.16"),
 //        .package(path: "../FoundationToolz"),
         .package(url: "https://github.com/flowtoolz/FoundationToolz.git",
-                 exact: "0.4.0"),
+                 exact: "0.4.1"),
         .package(url: "https://github.com/flowtoolz/SwiftyToolz.git",
                  exact: "0.5.1")
     ],
