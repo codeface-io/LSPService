@@ -116,6 +116,8 @@ struct RouteConfigurator {
                     promise: errorFeedbackWasSent)
         }
         
+        // TODO: check what we can/should improve in how we run the process: https://developer.apple.com/forums/thread/690310
+        
         try newServerExecutable.run()
         
         log("Launched LSP server " + config.command + " " + config.arguments.joined(separator: " "))
